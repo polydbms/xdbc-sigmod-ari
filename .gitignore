@@ -1,0 +1,6 @@
+# ...existing code...
+experiment_new/res/xdbc_plans/*.json
+experiment_new/res/pdf_plots/*.pdf
+experiment_new/res/*.csv
+# Ignore all JSON files in the xdbc_plans directory
+# ...existing code...
