@@ -1,9 +1,9 @@
 build:
-	docker-compose -f docker-compose.yml up -d --build
+	docker compose -f docker-compose.yml up -d --build
 restart:
-	docker-compose -f docker-compose.yml restart xdbcexpt
+	docker compose -f docker-compose.yml restart xdbcexpt
 clean:
-	docker-compose -f docker-compose.yml down --remove-orphans
+	docker compose -f docker-compose.yml down --remove-orphans
 open_docker:
 	docker exec -it xdbcexpt bash
 run_figureACSVCSV:
