@@ -44,14 +44,23 @@ run_expts:
 	
 run_plotter:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && python3 e2e_plotter.py"
+
 copy-pdfs:
 	@echo "Copying all PDFs from container to pdf_plots..."
 	@for pdf in $$(docker exec xdbcexpt find /app/experiments_new -name "*.pdf"); do \
 		filename=$$(basename "$$pdf"); \
-		docker cp "xdbcexpt:$$pdf" ~/XDBC/xdbc-sigmod-ari/experiments_new/res/pdf_plots/$$filename; \
+		if [ -d "$$HOME/XDBC/xdbc-sigmod-ari/experiments_new/res/pdf_plots" ]; then \
+			docker cp "xdbcexpt:$$pdf" "$$HOME/XDBC/xdbc-sigmod-ari/experiments_new/res/pdf_plots/$$filename"; \
+		elif [ -d "$$HOME/xdbc-sigmod-ari/experiments_new/res/pdf_plots" ]; then \
+			docker cp "xdbcexpt:$$pdf" "$$HOME/xdbc-sigmod-ari/experiments_new/res/pdf_plots/$$filename"; \
+		else \
+			echo "Error: Could not find pdf_plots directory in either $$HOME/XDBC/xdbc-sigmod-ari/ or $$HOME/xdbc-sigmod-ari/"; \
+			exit 1; \
+		fi; \
 		echo "Copied: $$filename"; \
 	done
 	@echo "All PDFs copied successfully!"
+
 run_plot: run_plotter copy-pdfs
 
 

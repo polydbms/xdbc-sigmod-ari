@@ -44,7 +44,7 @@ if not os.path.exists(csv_file_path):
         ])
 
 bpsize = 65536 * 10 * 3
-bsize = 65536
+bsize = 32768
 
 normal_conf = create_conf(read_par=1, deser_par=8, comp_par=1, send_par=1, rcv_par=1, decomp_par=1, ser_par=4,
                           write_par=1,
