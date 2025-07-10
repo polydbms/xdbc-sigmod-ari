@@ -60,8 +60,33 @@ copy-pdfs:
 		echo "Copied: $$filename"; \
 	done
 	@echo "All PDFs copied successfully!"
+copy-csvs:
+	@echo "Copying all CSVs from container..."
+	@for csv in $$(docker exec xdbcexpt find /app/experiments_new -name "*.csv"); do \
+		filename=$$(basename "$$csv"); \
+		if [ -d "$$HOME/XDBC/xdbc-sigmod-ari/experiments_new/res" ]; then \
+			docker cp "xdbcexpt:$$csv" "$$HOME/XDBC/xdbc-sigmod-ari/experiments_new/res/$$filename"; \
+		elif [ -d "$$HOME/xdbc-sigmod-ari/experiments_new/res" ]; then \
+			docker cp "xdbcexpt:$$csv" "$$HOME/xdbc-sigmod-ari/experiments_new/res/$$filename"; \
+		else \
+			echo "Error: Could not find res directory in either $$HOME/XDBC/xdbc-sigmod-ari/ or $$HOME/xdbc-sigmod-ari/"; \
+			exit 1; \
+		fi; \
+		echo "Copied: $$filename"; \
+	done
+	@echo "All CSVs copied successfully!"
+run_plot: run_plotter copy-pdfs copy-csvs
 
-run_plot: run_plotter copy-pdfs
+sync: 
+	rsync -avz --progress ~/XDBC/xdbc-sigmod-ari/ node21:~/xdbc-sigmod-ari/
 
+import_pdfs: 
+	scp node21:~/xdbc-sigmod-ari/experiments_new/res/pdf_plots/*.pdf ~/XDBC/xdbc-sigmod-ari/experiments_new/res/pdf_plots/
+
+import_csvs: 
+	scp node21:~/xdbc-sigmod-ari/experiments_new/res/*.csv ~/XDBC/xdbc-sigmod-ari/experiments_new/res/
+
+import:
+	import_pdfs import_csvs
 
 run_experiments_and_plot: run_expts run_plot

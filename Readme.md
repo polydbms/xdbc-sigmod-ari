@@ -19,23 +19,24 @@ xdbc_plans: contain json files
 c) Refer experiment_envs.py for the configurations used in the experiment
 d) If the experiment get stuck at thread = 16. This mightbe due to the unavailability of sufficent buffers in the pool. Cntl+C skips that run.
 
-
 Current status:
 
-Figure in paper  |      py file         |  Status
----------------------------------------------------
-Figure 8         |                      |  Not Done
-Figure 9         |                      |  Not Done
-Figure 10        |                      |  Not Done
-Figure 11        |                      |  Not Done
-Figure 12        |                      |  Not Done
-Figure 13        | figureACSVCSV.py     |  Completed part a)
-Figure 14        |                      |  Not Done
-Figure 15        |                      |  Not Done
-Figure 16        |                      |  Not Done
-Figure 17        |                      |  Not Done
-Figure 18        |                      |  Not Done
-Figure 19        |                      |  Not Done
-Figure 20        |                      |  Not Done
-Figure 21        |                      |  Not Done
-Figure 22        |                      |  Not Done
+Figure in paper  | Py file                          | Status
+----------------- | --------------------------------| ----------------------
+Figure 8          |                                 | Not Done
+Figure 9          |                                 | Not Done
+Figure 10         |                                 | Not Done
+Figure 11         |                                 | Completed part b)
+Figure 12         | figureACSVCSV.py                | Completed part a)
+                  | figureBCSVPG.py                 | Completed part b)
+Figure 13         | figureACSVCSVOpt.py             | Completed part a)
+                  | figureBCSVPGOpt.py              | Completed part b)
+Figure 14         |                                 | Not Done
+Figure 15         |                                 | Not Done
+Figure 16         |                                 | Not Done
+Figure 17         | figureMemoryManagement.py       | Completed part a)
+Figure 18         |                                 | Not Done
+Figure 19         |                                 | Not Done
+Figure 20         |                                 | Not Done
+Figure 21         |                                 | Not Done
+Figure 22         |                                 | Not Done
