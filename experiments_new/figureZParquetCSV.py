@@ -16,7 +16,7 @@ env = test_env['env']
 set_env(env)
 
 show_server_output = False
-show_client_output = False
+show_client_output = True
 
 show_stdout_server = None if show_server_output else subprocess.DEVNULL
 show_stdout_client = None if show_client_output else subprocess.DEVNULL
@@ -32,7 +32,7 @@ if not os.path.exists(csv_file_path):
         writer.writerow(["timestamp", "env", "repetition", "system", "network", "table", "time"])
 
 bpsize = 65536 * 10 * 3
-bsize = 65536
+bsize = 32768
 
 normal_conf = create_conf(read_par=4, deser_par=4, comp_par=1, send_par=1, rcv_par=1, decomp_par=1, ser_par=4,
                           write_par=1,
@@ -61,7 +61,7 @@ networks = [0, 125]
 
 # run baselines
 baseline = "duckdb"
-subprocess.Popen(["docker", "exec", "-it", env['server_container'], "bash", "-c",
+subprocess.Popen(["docker", "exec", "-d", env['server_container'], "bash", "-c",
                   f"cd /dev/shm && python3 -m RangeHTTPServer 1234"],
                  stdout=show_stdout_server)
 

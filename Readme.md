@@ -21,20 +21,22 @@ d) If the experiment get stuck at thread = 16. This mightbe due to the unavailab
 
 Current status:
 
-Figure in paper  | Py file                          | Status
+Figure in paper   |      Py file                    | Status
 ----------------- | --------------------------------| ----------------------
-Figure 8          |                                 | Not Done
-Figure 9          |                                 | Not Done
-Figure 10         |                                 | Not Done
-Figure 11         |                                 | Completed part b)
-Figure 12         | figureACSVCSV.py                | Completed part a)
-                  | figureBCSVPG.py                 | Completed part b)
-Figure 13         | figureACSVCSVOpt.py             | Completed part a)
-                  | figureBCSVPGOpt.py              | Completed part b)
+Figure 7          |figure8a.py                      | Optimize function throws an error demanding timing files in local_measurements_new
+                  |figure8b.py                      |
+Figure 8          |figure8a.py                      | Optimize function throws an error demanding timing files in local_measurements_new
+Figure 9          | xxxx                            | Not Done
+Figure 10         |figureZParquetCSV.py             | Completed. (check duckdb bar)
+Figure 11         |                                 | 
+Figure 12         | a. figureACSVCSV.py             | Completed 
+                  | b. figureBCSVPG.py              | Completed
+Figure 13         | a. figureACSVCSVOpt.py          | Completed 
+                  | b. figureBCSVPGOpt.py           | Completed 
 Figure 14         |                                 | Not Done
 Figure 15         |                                 | Not Done
 Figure 16         |                                 | Not Done
-Figure 17         | figureMemoryManagement.py       | Completed part a)
+Figure 17         | a. figureMemoryManagement.py    | Completed 
 Figure 18         |                                 | Not Done
 Figure 19         |                                 | Not Done
 Figure 20         |                                 | Not Done

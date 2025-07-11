@@ -22,7 +22,6 @@ show_stdout_client = None if show_client_output else subprocess.DEVNULL
 
 print(test_env)
 
-ashply
 
 if not os.path.exists(csv_file_path):
     with open(csv_file_path, mode="w", newline="") as file:

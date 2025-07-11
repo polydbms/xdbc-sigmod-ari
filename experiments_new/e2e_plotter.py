@@ -198,3 +198,90 @@ plt.grid(axis='y', alpha=0.3, zorder=0)
 plt.tight_layout()
 plt.savefig('xdbc_physical_nodes.pdf', bbox_inches='tight')
 
+
+# ******************************* Section4: Generate figure for Parquet CSV*******************************
+
+
+# Generate plots for each environment
+for network in [0,125]:
+
+    # Load CSV data
+    filename = "figureZParquetCSV"
+    csv_file_path = os.path.join('res', f'{filename}.csv')
+    if not os.path.exists(csv_file_path):
+        print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
+    data = pd.read_csv(csv_file_path)
+    # data = pd.read_csv("figureZParquetCSV.csv")
+    data = data[data['system']!='xdbc[parquet-snappy]']
+    
+    data = data[data['network']==network]
+    
+    data['table'] = data['table'].replace({
+        'lineitem_sf10': 'lineitem',
+        'ss13husallm': 'acs',
+        'iotm': 'iot',
+        'inputeventsm': 'icu'
+    })
+    
+    # Define the environments
+    environments = data['env'].unique()
+    
+    # Define the approaches
+    approaches = data['system'].unique()
+    
+    # Prepare data for plotting
+    grouped_data = data.groupby(['env', 'system', 'table'])['time'].mean().reset_index()
+
+
+
+    approaches = ['xdbc[parquet]', 'xdbc[col]', 'xdbc[col-snappy]', 'duckdb']
+    tables = ['lineitem', 'acs', 'iot', 'icu']  # Desired order for tables
+    grouped_data['table'] = pd.Categorical(grouped_data['table'], categories=tables, ordered=True)
+    grouped_data['system'] = pd.Categorical(grouped_data['system'], categories=approaches, ordered=True)
+    grouped_data = grouped_data.sort_values('table')
+
+    # Set up plot style
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Computer Modern Roman']
+    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+    
+    
+    #env_data = grouped_data[grouped_data['env'] == env]
+
+    # Pivot the data to get tables as x-axis and approaches as bars
+    pivot_data = grouped_data.pivot(index='table', columns='system', values='time')
+
+    
+
+    # Set the bar width and positions
+    bar_width = 0.15
+    x_indexes = np.arange(len(pivot_data.index))
+    colors = sns.color_palette("colorblind", len(approaches))
+
+    # Create the plot
+    plt.figure(figsize=(6, 3.75))
+
+    for i, (approach, color) in enumerate(zip(approaches, colors)):
+        if approach in pivot_data.columns:
+            plt.bar(x_indexes + (i - len(approaches)/2) * bar_width, pivot_data[approach],
+                    width=bar_width, label=approach, color=color, zorder=3)
+
+    # Labels and title
+    plt.xlabel('Tables')
+    plt.ylabel('Time (s)')
+    plt.ylim(0,90)
+    
+    plt.xticks(ticks=x_indexes, labels=pivot_data.index, ha='right')
+    #plt.title(f'Environment: {env}')
+    plt.legend(loc='best', ncol=2, labelspacing=0.3, borderpad=0.3, handletextpad=0.4, handlelength=1.5)
+
+    # Add grid for better readability
+    plt.grid(axis='y', alpha=0.3, zorder=0)
+
+    # Save the plot
+    #output_file = f'{env}_times_plot.pdf'
+    plt.tight_layout()
+    plt.savefig(f"xdbc_parquet_csv_formats_net{network}.pdf", bbox_inches='tight')
+    plt.show()
+

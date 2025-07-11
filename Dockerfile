@@ -30,9 +30,7 @@ COPY optimizer ./optimizer
 
 # Create necessary directories
 # Create necessary directories and files
-RUN mkdir -p experiments_new/res experiments_new/local_measurements experiments_new/local_measurements_new && \
-    touch /app/experiments_new/local_measurements_new/xdbc_general_stats.csv && \
-    chmod -R a+w /app/experiments_new/local_measurements /app/experiments_new/local_measurements_new
+RUN mkdir -p experiments_new/res 
 
 # Set environment variables
 ENV PYTHONPATH=/app
