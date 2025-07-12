@@ -2,27 +2,13 @@ import itertools
 import os
 from optimizer.runner import run_xdbserver_and_xdbclient
 
-def generate_historical_data():
+def generate_historical_data(env):
     """
     Generates historical performance data by running a series of data transfers
     with varying configurations. This populates the CSV files needed by the
     optimizer.
     """
-    # Define the specific environment for which to generate data.
-    env = {
-        'server_cpu': 16,
-        'client_cpu': 16,
-        'network': 0,
-        'network_latency': 0,
-        'network_loss': 0,
-        'src': 'csv',
-        'src_format': 1,
-        'target': 'csv',
-        'target_format': 1,
-        'server_container': 'xdbcserver',
-        'client_container': 'xdbcclient',
-        'tables': ['lineitem_sf10', 'ss13husallm', 'iotm', 'inputeventsm']
-    }
+    # # Define the specific environment for which to generate data.
 
     # Define the directory to store the performance measurement CSVs.
     perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements_new'))
@@ -127,7 +113,21 @@ def generate_historical_data():
     print("\n--- Historical data generation complete. ---")
 
 if __name__ == '__main__':
+    env_demo = {
+        'server_cpu': 16,
+        'client_cpu': 16,
+        'network': 0,
+        'network_latency': 0,
+        'network_loss': 0,
+        'src': 'csv',
+        'src_format': 1,
+        'target': 'csv',
+        'target_format': 1,
+        'server_container': 'xdbcserver',
+        'client_container': 'xdbcclient',
+        'tables': ['lineitem_sf10', 'ss13husallm', 'iotm', 'inputeventsm']
+    }
     # To run this script, you would execute:
     # python your_script_name.py
     # Make sure you have the 'optimizer' package and its dependencies available.
-    generate_historical_data()
+    generate_historical_data(env_demo)

@@ -38,7 +38,7 @@ skip_ser_conf = create_conf(read_par=4, deser_par=4, comp_par=1, send_par=1, rcv
                             format=4, compression_lib='nocomp', skip_ser=1, skip_deser=1)
 
 # run baselines
-baselines = ["read_parquet[pyarrow]", "duckdb"]
+baselines = ["pyarrow", "duckdb"]
 
 subprocess.Popen(["docker", "exec", "-it", env['server_container'], "bash", "-c",
                   f"cd /dev/shm && python3 -m RangeHTTPServer 1234"],

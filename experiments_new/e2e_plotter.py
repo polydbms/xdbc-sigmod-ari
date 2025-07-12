@@ -362,4 +362,71 @@ plt.tight_layout()
 plt.savefig('csv_netcat_env_local.pdf', bbox_inches='tight')
 plt.show()
 
+# ************************* Section6: Generate figure 14 *******************************
+
+# Load the data
+filename = "figureXArrow"
+csv_file_path = os.path.join('res', f'{filename}.csv')
+if not os.path.exists(csv_file_path):
+    print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
+data = pd.read_csv(csv_file_path)
+# data = pd.read_csv("figureXArrow.csv")
+
+# Replace mismatched table names
+data['table'] = data['table'].replace({
+    'lineitem_sf10': 'lineitem',
+    'ss13husallm': 'acs',
+    'iotm': 'iot',
+    'inputeventsm': 'icu'
+})
+
+# Extract format and skip information from the 'system' column
+data['format'] = data['system'].apply(lambda x: x.split('-')[-1])  # Extract format (e.g., format1, format2, etc.)
+data['skip'] = data['system'].apply(lambda x: 'skip1' in x)       # Identify skip-ser (skip1)
+
+# Calculate the average time for each table and format
+average_times = (
+    data.groupby(['table', 'format'])['time']
+    .mean()
+    .reset_index()
+    .pivot(index='table', columns='format', values='time')
+)
+
+# Ensure correct order of formats
+formats = ['format1', 'format2', 'format3', 'formatNone']
+tables = ['lineitem', 'acs', 'iot', 'icu']  # Desired order for tables
+average_times = average_times.reindex(index=tables, columns=formats, fill_value=0)
+
+# Set up plot style
+plt.rcParams['text.usetex'] = True
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.serif'] = ['Computer Modern Roman']
+plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+
+# Plot settings
+bar_width = 0.2
+x_indexes = np.arange(len(tables))
+colors = sns.color_palette("colorblind", len(formats))
+labels = ['xdbc[row]', 'xdbc[col]', 'xdbc[arrow]', 'xdbc[skip-ser]']
+
+plt.figure(figsize=(6, 3.75))
+
+# Plot each format
+for i, format_ in enumerate(formats):
+    plt.bar(x_indexes + (i - 1.5) * bar_width, average_times[format_], width=bar_width,
+            label=labels[i], color=colors[i], zorder=3)
+
+# Labels, legend, and formatting
+plt.xlabel('Datasets')
+plt.ylabel('Time (s)')
+plt.xticks(ticks=x_indexes, labels=tables)
+plt.legend(loc='best', labelspacing=0.3, borderpad=0.3, handletextpad=0.4, handlelength=1)
+plt.grid(axis='y', alpha=0.3, zorder=0)
+
+# Layout adjustments
+plt.tight_layout()
+
+# Save and show the plot
+plt.savefig("xdbc_csv_formats.pdf", bbox_inches='tight')
+plt.show()
 

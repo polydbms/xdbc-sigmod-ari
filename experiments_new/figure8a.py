@@ -7,6 +7,7 @@ from experiment_envs import test_envs
 from optimizer.runner import run_xdbserver_and_xdbclient
 from optimizer.optimize import optimize
 from experiment_helpers import set_env, create_file
+from profiling_phase import generate_historical_data
 
 repetitions = 2
 test_env = next((env for env in test_envs if env['name'] == "figurePandasPG"), None)
@@ -51,6 +52,7 @@ for table in test_env['env']['tables']:
                 writer.writerow([int(a.timestamp()), test_env['name'], i + 1, baseline, table, c])
 
 # run xdbc
+generate_historical_data(env) # Generate historical data for optimization and store in local_measurements_new
 perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
 for table in test_env['env']['tables']:
     for i in range(repetitions):
