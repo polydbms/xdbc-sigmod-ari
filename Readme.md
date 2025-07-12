@@ -35,13 +35,12 @@ Figure 12         | a. figureACSVCSV.py             | Completed
 Figure 13         | a. figureACSVCSVOpt.py          | Completed 
                   | b. figureBCSVPGOpt.py           | Completed 
 Figure 14         | a. figureXArrow.py              | Completed
-                  | b. figureYParquet.py            |Couldnt run pandas_xdbc due to import error pyxdbc,pyxdbcparquet
-                  |                                 | Not Done
+                  | b. figureYParquet.py            | Couldnt run pandas_xdbc due to import error pyxdbc,pyxdbcparquet
 Figure 15         |                                 | Not Done
 Figure 16         |                                 | Not Done
 Figure 17         | a. figureMemoryManagement.py    | Completed 
 Figure 18         |                                 | Not Done
-Figure 19         |                                 | Not Done
+Figure 19         | figure19.py                     | Completed
 Figure 20         |                                 | Not Done
 Figure 21         |                                 | Not Done
 Figure 22         |                                 | Not Done

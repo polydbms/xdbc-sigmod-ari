@@ -64,7 +64,7 @@ fixed_config = {
     'write_par': 16,
     'send_par': 1,  # Kept from original base config
     'rcv_par': 1,   # Kept from original base config
-    'ser_par': 1,   # Kept from original base config
+    'ser_par': 8,   # Kept from original base config
     'buffer_size': 1024,
     'server_buffpool_size': 81920,
     'client_buffpool_size': 81920,

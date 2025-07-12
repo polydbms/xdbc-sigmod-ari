@@ -57,7 +57,6 @@ copy-pdfs:
 			echo "Error: Could not find pdf_plots directory in either $$HOME/XDBC/xdbc-sigmod-ari/ or $$HOME/xdbc-sigmod-ari/"; \
 			exit 1; \
 		fi; \
-		echo "Copied: $$filename"; \
 	done
 	@echo "All PDFs copied successfully!"
 copy-csvs:
@@ -73,7 +72,6 @@ copy-csvs:
 			echo "Error: Could not find res directory in either $$HOME/XDBC/xdbc-sigmod-ari/ or $$HOME/xdbc-sigmod-ari/"; \
 			exit 1; \
 		fi; \
-		echo "Copied res CSV: $$filename"; \
 	done
 	@echo "Copying local_measurements_new CSVs..."
 	@for csv in $$(docker exec xdbcexpt find /app/experiments_new/local_measurements_new -name "*.csv"); do \
