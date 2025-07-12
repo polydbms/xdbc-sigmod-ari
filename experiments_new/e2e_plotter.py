@@ -285,3 +285,81 @@ for network in [0,125]:
     plt.savefig(f"xdbc_parquet_csv_formats_net{network}.pdf", bbox_inches='tight')
     plt.show()
 
+    # ******************************** Section5: Generate figure 11*******************************
+
+# Load the CSV file
+filename = "figure11"
+csv_file_path = os.path.join('res', f'{filename}.csv')
+if not os.path.exists(csv_file_path):
+    print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
+data = pd.read_csv(csv_file_path)
+
+# csv_file_path = 'figure11.csv'  # Replace with your actual file path
+# data = pd.read_csv(csv_file_path)
+
+# Replace mismatched table names
+data['table'] = data['table'].replace({
+    'lineitem_sf10': 'lineitem',
+    'ss13husallm': 'acs',
+    'iotm': 'iot',
+    'inputeventsm': 'icu'
+})
+
+# Replace system names for clarity
+data['system'] = data['system'].replace({
+    'xdbc-skip0': 'xdbc',
+    'xdbc-skip1': 'xdbc[skip-ser]',
+    'read_csv_url': 'netcat'
+})
+
+# Calculate the average time for each combination of table and system
+average_times = (
+    data.groupby(['table', 'system'])['time']
+    .min()
+    .reset_index()
+    .pivot(index='table', columns='system', values='time')
+)
+
+# Define the order of systems and datasets for consistency
+systems = ['xdbc', 'xdbc[skip-ser]', 'netcat']
+tables = ['lineitem', 'acs', 'iot', 'icu']
+
+# Reindex to ensure proper order and fill missing values with 0 (if any)
+average_times = average_times.reindex(index=tables, columns=systems, fill_value=0)
+
+# Extract data for plotting
+approach_times = [average_times[system].values for system in systems]
+
+# Set up plot style
+plt.rcParams['text.usetex'] = True
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.serif'] = ['Computer Modern Roman']
+plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+
+# Create the plot
+datasets = tables  # Adjust dataset names for readability
+formal_palette = sns.color_palette("colorblind", len(systems))
+bar_width = 0.25
+x_indexes = np.arange(len(datasets))
+
+plt.figure(figsize=(6, 3.75))
+
+# Plotting each approach with offset for bar positions
+for i, (system, times) in enumerate(zip(systems, approach_times)):
+    plt.bar(x_indexes + (i - 1) * bar_width, times, width=bar_width, color=formal_palette[i], label=system, zorder=3)
+
+# Labels and Title
+plt.xlabel('Datasets')
+plt.ylabel('Time (s)')
+plt.xticks(ticks=x_indexes, labels=datasets)
+plt.legend(loc='best')
+
+# Grid for better readability
+plt.grid(axis='y', alpha=0.3, zorder=0)
+
+# Display the plot
+plt.tight_layout()
+plt.savefig('csv_netcat_env_local.pdf', bbox_inches='tight')
+plt.show()
+
+

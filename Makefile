@@ -62,7 +62,8 @@ copy-pdfs:
 	@echo "All PDFs copied successfully!"
 copy-csvs:
 	@echo "Copying all CSVs from container..."
-	@for csv in $$(docker exec xdbcexpt find /app/experiments_new -name "*.csv"); do \
+	@echo "Copying res CSVs..."
+	@for csv in $$(docker exec xdbcexpt find /app/experiments_new/res -name "*.csv"); do \
 		filename=$$(basename "$$csv"); \
 		if [ -d "$$HOME/XDBC/xdbc-sigmod-ari/experiments_new/res" ]; then \
 			docker cp "xdbcexpt:$$csv" "$$HOME/XDBC/xdbc-sigmod-ari/experiments_new/res/$$filename"; \
@@ -72,9 +73,23 @@ copy-csvs:
 			echo "Error: Could not find res directory in either $$HOME/XDBC/xdbc-sigmod-ari/ or $$HOME/xdbc-sigmod-ari/"; \
 			exit 1; \
 		fi; \
-		echo "Copied: $$filename"; \
+		echo "Copied res CSV: $$filename"; \
 	done
-	@echo "All CSVs copied successfully!"
+	@echo "Copying local_measurements_new CSVs..."
+	@for csv in $$(docker exec xdbcexpt find /app/experiments_new/local_measurements_new -name "*.csv"); do \
+		filename=$$(basename "$$csv"); \
+		if [ -d "$$HOME/XDBC/xdbc-sigmod-ari/experiments_new/local_measurements_new" ]; then \
+			docker cp "xdbcexpt:$$csv" "$$HOME/XDBC/xdbc-sigmod-ari/experiments_new/local_measurements_new/$$filename"; \
+		elif [ -d "$$HOME/xdbc-sigmod-ari/experiments_new/local_measurements_new" ]; then \
+			docker cp "xdbcexpt:$$csv" "$$HOME/xdbc-sigmod-ari/experiments_new/local_measurements_new/$$filename"; \
+		else \
+			echo "Error: Could not find local_measurements_new directory in either $$HOME/XDBC/xdbc-sigmod-ari/ or $$HOME/xdbc-sigmod-ari/"; \
+			exit 1; \
+		fi; \
+		echo "Copied local_measurements CSV: $$filename"; \
+	done
+	@echo "All CSVs copied successfully to their respective directories!"
+	
 run_plot: run_plotter copy-pdfs copy-csvs
 
 sync: 

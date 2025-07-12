@@ -28,7 +28,7 @@ Figure 7          |figure8a.py                      | Optimize function throws a
 Figure 8          |figure8a.py                      | Optimize function throws an error demanding timing files in local_measurements_new
 Figure 9          | xxxx                            | Not Done
 Figure 10         |figureZParquetCSV.py             | Completed. (check duckdb bar)
-Figure 11         |                                 | 
+Figure 11         | a. figure11.py                  | Completed part a.
 Figure 12         | a. figureACSVCSV.py             | Completed 
                   | b. figureBCSVPG.py              | Completed
 Figure 13         | a. figureACSVCSVOpt.py          | Completed 
