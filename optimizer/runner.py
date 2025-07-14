@@ -5,9 +5,11 @@ import csv
 import os
 from optimizer.config.metrics_client import MetricsClient
 from optimizer.config.metrics_server import MetricsServer
+import re
 
 
-def run_xdbserver_and_xdbclient(config, env, perf_dir, sleep=2, show_output=(False, False)):
+
+def run_xdbserver_and_xdbclient(config, env, perf_dir, sleep=2, show_output=(False, False), return_size=False):
     show_server_output, show_client_output = show_output
     show_stdout_server = None if show_server_output else subprocess.DEVNULL
     show_stdout_client = None if show_client_output else subprocess.DEVNULL
@@ -144,7 +146,7 @@ def run_xdbserver_and_xdbclient(config, env, perf_dir, sleep=2, show_output=(Fal
         b = datetime.datetime.now()
         c = b - a
         result['time'] = c.total_seconds()
-
+        time.sleep(2) # Wait for 2 seconds
         end_data_size = measure_network(client_path, env['client_container'])
         result['size'] = end_data_size - start_data_size
         result['avg_cpu_server'] = 0
@@ -167,6 +169,8 @@ def run_xdbserver_and_xdbclient(config, env, perf_dir, sleep=2, show_output=(Fal
         subprocess.run(["docker", "exec", env['client_container'], "bash", "-c",
                         "rm -rf /dev/shm/output*"])
 
+    if return_size:
+        return (res, result['size'])
     return res
 
 
@@ -229,15 +233,36 @@ def print_metrics(perf_dir, dict=False):
     print(metrics_server.get_throughput_metrics())
     print(metrics_client.get_throughput_metrics())
 
+def measure_network(path, container_name):
+    """
+    Executes 'ip -s link show eth0' inside the target container
+    and parses the output to get the RX bytes.
+    """
+    command = ["docker", "exec", container_name, "ip", "-s", "link", "show", "eth0"]
+    
+    try:
+        result = subprocess.run(
+            command, capture_output=True, text=True, check=True
+        )
 
-def measure_network(client_path, container):
-    result = subprocess.run(
-        f"bash {client_path}/experiments_measure_network.sh '{container}'",
-        shell=True,
-        capture_output=True,
-        text=True
-    )
-    return int(result.stdout.strip())
+        # Split the output into lines
+        lines = result.stdout.split('\n')
+        
+        # Find the RX line and the following line with numbers
+        for i, line in enumerate(lines):
+            if 'RX:' in line and 'bytes' in line and i+1 < len(lines):
+                # The next line should contain the numbers
+                numbers = lines[i+1].split()
+                if numbers:
+                    byte_count = int(numbers[0])
+                    return byte_count
+        
+        print("--- Could not find RX bytes in output, returning 0. ---")
+        return 0
+            
+    except subprocess.CalledProcessError as e:
+        print(f"--- Command failed: {e.stderr} ---")
+        return 0
 
 
 def write_csv_header(filename, config=None):
