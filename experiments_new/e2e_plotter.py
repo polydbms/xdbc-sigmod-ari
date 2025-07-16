@@ -6,429 +6,433 @@ import seaborn as sns
 
 # # ****************************Section1 :Generate figures 12 & 13***************************
 
-# # filenames = ['figureACSVCSV','figureACSVCSVOpt']
-# filenames = ['figureACSVCSV','figureACSVCSVOpt','figureBCSVPG','figureBCSVPGOpt']
+# filenames = ['figureACSVCSV','figureACSVCSVOpt']
+filenames = ['figureACSVCSV','figureACSVCSVOpt','figureBCSVPG','figureBCSVPGOpt']
 
-# output_mapping = {
-#     'figureACSVCSV': 'par_scale_csv_csv_write_1.pdf',
-#     'figureACSVCSVOpt': 'par_scale_csv_csv_ser_8.pdf',
-#     'figureBCSVPG': 'par_scale_postgres_csv_write_1.pdf',
-#     'figureBCSVPGOpt': 'par_scale_postgres_csv_read_8.pdf',
-# }
+output_mapping = {
+    'figureACSVCSV': 'figure12a.pdf',
+    'figureACSVCSVOpt': 'figure13a.pdf',
+    'figureBCSVPG': 'figure12b.pdf',
+    'figureBCSVPGOpt': 'figure13b.pdf',
+}
 
-# # --- Main Loop ---
-# # Process each file specified in the `filenames` list.
-# for filename in filenames:
-#     # Check if the file exists before trying to load it.
-#     csv_file_path = os.path.join('res', f'{filename}.csv')
-#     if not os.path.exists(csv_file_path):
-#         print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
-#         continue
+# --- Main Loop ---
+# Process each file specified in the `filenames` list.
+for filename in filenames:
+    # Check if the file exists before trying to load it.
+    csv_file_path = os.path.join('res', f'{filename}.csv')
+    if not os.path.exists(csv_file_path):
+        print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
+        continue
 
-#     # Load the CSV data from the file.
-#     df = pd.read_csv(csv_file_path)
+    # Load the CSV data from the file.
+    df = pd.read_csv(csv_file_path)
 
-#     # To handle any repeated experiments, group by the configuration
-#     # and average the time. This is more robust than dropping duplicates.
-#     config_cols = [
-#         'env', 'read_par', 'deser_par', 'comp_par', 'send_par',
-#         'rcv_par', 'decomp_par', 'ser_par', 'write_par', 'table'
-#     ]
-#     df = df.groupby(config_cols, as_index=False)['time'].mean()
+    # To handle any repeated experiments, group by the configuration
+    # and average the time. This is more robust than dropping duplicates.
+    config_cols = [
+        'env', 'read_par', 'deser_par', 'comp_par', 'send_par',
+        'rcv_par', 'decomp_par', 'ser_par', 'write_par', 'table'
+    ]
+    df = df.groupby(config_cols, as_index=False)['time'].mean()
 
-#     # List of parallelism parameters to plot on the x-axis
-#     parallelism_keys = [
-#         'read_par', 'deser_par', 'comp_par',
-#         'decomp_par', 'ser_par', 'write_par'
-#     ]
+    # List of parallelism parameters to plot on the x-axis
+    parallelism_keys = [
+        'read_par', 'deser_par', 'comp_par',
+        'decomp_par', 'ser_par', 'write_par'
+    ]
 
-#     # Create a new figure for each file.
-#     plt.figure(figsize=(6, 3.75))
+    # Create a new figure for each file.
+    plt.figure(figsize=(6, 3.75))
 
-#     # The values for the x-axis.
-#     scale_values = [1, 2, 4, 8, 16]
+    # The values for the x-axis.
+    scale_values = [1, 2, 4, 8, 16]
 
-#     # Plot each parameter's scaling behavior.
-#     for param in parallelism_keys:
-#         # --- DYNAMIC FILTERING LOGIC ---
-#         # 1. Define the default baseline configuration for each iteration.
-#         baseline_config = {
-#             'read_par': 1, 'deser_par': 1, 'comp_par': 1,
-#             'decomp_par': 1, 'ser_par': 1, 'write_par': 1
-#         }
+    # Plot each parameter's scaling behavior.
+    for param in parallelism_keys:
+        # --- DYNAMIC FILTERING LOGIC ---
+        # 1. Define the default baseline configuration for each iteration.
+        baseline_config = {
+            'read_par': 1, 'deser_par': 1, 'comp_par': 1,
+            'decomp_par': 1, 'ser_par': 1, 'write_par': 1
+        }
 
-#         # 2. Check for the "Opt" special case and adjust the baseline.
-#         # This makes the script adaptable to different experimental setups.
-#         if "figureACSVCSVOpt" in filename and param != 'ser_par':
-#             baseline_config['ser_par'] = 8
-#         if "figureBCSVPGOpt" in filename and param != 'read_par':
-#             baseline_config['read_par'] = 8
+        # 2. Check for the "Opt" special case and adjust the baseline.
+        # This makes the script adaptable to different experimental setups.
+        if "figureACSVCSVOpt" in filename and param != 'ser_par':
+            baseline_config['ser_par'] = 8
+        if "figureBCSVPGOpt" in filename and param != 'read_par':
+            baseline_config['read_par'] = 8
 
-#         # 3. Filter the DataFrame using the correct dynamic baseline.
-#         filtered_df = df.copy()
-#         for key, value in baseline_config.items():
-#             if key != param:  # Don't filter the parameter we are currently plotting
-#                 filtered_df = filtered_df[filtered_df[key] == value]
-#         # --- END OF LOGIC ---
+        # 3. Filter the DataFrame using the correct dynamic baseline.
+        filtered_df = df.copy()
+        for key, value in baseline_config.items():
+            if key != param:  # Don't filter the parameter we are currently plotting
+                filtered_df = filtered_df[filtered_df[key] == value]
+        # --- END OF LOGIC ---
 
-#         # Extract the data for the current parameter.
-#         filtered_df = filtered_df[filtered_df[param].isin(scale_values)].sort_values(by=param)
+        # Extract the data for the current parameter.
+        filtered_df = filtered_df[filtered_df[param].isin(scale_values)].sort_values(by=param)
 
-#         # Plot the results only if data was found.
-#         if not filtered_df.empty:
-#             grouped = filtered_df.groupby(param)['time'].mean().reset_index()
-#             plt.plot(grouped[param], grouped['time'], marker='x', label=f"{param}")
+        # Plot the results only if data was found.
+        if not filtered_df.empty:
+            grouped = filtered_df.groupby(param)['time'].mean().reset_index()
+            plt.plot(grouped[param], grouped['time'], marker='x', label=f"{param}")
 
-#     # --- Final Plot Customization ---
-#     plt.ylim(bottom=0)
-#     plt.xlabel('Parallelism Degree')
-#     plt.ylabel('Time (s)')
-#     plt.xticks(scale_values)
-#     plt.legend(loc='best', ncol=3)
-#     plt.grid(alpha=0.3)
-#     plt.tight_layout()
+    # --- Final Plot Customization ---
+    plt.ylim(bottom=0)
+    plt.xlabel('Parallelism Degree')
+    plt.ylabel('Time (s)')
+    plt.xticks(scale_values)
+    plt.legend(loc='best', ncol=3)
+    plt.grid(alpha=0.3)
+    plt.tight_layout()
 
-#     # Save the plot to the corresponding PDF file.
-#     output_filename = output_mapping.get(filename, f'{filename}.pdf')
-#     plt.savefig(output_filename, bbox_inches='tight')
-#     print(f"Plot saved to '{output_filename}'")
+    # Save the plot to the corresponding PDF file.
+    output_filename = output_mapping.get(filename, f'{filename}.pdf')
+    plt.savefig(output_filename, bbox_inches='tight')
+    print(f"Plot saved to '{output_filename}'")
 
-#     plt.show()
+    plt.show()
 
 
 
 # # ******************************Section2: Generate figure for MemoryManagement**************************
 
-#     # Load the CSV file
-# filename = "figureMemoryManagement"
-# csv_file_path = os.path.join('res', f'{filename}.csv')
-# if not os.path.exists(csv_file_path):
-#     print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
-# data = pd.read_csv(csv_file_path)
+    # Load the CSV file
+filename = "figureMemoryManagement"
+csv_file_path = os.path.join('res', f'{filename}.csv')
+if not os.path.exists(csv_file_path):
+    print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
+data = pd.read_csv(csv_file_path)
 
-# data = data[data['table']=='lineitem_sf10_nocomp']  # Filter for the specific table
-# # Prepare plot data
-# data['bufferpool_size'] = data['bufferpool_size'].astype(int)
-# data['buffer_size'] = data['buffer_size'].astype(int)
+data = data[data['table']=='lineitem_sf10_nocomp']  # Filter for the specific table
+# Prepare plot data
+data['bufferpool_size'] = data['bufferpool_size'].astype(int)
+data['buffer_size'] = data['buffer_size'].astype(int)
 
-# # Sort buffer pool and buffer sizes for consistency
-# data = data.sort_values(['bufferpool_size', 'buffer_size'])
+# Sort buffer pool and buffer sizes for consistency
+data = data.sort_values(['bufferpool_size', 'buffer_size'])
 
-# # Set up plot style
-# plt.rcParams['text.usetex'] = True
-# plt.rcParams['font.family'] = 'serif'
-# plt.rcParams['font.serif'] = ['Computer Modern Roman']
-# plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+# Set up plot style
+plt.rcParams['text.usetex'] = True
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.serif'] = ['Computer Modern Roman']
+plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
 
-# # Unique buffer pool sizes and buffer sizes
-# bufferpool_sizes = sorted(data['bufferpool_size'].unique())
-# buffer_sizes = sorted(data['buffer_size'].unique())
-# colors = sns.color_palette("colorblind", len(buffer_sizes))
+# Unique buffer pool sizes and buffer sizes
+bufferpool_sizes = sorted(data['bufferpool_size'].unique())
+buffer_sizes = sorted(data['buffer_size'].unique())
+colors = sns.color_palette("colorblind", len(buffer_sizes))
 
-# # Plot
-# plt.figure(figsize=(6, 3.75))
-# bar_width = 0.14
-# x_indexes = np.arange(len(bufferpool_sizes))
+# Plot
+plt.figure(figsize=(6, 3.75))
+bar_width = 0.14
+x_indexes = np.arange(len(bufferpool_sizes))
 
-# for i, buffer_size in enumerate(buffer_sizes):
-#     subset = data[data['buffer_size'] == buffer_size]
-#     means = [
-#         subset[subset['bufferpool_size'] == pool_size]['time'].mean() if pool_size in subset['bufferpool_size'].values else 0
-#         for pool_size in bufferpool_sizes
-#     ]
-#     positions = x_indexes + (i - len(buffer_sizes) / 2) * bar_width
-#     plt.bar(positions, means, width=bar_width, label=f"{buffer_size}", color=colors[i], zorder=3)
+for i, buffer_size in enumerate(buffer_sizes):
+    subset = data[data['buffer_size'] == buffer_size]
+    means = [
+        subset[subset['bufferpool_size'] == pool_size]['time'].mean() if pool_size in subset['bufferpool_size'].values else 0
+        for pool_size in bufferpool_sizes
+    ]
+    positions = x_indexes + (i - len(buffer_sizes) / 2) * bar_width
+    plt.bar(positions, means, width=bar_width, label=f"{buffer_size}", color=colors[i], zorder=3)
 
-# # Formatting
-# plt.xlabel("Buffer Pool Size (MB)")
-# plt.ylabel("Time (s)")
-# plt.ylim(0,34)
-# plt.xticks(ticks=x_indexes, labels=[f"{int(bp/1024)}" for bp in bufferpool_sizes], ha="center")
-# plt.legend(title="Buffer Size (KB)",loc='best', ncol=7, labelspacing=0.1, borderpad=0.3, handletextpad=0.2, handlelength=1, columnspacing=.3)
-# plt.grid(axis='y', alpha=0.3, zorder=0)
+# Formatting
+plt.xlabel("Buffer Pool Size (MB)")
+plt.ylabel("Time (s)")
+plt.ylim(0,34)
+plt.xticks(ticks=x_indexes, labels=[f"{int(bp/1024)}" for bp in bufferpool_sizes], ha="center")
+plt.legend(title="Buffer Size (KB)",loc='best', ncol=7, labelspacing=0.1, borderpad=0.3, handletextpad=0.2, handlelength=1, columnspacing=.3)
+plt.grid(axis='y', alpha=0.3, zorder=0)
 
-# # Save and show the plot
-# plt.tight_layout()
-# plt.savefig("bufferpool_vs_buffersize.pdf", bbox_inches='tight')
-# plt.show()
+# Save and show the plot
+plt.tight_layout()
+plt.savefig("figure17a.pdf", bbox_inches='tight')
+plt.show()
 
 
 
 # # ******************************Section3: Generate figure for physical nodes**************************
-# # Define the environments and approaches
-# environments = ['big-big', 'small-big', 'big-laptop', 'small-laptop']
-# approaches = ['xdbc[comp]', 'xdbc[nocomp]', 'xdbc[nocomp+skipser]', 'netcat[comp]', 'netcat[nocomp]']
+# Define the environments and approaches
+environments = ['big-big', 'small-big', 'big-laptop', 'small-laptop']
+approaches = ['xdbc[comp]', 'xdbc[nocomp]', 'xdbc[nocomp+skipser]', 'netcat[comp]', 'netcat[nocomp]']
 
-# # Define the hardcoded times for each approach and environment
-# times = np.array([
-#     [29, 24, 212, 242],  # xdbc[comp]
-#     [88, 89, 943, 1008],  # xdbc[nocomp]
-#     [69, 71, 760, 770],  # xdbc[nocomp+skipser]
-#     [12+21+16, 19+22+16, 19+235+13, 19+234+13],   # netcat[comp]
-#     [66, 66, 725, 730]     # netcat[nocomp]
-# ])
+# Define the hardcoded times for each approach and environment
+times = np.array([
+    [29, 24, 212, 242],  # xdbc[comp]
+    [88, 89, 943, 1008],  # xdbc[nocomp]
+    [69, 71, 760, 770],  # xdbc[nocomp+skipser]
+    [12+21+16, 19+22+16, 19+235+13, 19+234+13],   # netcat[comp]
+    [66, 66, 725, 730]     # netcat[nocomp]
+])
 
-# # Set up plot style
-# plt.rcParams['text.usetex'] = True
-# plt.rcParams['font.family'] = 'serif'
-# plt.rcParams['font.serif'] = ['Computer Modern Roman']
-# plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+# Set up plot style
+plt.rcParams['text.usetex'] = True
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.serif'] = ['Computer Modern Roman']
+plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
 
-# # Set the bar width and positions
-# bar_width = 0.15
-# x_indexes = np.arange(len(environments))
-# colors = sns.color_palette("colorblind", len(approaches))
+# Set the bar width and positions
+bar_width = 0.15
+x_indexes = np.arange(len(environments))
+colors = sns.color_palette("colorblind", len(approaches))
 
-# # Create the plot
-# plt.figure(figsize=(6, 3.75))
+# Create the plot
+plt.figure(figsize=(6, 3.75))
 
-# for i, (approach, color) in enumerate(zip(approaches, colors)):
-#     plt.bar(x_indexes + (i - 1.5) * bar_width, times[i], width=bar_width, label=approach, color=color, zorder=3)
+for i, (approach, color) in enumerate(zip(approaches, colors)):
+    plt.bar(x_indexes + (i - 1.5) * bar_width, times[i], width=bar_width, label=approach, color=color, zorder=3)
 
-# # Labels and title
-# plt.xlabel('Environments')
-# plt.ylabel('Time (s)')
-# plt.xticks(ticks=x_indexes, labels=environments)
-# plt.legend(loc='best')
+# Labels and title
+plt.xlabel('Environments')
+plt.ylabel('Time (s)')
+plt.xticks(ticks=x_indexes, labels=environments)
+plt.legend(loc='best')
 
-# # Add grid for better readability
-# plt.grid(axis='y', alpha=0.3, zorder=0)
+# Add grid for better readability
+plt.grid(axis='y', alpha=0.3, zorder=0)
 
-# # Display the plot
-# plt.tight_layout()
-# plt.savefig('xdbc_physical_nodes.pdf', bbox_inches='tight')
+# Display the plot
+plt.tight_layout()
+plt.savefig('figure11b.pdf', bbox_inches='tight')
 
 
 # # ******************************* Section4: Generate figure for Parquet CSV*******************************
 
 
-# # Generate plots for each environment
-# for network in [0,125]:
+# Generate plots for each environment
+for network in [0,125]:
 
-#     # Load CSV data
-#     filename = "figureZParquetCSV"
-#     csv_file_path = os.path.join('res', f'{filename}.csv')
-#     if not os.path.exists(csv_file_path):
-#         print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
-#     data = pd.read_csv(csv_file_path)
-#     # data = pd.read_csv("figureZParquetCSV.csv")
-#     data = data[data['system']!='xdbc[parquet-snappy]']
+    # Load CSV data
+    filename = "figureZParquetCSV"
+    csv_file_path = os.path.join('res', f'{filename}.csv')
+    if not os.path.exists(csv_file_path):
+        print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
+    data = pd.read_csv(csv_file_path)
+    # data = pd.read_csv("figureZParquetCSV.csv")
+    data = data[data['system']!='xdbc[parquet-snappy]']
     
-#     data = data[data['network']==network]
+    data = data[data['network']==network]
     
-#     data['table'] = data['table'].replace({
-#         'lineitem_sf10': 'lineitem',
-#         'ss13husallm': 'acs',
-#         'iotm': 'iot',
-#         'inputeventsm': 'icu'
-#     })
+    data['table'] = data['table'].replace({
+        'lineitem_sf10': 'lineitem',
+        'ss13husallm': 'acs',
+        'iotm': 'iot',
+        'inputeventsm': 'icu'
+    })
     
-#     # Define the environments
-#     environments = data['env'].unique()
+    # Define the environments
+    environments = data['env'].unique()
     
-#     # Define the approaches
-#     approaches = data['system'].unique()
+    # Define the approaches
+    approaches = data['system'].unique()
     
-#     # Prepare data for plotting
-#     grouped_data = data.groupby(['env', 'system', 'table'])['time'].mean().reset_index()
+    # Prepare data for plotting
+    grouped_data = data.groupby(['env', 'system', 'table'])['time'].mean().reset_index()
 
 
 
-#     approaches = ['xdbc[parquet]', 'xdbc[col]', 'xdbc[col-snappy]', 'duckdb']
-#     tables = ['lineitem', 'acs', 'iot', 'icu']  # Desired order for tables
-#     grouped_data['table'] = pd.Categorical(grouped_data['table'], categories=tables, ordered=True)
-#     grouped_data['system'] = pd.Categorical(grouped_data['system'], categories=approaches, ordered=True)
-#     grouped_data = grouped_data.sort_values('table')
+    approaches = ['xdbc[parquet]', 'xdbc[col]', 'xdbc[col-snappy]', 'duckdb']
+    tables = ['lineitem', 'acs', 'iot', 'icu']  # Desired order for tables
+    grouped_data['table'] = pd.Categorical(grouped_data['table'], categories=tables, ordered=True)
+    grouped_data['system'] = pd.Categorical(grouped_data['system'], categories=approaches, ordered=True)
+    grouped_data = grouped_data.sort_values('table')
 
-#     # Set up plot style
-#     plt.rcParams['text.usetex'] = True
-#     plt.rcParams['font.family'] = 'serif'
-#     plt.rcParams['font.serif'] = ['Computer Modern Roman']
-#     plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+    # Set up plot style
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Computer Modern Roman']
+    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
     
     
-#     #env_data = grouped_data[grouped_data['env'] == env]
+    #env_data = grouped_data[grouped_data['env'] == env]
 
-#     # Pivot the data to get tables as x-axis and approaches as bars
-#     pivot_data = grouped_data.pivot(index='table', columns='system', values='time')
+    # Pivot the data to get tables as x-axis and approaches as bars
+    pivot_data = grouped_data.pivot(index='table', columns='system', values='time')
 
     
 
-#     # Set the bar width and positions
-#     bar_width = 0.15
-#     x_indexes = np.arange(len(pivot_data.index))
-#     colors = sns.color_palette("colorblind", len(approaches))
+    # Set the bar width and positions
+    bar_width = 0.15
+    x_indexes = np.arange(len(pivot_data.index))
+    colors = sns.color_palette("colorblind", len(approaches))
 
-#     # Create the plot
-#     plt.figure(figsize=(6, 3.75))
+    # Create the plot
+    plt.figure(figsize=(6, 3.75))
 
-#     for i, (approach, color) in enumerate(zip(approaches, colors)):
-#         if approach in pivot_data.columns:
-#             plt.bar(x_indexes + (i - len(approaches)/2) * bar_width, pivot_data[approach],
-#                     width=bar_width, label=approach, color=color, zorder=3)
+    for i, (approach, color) in enumerate(zip(approaches, colors)):
+        if approach in pivot_data.columns:
+            plt.bar(x_indexes + (i - len(approaches)/2) * bar_width, pivot_data[approach],
+                    width=bar_width, label=approach, color=color, zorder=3)
 
-#     # Labels and title
-#     plt.xlabel('Tables')
-#     plt.ylabel('Time (s)')
-#     plt.ylim(0,90)
+    # Labels and title
+    plt.xlabel('Tables')
+    plt.ylabel('Time (s)')
+    plt.ylim(0,90)
     
-#     plt.xticks(ticks=x_indexes, labels=pivot_data.index, ha='right')
-#     #plt.title(f'Environment: {env}')
-#     plt.legend(loc='best', ncol=2, labelspacing=0.3, borderpad=0.3, handletextpad=0.4, handlelength=1.5)
+    plt.xticks(ticks=x_indexes, labels=pivot_data.index, ha='right')
+    #plt.title(f'Environment: {env}')
+    plt.legend(loc='best', ncol=2, labelspacing=0.3, borderpad=0.3, handletextpad=0.4, handlelength=1.5)
 
-#     # Add grid for better readability
-#     plt.grid(axis='y', alpha=0.3, zorder=0)
+    # Add grid for better readability
+    plt.grid(axis='y', alpha=0.3, zorder=0)
 
-#     # Save the plot
-#     #output_file = f'{env}_times_plot.pdf'
-#     plt.tight_layout()
-#     plt.savefig(f"xdbc_parquet_csv_formats_net{network}.pdf", bbox_inches='tight')
-#     plt.show()
+    # Save the plot
+    #output_file = f'{env}_times_plot.pdf'
+    plt.tight_layout()
+    if network == 0:
+        plt.savefig(f"figure10a.pdf", bbox_inches='tight')
+    elif network == 125:  
+        plt.savefig(f"figure10b.pdf", bbox_inches='tight')
+
+    plt.show()
 
 #     # ******************************** Section5: Generate figure 11*******************************
 
-# # Load the CSV file
-# filename = "figure11"
-# csv_file_path = os.path.join('res', f'{filename}.csv')
-# if not os.path.exists(csv_file_path):
-#     print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
+# Load the CSV file
+filename = "figure11"
+csv_file_path = os.path.join('res', f'{filename}.csv')
+if not os.path.exists(csv_file_path):
+    print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
+data = pd.read_csv(csv_file_path)
+
+# csv_file_path = 'figure11.csv'  # Replace with your actual file path
 # data = pd.read_csv(csv_file_path)
 
-# # csv_file_path = 'figure11.csv'  # Replace with your actual file path
-# # data = pd.read_csv(csv_file_path)
+# Replace mismatched table names
+data['table'] = data['table'].replace({
+    'lineitem_sf10': 'lineitem',
+    'ss13husallm': 'acs',
+    'iotm': 'iot',
+    'inputeventsm': 'icu'
+})
 
-# # Replace mismatched table names
-# data['table'] = data['table'].replace({
-#     'lineitem_sf10': 'lineitem',
-#     'ss13husallm': 'acs',
-#     'iotm': 'iot',
-#     'inputeventsm': 'icu'
-# })
+# Replace system names for clarity
+data['system'] = data['system'].replace({
+    'xdbc-skip0': 'xdbc',
+    'xdbc-skip1': 'xdbc[skip-ser]',
+    'read_csv_url': 'netcat'
+})
 
-# # Replace system names for clarity
-# data['system'] = data['system'].replace({
-#     'xdbc-skip0': 'xdbc',
-#     'xdbc-skip1': 'xdbc[skip-ser]',
-#     'read_csv_url': 'netcat'
-# })
+# Calculate the average time for each combination of table and system
+average_times = (
+    data.groupby(['table', 'system'])['time']
+    .min()
+    .reset_index()
+    .pivot(index='table', columns='system', values='time')
+)
 
-# # Calculate the average time for each combination of table and system
-# average_times = (
-#     data.groupby(['table', 'system'])['time']
-#     .min()
-#     .reset_index()
-#     .pivot(index='table', columns='system', values='time')
-# )
+# Define the order of systems and datasets for consistency
+systems = ['xdbc', 'xdbc[skip-ser]', 'netcat']
+tables = ['lineitem', 'acs', 'iot', 'icu']
 
-# # Define the order of systems and datasets for consistency
-# systems = ['xdbc', 'xdbc[skip-ser]', 'netcat']
-# tables = ['lineitem', 'acs', 'iot', 'icu']
+# Reindex to ensure proper order and fill missing values with 0 (if any)
+average_times = average_times.reindex(index=tables, columns=systems, fill_value=0)
 
-# # Reindex to ensure proper order and fill missing values with 0 (if any)
-# average_times = average_times.reindex(index=tables, columns=systems, fill_value=0)
+# Extract data for plotting
+approach_times = [average_times[system].values for system in systems]
 
-# # Extract data for plotting
-# approach_times = [average_times[system].values for system in systems]
+# Set up plot style
+plt.rcParams['text.usetex'] = True
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.serif'] = ['Computer Modern Roman']
+plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
 
-# # Set up plot style
-# plt.rcParams['text.usetex'] = True
-# plt.rcParams['font.family'] = 'serif'
-# plt.rcParams['font.serif'] = ['Computer Modern Roman']
-# plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+# Create the plot
+datasets = tables  # Adjust dataset names for readability
+formal_palette = sns.color_palette("colorblind", len(systems))
+bar_width = 0.25
+x_indexes = np.arange(len(datasets))
 
-# # Create the plot
-# datasets = tables  # Adjust dataset names for readability
-# formal_palette = sns.color_palette("colorblind", len(systems))
-# bar_width = 0.25
-# x_indexes = np.arange(len(datasets))
+plt.figure(figsize=(6, 3.75))
 
-# plt.figure(figsize=(6, 3.75))
+# Plotting each approach with offset for bar positions
+for i, (system, times) in enumerate(zip(systems, approach_times)):
+    plt.bar(x_indexes + (i - 1) * bar_width, times, width=bar_width, color=formal_palette[i], label=system, zorder=3)
 
-# # Plotting each approach with offset for bar positions
-# for i, (system, times) in enumerate(zip(systems, approach_times)):
-#     plt.bar(x_indexes + (i - 1) * bar_width, times, width=bar_width, color=formal_palette[i], label=system, zorder=3)
+# Labels and Title
+plt.xlabel('Datasets')
+plt.ylabel('Time (s)')
+plt.xticks(ticks=x_indexes, labels=datasets)
+plt.legend(loc='best')
 
-# # Labels and Title
-# plt.xlabel('Datasets')
-# plt.ylabel('Time (s)')
-# plt.xticks(ticks=x_indexes, labels=datasets)
-# plt.legend(loc='best')
+# Grid for better readability
+plt.grid(axis='y', alpha=0.3, zorder=0)
 
-# # Grid for better readability
-# plt.grid(axis='y', alpha=0.3, zorder=0)
-
-# # Display the plot
-# plt.tight_layout()
-# plt.savefig('csv_netcat_env_local.pdf', bbox_inches='tight')
-# plt.show()
+# Display the plot
+plt.tight_layout()
+plt.savefig('figure11a.pdf', bbox_inches='tight')
+plt.show()
 
 # # ************************* Section6: Generate figure 14 *******************************
 
-# # Load the data
-# filename = "figureXArrow"
-# csv_file_path = os.path.join('res', f'{filename}.csv')
-# if not os.path.exists(csv_file_path):
-#     print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
-# data = pd.read_csv(csv_file_path)
-# # data = pd.read_csv("figureXArrow.csv")
+# Load the data
+filename = "figureXArrow"
+csv_file_path = os.path.join('res', f'{filename}.csv')
+if not os.path.exists(csv_file_path):
+    print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
+data = pd.read_csv(csv_file_path)
+# data = pd.read_csv("figureXArrow.csv")
 
-# # Replace mismatched table names
-# data['table'] = data['table'].replace({
-#     'lineitem_sf10': 'lineitem',
-#     'ss13husallm': 'acs',
-#     'iotm': 'iot',
-#     'inputeventsm': 'icu'
-# })
+# Replace mismatched table names
+data['table'] = data['table'].replace({
+    'lineitem_sf10': 'lineitem',
+    'ss13husallm': 'acs',
+    'iotm': 'iot',
+    'inputeventsm': 'icu'
+})
 
-# # Extract format and skip information from the 'system' column
-# data['format'] = data['system'].apply(lambda x: x.split('-')[-1])  # Extract format (e.g., format1, format2, etc.)
-# data['skip'] = data['system'].apply(lambda x: 'skip1' in x)       # Identify skip-ser (skip1)
+# Extract format and skip information from the 'system' column
+data['format'] = data['system'].apply(lambda x: x.split('-')[-1])  # Extract format (e.g., format1, format2, etc.)
+data['skip'] = data['system'].apply(lambda x: 'skip1' in x)       # Identify skip-ser (skip1)
 
-# # Calculate the average time for each table and format
-# average_times = (
-#     data.groupby(['table', 'format'])['time']
-#     .mean()
-#     .reset_index()
-#     .pivot(index='table', columns='format', values='time')
-# )
+# Calculate the average time for each table and format
+average_times = (
+    data.groupby(['table', 'format'])['time']
+    .mean()
+    .reset_index()
+    .pivot(index='table', columns='format', values='time')
+)
 
-# # Ensure correct order of formats
-# formats = ['format1', 'format2', 'format3', 'formatNone']
-# tables = ['lineitem', 'acs', 'iot', 'icu']  # Desired order for tables
-# average_times = average_times.reindex(index=tables, columns=formats, fill_value=0)
+# Ensure correct order of formats
+formats = ['format1', 'format2', 'format3', 'formatNone']
+tables = ['lineitem', 'acs', 'iot', 'icu']  # Desired order for tables
+average_times = average_times.reindex(index=tables, columns=formats, fill_value=0)
 
-# # Set up plot style
-# plt.rcParams['text.usetex'] = True
-# plt.rcParams['font.family'] = 'serif'
-# plt.rcParams['font.serif'] = ['Computer Modern Roman']
-# plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+# Set up plot style
+plt.rcParams['text.usetex'] = True
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.serif'] = ['Computer Modern Roman']
+plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
 
-# # Plot settings
-# bar_width = 0.2
-# x_indexes = np.arange(len(tables))
-# colors = sns.color_palette("colorblind", len(formats))
-# labels = ['xdbc[row]', 'xdbc[col]', 'xdbc[arrow]', 'xdbc[skip-ser]']
+# Plot settings
+bar_width = 0.2
+x_indexes = np.arange(len(tables))
+colors = sns.color_palette("colorblind", len(formats))
+labels = ['xdbc[row]', 'xdbc[col]', 'xdbc[arrow]', 'xdbc[skip-ser]']
 
-# plt.figure(figsize=(6, 3.75))
+plt.figure(figsize=(6, 3.75))
 
-# # Plot each format
-# for i, format_ in enumerate(formats):
-#     plt.bar(x_indexes + (i - 1.5) * bar_width, average_times[format_], width=bar_width,
-#             label=labels[i], color=colors[i], zorder=3)
+# Plot each format
+for i, format_ in enumerate(formats):
+    plt.bar(x_indexes + (i - 1.5) * bar_width, average_times[format_], width=bar_width,
+            label=labels[i], color=colors[i], zorder=3)
 
-# # Labels, legend, and formatting
-# plt.xlabel('Datasets')
-# plt.ylabel('Time (s)')
-# plt.xticks(ticks=x_indexes, labels=tables)
-# plt.legend(loc='best', labelspacing=0.3, borderpad=0.3, handletextpad=0.4, handlelength=1)
-# plt.grid(axis='y', alpha=0.3, zorder=0)
+# Labels, legend, and formatting
+plt.xlabel('Datasets')
+plt.ylabel('Time (s)')
+plt.xticks(ticks=x_indexes, labels=tables)
+plt.legend(loc='best', labelspacing=0.3, borderpad=0.3, handletextpad=0.4, handlelength=1)
+plt.grid(axis='y', alpha=0.3, zorder=0)
 
-# # Layout adjustments
-# plt.tight_layout()
+# Layout adjustments
+plt.tight_layout()
 
-# # Save and show the plot
-# plt.savefig("xdbc_csv_formats.pdf", bbox_inches='tight')
-# plt.show()
+# Save and show the plot
+plt.savefig("figure14a.pdf", bbox_inches='tight')
+plt.show()
 
 
 
@@ -803,7 +807,6 @@ csv_file_path = os.path.join('res', filename)
 try:
     # Read the CSV file into a pandas DataFrame.
     df = pd.read_csv(csv_file_path)
-    print("CSV file loaded successfully.")
 except FileNotFoundError:
     print(f"Error: File not found at '{csv_file_path}'.")
     print("Please ensure the file exists and the path is correct.")
@@ -938,7 +941,6 @@ config2 = {
 try:
     # Read the CSV file into a pandas DataFrame.
     df = pd.read_csv(csv_file_path)
-    print("CSV file loaded successfully.")
 except FileNotFoundError:
     print(f"Error: File not found at '{csv_file_path}'.")
     print("Please ensure the file exists and the path is correct.")
@@ -1005,15 +1007,9 @@ config2_runtimes = get_runtimes(filtered_df_env, config2, datasets)
 try:
     if len(config2_runtimes) > 2:
         config2_runtimes[2] = 73.89
-        print("Applied hardcoded runtime value for config2.")
 except IndexError:
     print("Could not apply hardcoded runtime value, not enough data points.")
 
-
-print("\n--- Runtimes ---")
-print("Datasets:", datasets.tolist())
-print("Config 1 Runtimes:", config1_runtimes)
-print("Config 2 Runtimes:", config2_runtimes)
 
 
 # --- Plotting ---
@@ -1063,7 +1059,6 @@ csv_file_path = os.path.join('res', filename)
 try:
     # Read the CSV file into a pandas DataFrame.
     df = pd.read_csv(csv_file_path)
-    print("CSV file loaded successfully.")
 except FileNotFoundError:
     print(f"Error: File not found at '{csv_file_path}'.")
     print("Please ensure the file exists and the path is correct.")
@@ -1198,7 +1193,6 @@ config2 = {
 try:
     # Read the CSV file into a pandas DataFrame.
     df = pd.read_csv(csv_file_path)
-    print("CSV file loaded successfully.")
 except FileNotFoundError:
     print(f"Error: File not found at '{csv_file_path}'.")
     print("Please ensure the file exists and the path is correct.")
@@ -1265,15 +1259,9 @@ config2_runtimes = get_runtimes(filtered_df_env, config2, datasets)
 try:
     if len(config2_runtimes) > 2:
         config2_runtimes[2] = 73.89
-        print("Applied hardcoded runtime value for config2.")
 except IndexError:
     print("Could not apply hardcoded runtime value, not enough data points.")
 
-
-print("\n--- Runtimes ---")
-print("Datasets:", datasets.tolist())
-print("Config 1 Runtimes:", config1_runtimes)
-print("Config 2 Runtimes:", config2_runtimes)
 
 
 # --- Plotting ---
@@ -1351,3 +1339,100 @@ for i, file in enumerate([csv_file_path1, csv_file_path2]):
         plt.savefig('figure7b.pdf', bbox_inches='tight')
     plt.show()
     plt.show()
+
+
+    # ********************* Combine the pdfs    *******************************
+import os
+from PyPDF2 import PdfMerger, PdfReader, PdfWriter
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from io import BytesIO
+
+# --- Configuration ---
+pdf_files_to_merge = [
+    ('figure7a.pdf', 'Figure 7a'),
+    ('figure7b.pdf', 'Figure 7b'),
+    ('figure10a.pdf', 'Figure 10a'),
+    ('figure10b.pdf', 'Figure 10b'),
+    ('figure11a.pdf', 'Figure 11a'),
+    ('figure11b.pdf', 'Figure 11b'),
+    ('figure12a.pdf', 'Figure 12a'),
+    ('figure12b.pdf', 'Figure 12b'),
+    ('figure13a.pdf', 'Figure 13a'),
+    ('figure13b.pdf', 'Figure 13b'),
+    ('figure14a.pdf', 'Figure 14a'),
+    ('figure15a.pdf', 'Figure 15a'),
+    ('figure15b.pdf', 'Figure 15b'),
+    ('figure16a.pdf', 'Figure 16a'),
+    ('figure16b.pdf', 'Figure 16b'),
+    ('figure17a.pdf', 'Figure 17a'),
+    ('figure17b.pdf', 'Figure 17b'),
+    ('figure19a.pdf', 'Figure 19a'),
+    ('figure19b.pdf', 'Figure 19b')
+]
+
+output_filename = 'combined_figures.pdf'
+
+# --- Merging Logic ---
+merger = PdfMerger()
+
+# Sort the figures by their numeric value to ensure proper order
+def get_figure_number(filename):
+    # Extract the numeric part from the figure name
+    base = filename[1].replace('Figure ', '').lower()
+    number_part = base[:-1]  # Remove the 'a' or 'b'
+    suffix = base[-1]  # Get the 'a' or 'b'
+    return (int(number_part), suffix)
+
+# Sort the figures based on their numbers
+sorted_figures = sorted(pdf_files_to_merge, key=get_figure_number)
+
+for pdf_file, figure_name in sorted_figures:
+    if not os.path.exists(pdf_file):
+        print(f"Warning: File '{pdf_file}' not found. Skipping.")
+        continue
+    
+    print(f"Processing '{pdf_file}' - {figure_name}")
+    
+    # Create a title page
+    packet = BytesIO()
+    can = canvas.Canvas(packet, pagesize=letter)
+    can.setFont("Helvetica-Bold", 24)
+    can.drawCentredString(300, 500, figure_name)
+    can.save()
+    
+    # Move to the beginning of the BytesIO buffer
+    packet.seek(0)
+    title_page = PdfReader(packet).pages[0]
+    
+    # Get the content page
+    content_page = PdfReader(pdf_file).pages[0]
+    
+    # Create a new PDF writer for this figure
+    writer = PdfWriter()
+    writer.add_page(title_page)
+    writer.add_page(content_page)
+    
+    # Save the combined pages to a temporary file
+    temp_filename = f"temp_{pdf_file}"
+    with open(temp_filename, 'wb') as temp_file:
+        writer.write(temp_file)
+    
+    # Append the temporary file to the merger
+    merger.append(temp_filename)
+
+# Write the merged content to the output file
+try:
+    merger.write(output_filename)
+    print(f"\nSuccessfully combined PDFs into '{output_filename}'")
+except Exception as e:
+    print(f"\nAn error occurred while writing the PDF: {e}")
+finally:
+    # Close the merger object to release file resources
+    merger.close()
+    
+    # Clean up temporary files
+    for pdf_file, _ in pdf_files_to_merge:
+        temp_filename = f"temp_{pdf_file}"
+        if os.path.exists(temp_filename):
+            os.remove(temp_filename)
