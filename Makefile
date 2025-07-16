@@ -53,6 +53,12 @@ run_prepare_experiments:
 run_testPostgresCSV:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 testPostgresCSV.py"
 
+prepare_postgres:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && ./prepare_postgres.sh"
+
+prepare_parquet:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && ./prepare_parquet.sh"
+
 run_expts:
 	run_figureACSVCSV run_figure11 run_figure8a run_figure8b run_figureACSVCSVOpt run_figureBCSVPGOpt run_figureBCSVPG run_figureCloudFogCSV run_figureCloudFogPG run_figureMemoryManagement run_figurePandasPGCPUNet run_figureXArrow run_figureYParquet run_figureZParquetCSV
 	

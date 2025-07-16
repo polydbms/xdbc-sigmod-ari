@@ -2,7 +2,7 @@ import itertools
 import os
 from optimizer.runner import run_xdbserver_and_xdbclient
 
-def generate_historical_data(env):
+def generate_historical_data(env, show_output=(False, False)):
     """
     Generates historical performance data by running a series of data transfers
     with varying configurations. This populates the CSV files needed by the
@@ -105,7 +105,7 @@ def generate_historical_data(env):
                         env=env,
                         perf_dir=perf_dir,
                         sleep=2,  # Give the server time to start
-                        show_output=(False, False) # Suppress stdout from client/server
+                        show_output=show_output # Suppress stdout from client/server
                     )
                     
                     run_counter += 1

@@ -52,7 +52,7 @@ test_envs = [
             'target_format': 2,
             'server_container': 'xdbcserver',
             'client_container': 'xdbcpython',
-            'tables': ['lineitem_sf10', 'ss13husallm', 'iotm', 'inputeventsm']
+            'tables': ['lineitem_sf10']
         }
     },
     {

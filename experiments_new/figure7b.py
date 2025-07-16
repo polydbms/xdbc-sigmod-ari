@@ -51,7 +51,7 @@ repetitions = 1
 sweep_values = [1, 2, 4, 8]
 
 # --- 3. Generate Random Configurations ---
-max_configurations = 11
+max_configurations = 1150
 configurations = []
 # This set will store a tuple representation of each generated config to prevent duplicates.
 seen_configurations = set()
@@ -143,7 +143,7 @@ pprint.pprint(configurations[-3:])
 # --- Script Execution ---
 
 # Setup output file
-csv_file_path = "res/figure7.csv"
+csv_file_path = "res/figure7b.csv"
 if not os.path.exists("res"):
     os.makedirs("res")
 if not os.path.exists("res/xdbc_plans"):

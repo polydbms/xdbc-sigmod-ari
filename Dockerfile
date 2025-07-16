@@ -25,8 +25,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Then copy the rest of the application
 COPY experiments ./experiments
+COPY sql_scripts ./sql_scripts
+COPY schemas ./schemas
 COPY experiments_new ./experiments_new
 COPY optimizer ./optimizer
+
+RUN chmod +x /app/experiments_new/prepare_postgres.sh
+RUN chmod +x /app/experiments_new/prepare_parquet.sh
+RUN chmod +x /app/experiments_new/run_experiments.sh
 
 # Create necessary directories
 # Create necessary directories and files

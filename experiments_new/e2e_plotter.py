@@ -1052,7 +1052,7 @@ plt.show()
 
 
 
-# ******************************** Section10: Generate figure 15a *******************************
+# ******************************** Section11: Generate figure 15a *******************************
 env_filter = 'env_16s_2c_125net'
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
@@ -1163,7 +1163,7 @@ print(f"\nPlot saved successfully to '{output_filename}'")
 
 
 
-# ******************************** Section11: Generate figure15b *******************************
+# ******************************** Section12: Generate figure15b *******************************
 env_filter = 'env_16s_2c_125net'
 # --- Configuration ---
 
@@ -1304,3 +1304,50 @@ plt.savefig(output_filename, bbox_inches='tight')
 print(f"\nPlot saved successfully to '{output_filename}'")
 # Show the plot
 plt.show()
+
+
+# ******************************** Section13: Generate figure 7 a,b *******************************
+filename1 = "figure7.csv"
+csv_file_path1 = os.path.join('res', filename1)
+filename2 = "figure7b.csv"
+csv_file_path2 = os.path.join('res', filename2)
+for i, file in enumerate([csv_file_path1, csv_file_path2]):
+    # Read the CSV file
+    data = pd.read_csv(file)  # Replace with your actual CSV file name
+    
+    #data = data[(data['comp_par']==1) & (data['decomp_par']==1)]
+    data = data[['timestamp', 'time']]
+    data = data[data['time']>0]
+    # Sort the data by the "time" column
+    data_sorted = data.sort_values(by="time", ascending=False).reset_index()
+    
+    # Extract the "time" column and create indices for the x-axis
+    sorted_times = data_sorted["time"].values
+    sorted_indices = np.arange(len(sorted_times))  # Indices for x-axis
+    
+    # Set up plot style
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Computer Modern Roman']
+    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+    
+    # Create plot
+    plt.figure(figsize=(6, 3.75))
+    plt.bar(sorted_indices, sorted_times, width=0.6, color='steelblue', edgecolor='steelblue', zorder=3)
+    
+    # Add labels and title
+    plt.xlabel('Configuration Index')
+    plt.ylabel('Time (s)')
+    #plt.xticks(ticks=sorted_indices, labels=sorted_indices, rotation=45)
+    
+    # Add grid for better readability
+    plt.grid(axis='y', alpha=0.3, zorder=0)
+    
+    # Save and display the plot
+    plt.tight_layout()
+    if i == 0:
+        plt.savefig('figure7a.pdf', bbox_inches='tight')
+    else:
+        plt.savefig('figure7b.pdf', bbox_inches='tight')
+    plt.show()
+    plt.show()

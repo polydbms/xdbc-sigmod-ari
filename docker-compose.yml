@@ -12,6 +12,7 @@ services:
       # - ./experiments_new/res/xdbc_plans:/app/experiments_new/res/xdbc_plans  # Mount xdbc_plans specifically
       # - ./experiments_new/res/pdf_plots:/app/experiments_new/res/pdf_plots  # Mount xdbc_plans specifically
       - /var/run/docker.sock:/var/run/docker.sock  # Mount Docker socket
+      - /dev/shm:/dev/shm
     environment:
       - PYTHONUNBUFFERED=1
     working_dir: /app

@@ -12,17 +12,22 @@ from profiling_phase import generate_historical_data
 repetitions = 2
 test_env = next((env for env in test_envs if env['name'] == "figurePandasPG"), None)
 # baselines = ['connectorx', 'duckdb', 'modin', 'turbodbc']
-baselines = []
+baselines = ['connectorx']
 # prepare environment
 env = test_env['env']
 
 set_env(env)
 
-show_server_output = False
+show_server_output = True
 show_client_output = False
 
 show_stdout_server = None if show_server_output else subprocess.DEVNULL
 show_stdout_client = None if show_client_output else subprocess.DEVNULL
+
+# subprocess.Popen(["docker", "exec", "-it", env['server_container'], "bash", "-c",
+#                   f"cd /dev/shm && python3 -m RangeHTTPServer 1234"],
+#                  stdout=show_stdout_server)
+
 
 print(test_env)
 
@@ -35,13 +40,20 @@ for table in test_env['env']['tables']:
         for i in range(repetitions):
             a = datetime.datetime.now()
 
-            subprocess.run(["docker", "exec", "-it", env['client_container'], "bash", "-c",
-                            f"""python /workspace/tests/pandas_baselines.py \
-                                --parallelism 8 \
-                                --table "{table}" \
-                                --chunksize 42 \
-                                --library "{baseline}"
-                                """], check=True, stdout=show_stdout_client)
+            try:
+                subprocess.run(["docker", "exec", "-it", env['client_container'], "bash", "-c",
+                                f"""python /workspace/tests/pandas_baselines.py \
+                                    --parallelism 8 \
+                                    --table "{table}" \
+                                    --chunksize 42 \
+                                    --library "{baseline}"
+                                    """], check=True, capture_output=True, text=True)
+            except subprocess.CalledProcessError as e:
+                print("Error running the baseline script.")
+                print(f"Return code: {e.returncode}")
+                print(f"Stdout: {e.stdout}")
+                print(f"Stderr: {e.stderr}") # This will contain the error message from pandas_baselines.py
+                raise # Re-raise the exception if you still want the script to stop
 
             b = datetime.datetime.now()
             c = (b - a).total_seconds()
@@ -52,7 +64,7 @@ for table in test_env['env']['tables']:
                 writer.writerow([int(a.timestamp()), test_env['name'], i + 1, baseline, table, c])
 
 # run xdbc
-generate_historical_data(env) # Generate historical data for optimization and store in local_measurements_new
+generate_historical_data(env,show_output = (show_server_output,show_client_output)) # Generate historical data for optimization and store in local_measurements_new
 perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
 for table in test_env['env']['tables']:
     for i in range(repetitions):

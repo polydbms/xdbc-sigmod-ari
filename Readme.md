@@ -25,10 +25,10 @@ Figure in paper   |      Py file                    | Status
 ----------------- | --------------------------------| ----------------------
 Figure 6          |figure7.py                       | In progress
                   |figure7b.py                      | In progress
-Figure 7          |figure8a.py                      | Couldnt run pandas_xdbc due to import error pyxdbc,pyxdbcparquet
-                  |figure8b.py                      | Couldnt run pandas_xdbc due to import error pyxdbc,pyxdbcparquet
-Figure 8          |figure8a.py                      | Couldnt run pandas_xdbc due to import error pyxdbc,pyxdbcparquet
-Figure 9          | figurePandasPGCPUNet            | Couldnt run pandas_xdbc due to import error pyxdbc,pyxdbcparquet
+Figure 7          |figure8a.py                      | xdbcpy is stuck even though server runs fine
+                  |figure8b.py                      | xdbcpy is stuck even though server runs fine
+Figure 8          |figure8a.py                      | xdbcpy is stuck even though server runs fine
+Figure 9          | figurePandasPGCPUNet            | xdbcpy is stuck even though server runs fine
 Figure 10         |figureZParquetCSV.py             | Completed. (check duckdb bar)
 Figure 11         | a. figure11.py                  | Completed
                     b. custom/manual run            | Completed
@@ -37,14 +37,14 @@ Figure 12         | a. figureACSVCSV.py             | Completed
 Figure 13         | a. figureACSVCSVOpt.py          | Completed 
                   | b. figureBCSVPGOpt.py           | Completed 
 Figure 14         | a. figureXArrow.py              | Completed
-                  | b. figureYParquet.py            | Couldnt run pandas_xdbc due to import error pyxdbc,pyxdbcparquet
+                  | b. figureYParquet.py            | xdbcpy is stuck even though server runs fine
 Figure 15         | a. figure1516a.py               | Completed*
                     b. figure1516b.py               | Completed*
 Figure 16         | a. figure1516a.py               | Completed*
                     b. figure1516b.py               | Completed*
 Figure 17         | a. figureMemoryManagement.py    | Completed 
                   | b. figure17b.py                 | Completed 
-Figure 18         |                                 | In progress
+Figure 18         | figure18.py                     | In progress
 Figure 19         | figure19.py                     | Completed
 Figure 20         | xxxx                            | Need expert config
 Figure 21         | xxxx                            | Need expert config

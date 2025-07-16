@@ -51,7 +51,7 @@ repetitions = 1
 sweep_values = [1, 2, 4, 8, 16]
 
 # --- 3. Generate Random Configurations ---
-max_configurations = 23
+max_configurations = 2300
 configurations = []
 # This set will store a tuple representation of each generated config to prevent duplicates.
 seen_configurations = set()
