@@ -41,7 +41,7 @@ DB_NAME="db1"
 # --- Table and Script Mapping ---
 # Use a Bash associative array to map table names to their SQL creation scripts.
 declare -A TABLE_TO_SQL_MAP
-# TABLE_TO_SQL_MAP["ss13husallm"]="create_ss13husall.sql"
+TABLE_TO_SQL_MAP["ss13husallm"]="create_ss13husall.sql"
 TABLE_TO_SQL_MAP["iotm"]="create_iot.sql"
 TABLE_TO_SQL_MAP["inputeventsm"]="create_inputevents.sql"
 

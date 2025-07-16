@@ -1,19 +1,22 @@
 Instructions to carry out experiments and generate results:
+**********************************************************
+step1: ./run_experiments.sh     
 
-step1: make build                #   setup the docker container
-step2: make run_figureACSVCSV    #   execute figureACSVCSV.py to run the experiment. Similarly execute other py files as well.
-step3: make run_plot             #   execute e2e_plotter.py to generate the plots in a pdf file.
+----------------------------------------------------------
 
 To do:
-Execute .py files in experiments_new to run all the experiments. 
-Copy the scripts from e2e.ipynb to e2_plotter.py to plot the results of all the experiments.
+Need to execute 4 more commands successfully:
+1) make run_figure8a
+2) make run_figure8b
+3) make run_figureYParquet
+4) make run_figurePandasPGCPUNet
 
 Reminder: 
 Copy the csv databases to dev/shm before starting the experiments
 
 Notes: 
 a) Refer Makefile for actual commands executed
-b) Results of experiments are available in res folder
+b) Results of experiments are available in experiments_new/res folder
 pdf_plots: contain plots in pdf
 xdbc_plans: contain json files
 c) Refer experiment_envs.py for the configurations used in the experimentrun.
@@ -43,7 +46,7 @@ Figure 16         | a. figure1516a.py               | Completed*
                     b. figure1516b.py               | Completed*
 Figure 17         | a. figureMemoryManagement.py    | Completed 
                   | b. figure17b.py                 | Completed 
-Figure 18         | figure18.py                     | In progress
+Figure 18         | figure18.py                     | Completed (a*,b*,c,d,e,f)
 Figure 19         | figure19.py                     | Completed
 Figure 20         | xxxx                            | Need expert config
 Figure 21         | xxxx                            | Need expert config

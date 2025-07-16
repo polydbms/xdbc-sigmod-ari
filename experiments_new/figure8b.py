@@ -50,23 +50,23 @@ for table in test_env['env']['tables']:
 
 subprocess.run(["docker", "exec", "-it", env['server_container'], "pkill", "-f", "http.server"], check=True)
 
-# run xdbc
+# # run xdbc
 
-perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
-for table in test_env['env']['tables']:
-    for i in range(repetitions):
-        env['table'] = table
+# perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
+# for table in test_env['env']['tables']:
+#     for i in range(repetitions):
+#         env['table'] = table
 
-        n, best_config, estimated_thr, opt_time = optimize(env, 'xdbc', 'heuristic', False, 0)
-        t = run_xdbserver_and_xdbclient(best_config, env, perf_dir)
+#         n, best_config, estimated_thr, opt_time = optimize(env, 'xdbc', 'heuristic', False, 0)
+#         t = run_xdbserver_and_xdbclient(best_config, env, perf_dir)
 
-        print(f"xdbc for {table}: {t} s")
+#         print(f"xdbc for {table}: {t} s")
 
-        timestamp = int(datetime.datetime.now().timestamp())
+#         timestamp = int(datetime.datetime.now().timestamp())
 
-        with open(csv_file_path, mode="a", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerow([timestamp, test_env['name'], i + 1, "xdbc", table, t])
+#         with open(csv_file_path, mode="a", newline="") as file:
+#             writer = csv.writer(file)
+#             writer.writerow([timestamp, test_env['name'], i + 1, "xdbc", table, t])
 
-        with open(f"res/xdbc_plans/{timestamp}.json", "w") as file:
-            json.dump(best_config, file, indent=4)
+#         with open(f"res/xdbc_plans/{timestamp}.json", "w") as file:
+#             json.dump(best_config, file, indent=4)
