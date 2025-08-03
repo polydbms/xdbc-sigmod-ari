@@ -61,6 +61,13 @@ cp "${SCHEMA_DIR}"/*.json "${DATA_DIR}/schemas/"
 echo "Schemas copied."
 echo ""
 
+echo "--------------------------------------------------"
+echo "Copying conversion script to container..."
+echo "--------------------------------------------------"
+docker cp "${CONVERSION_SCRIPT_PATH}" "${PYTHON_CONTAINER}":/workspace/
+echo "Script copied."
+echo ""
+
 # --- 1. Data Preparation Phase ---
 # Convert the required CSV files into Parquet datasets.
 # You can add or remove datasets here as needed.

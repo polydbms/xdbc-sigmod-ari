@@ -84,7 +84,7 @@ echo "----------------------------------------------------"
 # --- Step 5: Prepare Data and Experiments ---
 echo "🛠️  Step 2/4: Preparing data sources and experiments..."
 # make prepare_postgres
-# make prepare_parquet
+make prepare_parquet
 echo "Data sources prepared."
 echo "----------------------------------------------------"
 
@@ -114,8 +114,8 @@ echo "Step 6/7: Running all figure generation scripts..."
 echo "All figure experiments completed successfully."
 echo "----------------------------------------------------"
 
-# --- Step 7: Generate Plots and Copy Results ---
-echo "Step 7/7: Generating plots and copying results with 'make run_plot'..."
+# --- Step 4: Generate Plots and Copy Results ---
+echo "Step 4/4: Generating plots and copying results with 'make run_plot'..."
 # make run_plot
 echo "Plotting and file copying complete."
 echo "----------------------------------------------------"

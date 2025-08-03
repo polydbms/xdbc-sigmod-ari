@@ -22,45 +22,39 @@
 #    'pg1' container.
 #  - The source .sql and .csv files must exist in the shared directory.
 # ==============================================================================
+#!/bin/bash
+
+# ==============================================================================
+#  PostgreSQL Multi-Table/CSV Import Script
+#  MODIFIED to copy files into the target container before execution.
+# ==============================================================================
 
 # --- Configuration ---
-# The shared directory path, which must be accessible from both the host
-# and inside the container.
 SHARED_DIR="/dev/shm"
 SHARED_SQL_DIR="$SHARED_DIR/sql_scripts"
 SHARED_CSV_DIR="$SHARED_DIR"
 SQL_DIR="/app/sql_scripts"
-
-# The name of your PostgreSQL Docker container.
 CONTAINER_NAME="pg1"
-
-# PostgreSQL connection details.
 DB_USER="postgres"
 DB_NAME="db1"
+TABLES=("ss13husallm" "iotm" "inputeventsm")
 
 # --- Table and Script Mapping ---
-# Use a Bash associative array to map table names to their SQL creation scripts.
 declare -A TABLE_TO_SQL_MAP
 TABLE_TO_SQL_MAP["ss13husallm"]="create_ss13husall.sql"
 TABLE_TO_SQL_MAP["iotm"]="create_iot.sql"
 TABLE_TO_SQL_MAP["inputeventsm"]="create_inputevents.sql"
 
-
 # --- Script Logic ---
-
-# Exit immediately if a command exits with a non-zero status.
 set -e
-
 echo "Starting bulk table creation and CSV import process..."
 echo "======================================================"
 
-# Copy the schemas directory to /dev/shm to make it accessible
+# This section prepares the files inside the current container (xdbcexpt)
 echo "--------------------------------------------------"
-echo "Copying sql scripts to accessible location (${SHARED_DIR}/sql_scripts)..."
+echo "Copying sql scripts to local accessible location (${SHARED_DIR}/sql_scripts)..."
 echo "--------------------------------------------------"
-# Create the schemas directory if it doesn't exist
 mkdir -p "${SHARED_DIR}/sql_scripts"
-# Copy all JSON schema files to the directory
 cp "${SQL_DIR}"/*.sql "${SHARED_DIR}/sql_scripts/"
 echo "sql_scripts copied."
 echo ""
@@ -71,47 +65,63 @@ for TABLE_NAME in "${!TABLE_TO_SQL_MAP[@]}"; do
     echo ""
     echo "--- Processing table: $TABLE_NAME ---"
 
-    # --- Step 1: Create table from .sql script ---
-    SQL_FILE_PATH="$SHARED_SQL_DIR/$SQL_FILE_NAME"
+    # Define source paths (in this container) and destination paths (in pg1)
+    SRC_SQL_PATH="$SHARED_SQL_DIR/$SQL_FILE_NAME"
+    SRC_CSV_PATH="$SHARED_CSV_DIR/$TABLE_NAME.csv"
+    DEST_SQL_PATH="/tmp/$SQL_FILE_NAME"
+    DEST_CSV_PATH="/tmp/$TABLE_NAME.csv"
 
-    # Check if the source SQL file exists from the host's perspective.
-    if [ ! -f "$SQL_FILE_PATH" ]; then
-        echo "Error: SQL script not found at '$SQL_FILE_PATH'. Skipping this table."
-        continue
-    fi
+    # --- NEW: Step 1/4: Copy SQL file to pg1 ---
+    echo "Step 1/4: Copying '$SQL_FILE_NAME' to '$CONTAINER_NAME:$DEST_SQL_PATH'..."
+    docker cp "$SRC_SQL_PATH" "$CONTAINER_NAME:$DEST_SQL_PATH"
 
-    echo "Step 1/2: Creating table '$TABLE_NAME' using '$SQL_FILE_NAME'..."
-    # Use psql -f to execute the script file. Any "table already exists" errors
-    # will be shown but won't stop the script if the table is already there.
-    if docker exec "$CONTAINER_NAME" psql -U "$DB_USER" -d "$DB_NAME" -f "$SQL_FILE_PATH"; then
-        echo "Table creation script executed successfully."
-    else
-        echo "Warning: Issue executing '$SQL_FILE_NAME'. The table might already exist, or there could be a syntax error. Continuing..."
-    fi
+    # --- MODIFIED: Step 2/4: Create table from .sql script inside pg1 ---
+    echo "Step 2/4: Creating table '$TABLE_NAME'..."
+    docker exec "$CONTAINER_NAME" psql -U "$DB_USER" -d "$DB_NAME" -f "$DEST_SQL_PATH";
+    echo "Table creation script executed successfully."
+    echo "Truncating table to ensure it is empty before import..."
+    docker exec "$CONTAINER_NAME" psql -U "$DB_USER" -d "$DB_NAME" -c "TRUNCATE TABLE $TABLE_NAME;"
 
+    # --- NEW: Step 3/4: Copy CSV file to pg1 ---
+    echo "Step 3/4: Copying '$TABLE_NAME.csv' to '$CONTAINER_NAME:$DEST_CSV_PATH'..."
+    docker cp "$SRC_CSV_PATH" "$CONTAINER_NAME:$DEST_CSV_PATH"
 
-    # --- Step 2: Import data from .csv file ---
-    CSV_FILE_PATH="$SHARED_CSV_DIR/$TABLE_NAME.csv"
-
-    # Check if the source CSV file exists from the host's perspective.
-    if [ ! -f "$CSV_FILE_PATH" ]; then
-        echo "Error: Source CSV file not found at '$CSV_FILE_PATH'. Skipping data import."
-        continue
-    fi
-
-    # Since the directory is shared, we directly execute the \copy command
-    # inside the container, referencing the file's path in the shared volume.
-    echo "Step 2/2: Importing data into table '$TABLE_NAME' from '$CSV_FILE_PATH'..."
-    COPY_COMMAND="\copy $TABLE_NAME FROM '$CSV_FILE_PATH' WITH (FORMAT csv, HEADER true);"
+    # --- MODIFIED: Step 4/4: Import data from .csv file inside pg1 ---
+    echo "Step 4/4: Importing data into table '$TABLE_NAME'..."
+    COPY_COMMAND="\copy $TABLE_NAME FROM '$DEST_CSV_PATH' WITH (FORMAT csv, HEADER true);"
 
     if docker exec "$CONTAINER_NAME" psql -U "$DB_USER" -d "$DB_NAME" -c "$COPY_COMMAND"; then
         echo "Data for '$TABLE_NAME' imported successfully!"
     else
-        echo "Error: Failed to import data for table '$TABLE_NAME'. Check PostgreSQL logs, data format, or file permissions inside the container."
-        continue
+        echo "Error: Failed to import data for table '$TABLE_NAME'."
     fi
+    
+    # --- NEW: Optional cleanup of temporary files inside pg1 ---
+    echo "Cleaning up temporary files from '$CONTAINER_NAME'..."
+    docker exec -u root "$CONTAINER_NAME" rm "$DEST_SQL_PATH" "$DEST_CSV_PATH"
 done
 
 echo ""
 echo "===================================="
 echo "Process complete."
+
+
+echo "--- Verifying All Tables ---"
+
+# Loop through the array of table names
+for TABLE in "${TABLES[@]}"; do
+    echo ""
+    echo "========================================"
+    echo "Checking table: $TABLE"
+    echo "========================================"
+
+    # Attempt to select one row from the current table
+    if docker exec "$CONTAINER_NAME" psql -U "$DB_USER" -d "$DB_NAME" -c "SELECT * FROM $TABLE LIMIT 1;"; then
+        echo "✅ Check successful for table: $TABLE"
+    else
+        echo "❌ ERROR checking table: $TABLE. It might not exist or be empty."
+    fi
+done
+
+echo ""
+echo "--- Verification complete. ---"
