@@ -82,9 +82,9 @@ echo " Docker environment built successfully."
 echo "----------------------------------------------------"
 
 # --- Step 5: Prepare Data and Experiments ---
-echo "Step 5/7: Preparing data sources and experiments..."
-make prepare_postgres
-make prepare_parquet
+echo "🛠️  Step 2/4: Preparing data sources and experiments..."
+# make prepare_postgres
+# make prepare_parquet
 echo "Data sources prepared."
 echo "----------------------------------------------------"
 
@@ -100,7 +100,7 @@ echo "Step 6/7: Running all figure generation scripts..."
 # make run_figure11
 # make run_figureACSVCSV
 # make run_figureBCSVPG
- make run_figureACSVCSVOpt
+# make run_figureACSVCSVOpt
 # make run_figureBCSVPGOpt
 # make run_figureXArrow
 # make run_figureYParquet
@@ -116,7 +116,7 @@ echo "----------------------------------------------------"
 
 # --- Step 7: Generate Plots and Copy Results ---
 echo "Step 7/7: Generating plots and copying results with 'make run_plot'..."
-make run_plot
+# make run_plot
 echo "Plotting and file copying complete."
 echo "----------------------------------------------------"
 

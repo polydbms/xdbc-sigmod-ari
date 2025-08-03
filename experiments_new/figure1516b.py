@@ -113,7 +113,7 @@ for config in fixed_configs:
                         'rcv_par': config['config_type']['network_parallelism'],
                         'comp_par': config['config_type']['server_comp_par'],
                         'decomp_par': config['config_type']['client_decomp_par'],
-                        'ser_par': config['config_type']['server_deser_par'],
+                        'ser_par': config['config_type']['client_write_par'],
                         'buffer_size': buff_size,
                         'server_buffpool_size': bufpool_size,
                         'client_buffpool_size': bufpool_size,

@@ -598,7 +598,7 @@ plt.savefig(output_filename, bbox_inches='tight')
 
 
 
-# ****************************** Section9: Generate figure18 (need edit)*******************************
+# ****************************** Section9: Generate figure18 *******************************
 from matplotlib.colors import to_rgba
 
 # --- Main Configuration ---
@@ -757,13 +757,13 @@ for env in environments:
     # --- Generate Runtime Plot if specified ---
     if (env, 'runtime') in plot_naming_map:
         plot_char = plot_naming_map[(env, 'runtime')]
-        out_fname = f"figure18_{plot_char}.pdf"
+        out_fname = f"figure18{plot_char}.pdf"
         plot_grouped_bar(filtered_df, out_fname)
 
     # --- Generate Data Size Plot if specified ---
     if (env, 'datasize') in plot_naming_map:
         plot_char = plot_naming_map[(env, 'datasize')]
-        out_fname = f"figure18_{plot_char}.pdf"
+        out_fname = f"figure18{plot_char}.pdf"
         plot_grouped_bar_datasize(filtered_df, out_fname)
 
 
@@ -1324,68 +1324,68 @@ for i, file in enumerate([csv_file_path1, csv_file_path2]):
     plt.show()
 
 # ******************************** Section14: Figure 7a *******************************
-filename = "figure8a.csv"
-csv_file_path = os.path.join('res', filename)
-data = pd.read_csv(csv_file_path)
+# filename = "figure8a.csv"
+# csv_file_path = os.path.join('res', filename)
+# data = pd.read_csv(csv_file_path)
 
-# Replace mismatched table names
-data['table'] = data['table'].replace({
-    'lineitem_sf10': 'lineitem',
-    'ss13husallm': 'acs',
-    'iotm': 'iot',
-    'inputeventsm': 'icu'
-})
+# # Replace mismatched table names
+# data['table'] = data['table'].replace({
+#     'lineitem_sf10': 'lineitem',
+#     'ss13husallm': 'acs',
+#     'iotm': 'iot',
+#     'inputeventsm': 'icu'
+# })
 
-# Calculate the average time for each combination of table and system
-average_times = (
-    data.groupby(['table', 'system'])['time']
-    .mean()
-    .reset_index()
-    .pivot(index='table', columns='system', values='time')
-)
+# # Calculate the average time for each combination of table and system
+# average_times = (
+#     data.groupby(['table', 'system'])['time']
+#     .mean()
+#     .reset_index()
+#     .pivot(index='table', columns='system', values='time')
+# )
 
-# Define the order of systems and datasets for consistency
-# systems = ['xdbc', 'connectorx', 'duckdb', 'modin', 'turbodbc']
-systems = ['connectorx', 'duckdb', 'modin', 'turbodbc']
-tables = ['lineitem', 'acs', 'iot', 'icu']
+# # Define the order of systems and datasets for consistency
+# # systems = ['xdbc', 'connectorx', 'duckdb', 'modin', 'turbodbc']
+# systems = ['connectorx', 'duckdb', 'modin', 'turbodbc']
+# tables = ['lineitem', 'acs', 'iot', 'icu']
 
-# Reindex to ensure proper order and fill missing values with 0 (if any)
-average_times = average_times.reindex(index=tables, columns=systems, fill_value=0)
+# # Reindex to ensure proper order and fill missing values with 0 (if any)
+# average_times = average_times.reindex(index=tables, columns=systems, fill_value=0)
 
-# Extract data for plotting
-approach_times = [average_times[system].values for system in systems]
+# # Extract data for plotting
+# approach_times = [average_times[system].values for system in systems]
 
-# Set up plot style
-plt.rcParams['text.usetex'] = True
-plt.rcParams['font.family'] = 'serif'
-plt.rcParams['font.serif'] = ['Computer Modern Roman']
-plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+# # Set up plot style
+# plt.rcParams['text.usetex'] = True
+# plt.rcParams['font.family'] = 'serif'
+# plt.rcParams['font.serif'] = ['Computer Modern Roman']
+# plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
 
-# Create the plot
-datasets = ['lineitem', 'acs', 'iot', 'icu']  # Adjust dataset names for readability
-formal_palette = sns.color_palette("colorblind", len(systems))
-bar_width = 0.17
-x_indexes = np.arange(len(datasets))
+# # Create the plot
+# datasets = ['lineitem', 'acs', 'iot', 'icu']  # Adjust dataset names for readability
+# formal_palette = sns.color_palette("colorblind", len(systems))
+# bar_width = 0.17
+# x_indexes = np.arange(len(datasets))
 
-plt.figure(figsize=(6, 3.75))
+# plt.figure(figsize=(6, 3.75))
 
-# Plotting each approach with offset for bar positions
-for i, (system, times) in enumerate(zip(systems, approach_times)):
-    plt.bar(x_indexes + (i - 2) * bar_width, times, width=bar_width, color=formal_palette[i], label=system, zorder=3)
+# # Plotting each approach with offset for bar positions
+# for i, (system, times) in enumerate(zip(systems, approach_times)):
+#     plt.bar(x_indexes + (i - 2) * bar_width, times, width=bar_width, color=formal_palette[i], label=system, zorder=3)
 
-# Labels and Title
-plt.xlabel('Datasets')
-plt.ylabel('Time (s)')
-plt.xticks(ticks=x_indexes, labels=datasets)
-plt.legend(loc='best')
+# # Labels and Title
+# plt.xlabel('Datasets')
+# plt.ylabel('Time (s)')
+# plt.xticks(ticks=x_indexes, labels=datasets)
+# plt.legend(loc='best')
 
-# Grid for better readability
-plt.grid(axis='y', alpha=0.3, zorder=0)
+# # Grid for better readability
+# plt.grid(axis='y', alpha=0.3, zorder=0)
 
-# Display the plot
-plt.tight_layout()
-plt.savefig('figure7a.pdf', bbox_inches='tight')
-plt.show()
+# # Display the plot
+# plt.tight_layout()
+# plt.savefig('figure7a.pdf', bbox_inches='tight')
+# plt.show()
 
     # ********************* Combine the pdfs    *******************************
 import os

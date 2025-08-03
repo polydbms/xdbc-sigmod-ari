@@ -122,7 +122,7 @@ for param_name in params_to_sweep:
                             'rcv_par': current_config['network_parallelism'],
                             'comp_par': current_config['server_comp_par'],
                             'decomp_par': current_config['client_decomp_par'],
-                            'ser_par': current_config['server_deser_par'],
+                            'ser_par': current_config['client_write_par'],
                             'buffer_size': buff_size,
                             'server_buffpool_size': bufpool_size,
                             'client_buffpool_size': bufpool_size,
