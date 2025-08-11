@@ -105,53 +105,54 @@ filename = "figureMemoryManagement"
 csv_file_path = os.path.join('res', f'{filename}.csv')
 if not os.path.exists(csv_file_path):
     print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
-data = pd.read_csv(csv_file_path)
+else:
+    data = pd.read_csv(csv_file_path)
 
-data = data[data['table']=='lineitem_sf10_nocomp']  # Filter for the specific table
-# Prepare plot data
-data['bufferpool_size'] = data['bufferpool_size'].astype(int)
-data['buffer_size'] = data['buffer_size'].astype(int)
+    data = data[data['table']=='lineitem_sf10_nocomp']  # Filter for the specific table
+    # Prepare plot data
+    data['bufferpool_size'] = data['bufferpool_size'].astype(int)
+    data['buffer_size'] = data['buffer_size'].astype(int)
 
-# Sort buffer pool and buffer sizes for consistency
-data = data.sort_values(['bufferpool_size', 'buffer_size'])
+    # Sort buffer pool and buffer sizes for consistency
+    data = data.sort_values(['bufferpool_size', 'buffer_size'])
 
-# Set up plot style
-plt.rcParams['text.usetex'] = True
-plt.rcParams['font.family'] = 'serif'
-plt.rcParams['font.serif'] = ['Computer Modern Roman']
-plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+    # Set up plot style
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Computer Modern Roman']
+    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
 
-# Unique buffer pool sizes and buffer sizes
-bufferpool_sizes = sorted(data['bufferpool_size'].unique())
-buffer_sizes = sorted(data['buffer_size'].unique())
-colors = sns.color_palette("colorblind", len(buffer_sizes))
+    # Unique buffer pool sizes and buffer sizes
+    bufferpool_sizes = sorted(data['bufferpool_size'].unique())
+    buffer_sizes = sorted(data['buffer_size'].unique())
+    colors = sns.color_palette("colorblind", len(buffer_sizes))
 
-# Plot
-plt.figure(figsize=(6, 3.75))
-bar_width = 0.14
-x_indexes = np.arange(len(bufferpool_sizes))
+    # Plot
+    plt.figure(figsize=(6, 3.75))
+    bar_width = 0.14
+    x_indexes = np.arange(len(bufferpool_sizes))
 
-for i, buffer_size in enumerate(buffer_sizes):
-    subset = data[data['buffer_size'] == buffer_size]
-    means = [
-        subset[subset['bufferpool_size'] == pool_size]['time'].mean() if pool_size in subset['bufferpool_size'].values else 0
-        for pool_size in bufferpool_sizes
-    ]
-    positions = x_indexes + (i - len(buffer_sizes) / 2) * bar_width
-    plt.bar(positions, means, width=bar_width, label=f"{buffer_size}", color=colors[i], zorder=3)
+    for i, buffer_size in enumerate(buffer_sizes):
+        subset = data[data['buffer_size'] == buffer_size]
+        means = [
+            subset[subset['bufferpool_size'] == pool_size]['time'].mean() if pool_size in subset['bufferpool_size'].values else 0
+            for pool_size in bufferpool_sizes
+        ]
+        positions = x_indexes + (i - len(buffer_sizes) / 2) * bar_width
+        plt.bar(positions, means, width=bar_width, label=f"{buffer_size}", color=colors[i], zorder=3)
 
-# Formatting
-plt.xlabel("Buffer Pool Size (MB)")
-plt.ylabel("Time (s)")
-plt.ylim(0,34)
-plt.xticks(ticks=x_indexes, labels=[f"{int(bp/1024)}" for bp in bufferpool_sizes], ha="center")
-plt.legend(title="Buffer Size (KB)",loc='best', ncol=7, labelspacing=0.1, borderpad=0.3, handletextpad=0.2, handlelength=1, columnspacing=.3)
-plt.grid(axis='y', alpha=0.3, zorder=0)
+    # Formatting
+    plt.xlabel("Buffer Pool Size (MB)")
+    plt.ylabel("Time (s)")
+    plt.ylim(0,34)
+    plt.xticks(ticks=x_indexes, labels=[f"{int(bp/1024)}" for bp in bufferpool_sizes], ha="center")
+    plt.legend(title="Buffer Size (KB)",loc='best', ncol=7, labelspacing=0.1, borderpad=0.3, handletextpad=0.2, handlelength=1, columnspacing=.3)
+    plt.grid(axis='y', alpha=0.3, zorder=0)
 
-# Save and show the plot
-plt.tight_layout()
-plt.savefig("figure17a.pdf", bbox_inches='tight')
-plt.show()
+    # Save and show the plot
+    plt.tight_layout()
+    plt.savefig("figure17a.pdf", bbox_inches='tight')
+    plt.show()
 
 
 
@@ -211,6 +212,7 @@ for network in [0,125]:
     csv_file_path = os.path.join('res', f'{filename}.csv')
     if not os.path.exists(csv_file_path):
         print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
+        continue
     data = pd.read_csv(csv_file_path)
     # data = pd.read_csv("figureZParquetCSV.csv")
     data = data[data['system']!='xdbc[parquet-snappy]']
@@ -297,75 +299,76 @@ filename = "figure11"
 csv_file_path = os.path.join('res', f'{filename}.csv')
 if not os.path.exists(csv_file_path):
     print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
-data = pd.read_csv(csv_file_path)
+else:
+    data = pd.read_csv(csv_file_path)
 
-# csv_file_path = 'figure11.csv'  # Replace with your actual file path
-# data = pd.read_csv(csv_file_path)
+    # csv_file_path = 'figure11.csv'  # Replace with your actual file path
+    # data = pd.read_csv(csv_file_path)
 
-# Replace mismatched table names
-data['table'] = data['table'].replace({
-    'lineitem_sf10': 'lineitem',
-    'ss13husallm': 'acs',
-    'iotm': 'iot',
-    'inputeventsm': 'icu'
-})
+    # Replace mismatched table names
+    data['table'] = data['table'].replace({
+        'lineitem_sf10': 'lineitem',
+        'ss13husallm': 'acs',
+        'iotm': 'iot',
+        'inputeventsm': 'icu'
+    })
 
-# Replace system names for clarity
-data['system'] = data['system'].replace({
-    'xdbc-skip0': 'xdbc',
-    'xdbc-skip1': 'xdbc[skip-ser]',
-    'read_csv_url': 'netcat'
-})
+    # Replace system names for clarity
+    data['system'] = data['system'].replace({
+        'xdbc-skip0': 'xdbc',
+        'xdbc-skip1': 'xdbc[skip-ser]',
+        'read_csv_url': 'netcat'
+    })
 
-# Calculate the average time for each combination of table and system
-average_times = (
-    data.groupby(['table', 'system'])['time']
-    .min()
-    .reset_index()
-    .pivot(index='table', columns='system', values='time')
-)
+    # Calculate the average time for each combination of table and system
+    average_times = (
+        data.groupby(['table', 'system'])['time']
+        .min()
+        .reset_index()
+        .pivot(index='table', columns='system', values='time')
+    )
 
-# Define the order of systems and datasets for consistency
-systems = ['xdbc', 'xdbc[skip-ser]', 'netcat']
-tables = ['lineitem', 'acs', 'iot', 'icu']
+    # Define the order of systems and datasets for consistency
+    systems = ['xdbc', 'xdbc[skip-ser]', 'netcat']
+    tables = ['lineitem', 'acs', 'iot', 'icu']
 
-# Reindex to ensure proper order and fill missing values with 0 (if any)
-average_times = average_times.reindex(index=tables, columns=systems, fill_value=0)
+    # Reindex to ensure proper order and fill missing values with 0 (if any)
+    average_times = average_times.reindex(index=tables, columns=systems, fill_value=0)
 
-# Extract data for plotting
-approach_times = [average_times[system].values for system in systems]
+    # Extract data for plotting
+    approach_times = [average_times[system].values for system in systems]
 
-# Set up plot style
-plt.rcParams['text.usetex'] = True
-plt.rcParams['font.family'] = 'serif'
-plt.rcParams['font.serif'] = ['Computer Modern Roman']
-plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+    # Set up plot style
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Computer Modern Roman']
+    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
 
-# Create the plot
-datasets = tables  # Adjust dataset names for readability
-formal_palette = sns.color_palette("colorblind", len(systems))
-bar_width = 0.25
-x_indexes = np.arange(len(datasets))
+    # Create the plot
+    datasets = tables  # Adjust dataset names for readability
+    formal_palette = sns.color_palette("colorblind", len(systems))
+    bar_width = 0.25
+    x_indexes = np.arange(len(datasets))
 
-plt.figure(figsize=(6, 3.75))
+    plt.figure(figsize=(6, 3.75))
 
-# Plotting each approach with offset for bar positions
-for i, (system, times) in enumerate(zip(systems, approach_times)):
-    plt.bar(x_indexes + (i - 1) * bar_width, times, width=bar_width, color=formal_palette[i], label=system, zorder=3)
+    # Plotting each approach with offset for bar positions
+    for i, (system, times) in enumerate(zip(systems, approach_times)):
+        plt.bar(x_indexes + (i - 1) * bar_width, times, width=bar_width, color=formal_palette[i], label=system, zorder=3)
 
-# Labels and Title
-plt.xlabel('Datasets')
-plt.ylabel('Time (s)')
-plt.xticks(ticks=x_indexes, labels=datasets)
-plt.legend(loc='best')
+    # Labels and Title
+    plt.xlabel('Datasets')
+    plt.ylabel('Time (s)')
+    plt.xticks(ticks=x_indexes, labels=datasets)
+    plt.legend(loc='best')
 
-# Grid for better readability
-plt.grid(axis='y', alpha=0.3, zorder=0)
+    # Grid for better readability
+    plt.grid(axis='y', alpha=0.3, zorder=0)
 
-# Display the plot
-plt.tight_layout()
-plt.savefig('figure11a.pdf', bbox_inches='tight')
-plt.show()
+    # Display the plot
+    plt.tight_layout()
+    plt.savefig('figure11a.pdf', bbox_inches='tight')
+    plt.show()  
 
 # # ************************* Section6: Generate figure 14 *******************************
 
@@ -374,66 +377,67 @@ filename = "figureXArrow"
 csv_file_path = os.path.join('res', f'{filename}.csv')
 if not os.path.exists(csv_file_path):
     print(f"Warning: File not found at '{csv_file_path}'. Skipping.")
-data = pd.read_csv(csv_file_path)
-# data = pd.read_csv("figureXArrow.csv")
+else:
+    data = pd.read_csv(csv_file_path)
+    # data = pd.read_csv("figureXArrow.csv")
 
-# Replace mismatched table names
-data['table'] = data['table'].replace({
-    'lineitem_sf10': 'lineitem',
-    'ss13husallm': 'acs',
-    'iotm': 'iot',
-    'inputeventsm': 'icu'
-})
+    # Replace mismatched table names
+    data['table'] = data['table'].replace({
+        'lineitem_sf10': 'lineitem',
+        'ss13husallm': 'acs',
+        'iotm': 'iot',
+        'inputeventsm': 'icu'
+    })
 
-# Extract format and skip information from the 'system' column
-data['format'] = data['system'].apply(lambda x: x.split('-')[-1])  # Extract format (e.g., format1, format2, etc.)
-data['skip'] = data['system'].apply(lambda x: 'skip1' in x)       # Identify skip-ser (skip1)
+    # Extract format and skip information from the 'system' column
+    data['format'] = data['system'].apply(lambda x: x.split('-')[-1])  # Extract format (e.g., format1, format2, etc.)
+    data['skip'] = data['system'].apply(lambda x: 'skip1' in x)       # Identify skip-ser (skip1)
 
-# Calculate the average time for each table and format
-average_times = (
-    data.groupby(['table', 'format'])['time']
-    .mean()
-    .reset_index()
-    .pivot(index='table', columns='format', values='time')
-)
+    # Calculate the average time for each table and format
+    average_times = (
+        data.groupby(['table', 'format'])['time']
+        .mean()
+        .reset_index()
+        .pivot(index='table', columns='format', values='time')
+    )
 
-# Ensure correct order of formats
-formats = ['format1', 'format2', 'format3', 'formatNone']
-tables = ['lineitem', 'acs', 'iot', 'icu']  # Desired order for tables
-average_times = average_times.reindex(index=tables, columns=formats, fill_value=0)
+    # Ensure correct order of formats
+    formats = ['format1', 'format2', 'format3', 'formatNone']
+    tables = ['lineitem', 'acs', 'iot', 'icu']  # Desired order for tables
+    average_times = average_times.reindex(index=tables, columns=formats, fill_value=0)
 
-# Set up plot style
-plt.rcParams['text.usetex'] = True
-plt.rcParams['font.family'] = 'serif'
-plt.rcParams['font.serif'] = ['Computer Modern Roman']
-plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+    # Set up plot style
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Computer Modern Roman']
+    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
 
-# Plot settings
-bar_width = 0.2
-x_indexes = np.arange(len(tables))
-colors = sns.color_palette("colorblind", len(formats))
-labels = ['xdbc[row]', 'xdbc[col]', 'xdbc[arrow]', 'xdbc[skip-ser]']
+    # Plot settings
+    bar_width = 0.2
+    x_indexes = np.arange(len(tables))
+    colors = sns.color_palette("colorblind", len(formats))
+    labels = ['xdbc[row]', 'xdbc[col]', 'xdbc[arrow]', 'xdbc[skip-ser]']
 
-plt.figure(figsize=(6, 3.75))
+    plt.figure(figsize=(6, 3.75))
 
-# Plot each format
-for i, format_ in enumerate(formats):
-    plt.bar(x_indexes + (i - 1.5) * bar_width, average_times[format_], width=bar_width,
-            label=labels[i], color=colors[i], zorder=3)
+    # Plot each format
+    for i, format_ in enumerate(formats):
+        plt.bar(x_indexes + (i - 1.5) * bar_width, average_times[format_], width=bar_width,
+                label=labels[i], color=colors[i], zorder=3)
 
-# Labels, legend, and formatting
-plt.xlabel('Datasets')
-plt.ylabel('Time (s)')
-plt.xticks(ticks=x_indexes, labels=tables)
-plt.legend(loc='best', labelspacing=0.3, borderpad=0.3, handletextpad=0.4, handlelength=1)
-plt.grid(axis='y', alpha=0.3, zorder=0)
+    # Labels, legend, and formatting
+    plt.xlabel('Datasets')
+    plt.ylabel('Time (s)')
+    plt.xticks(ticks=x_indexes, labels=tables)
+    plt.legend(loc='best', labelspacing=0.3, borderpad=0.3, handletextpad=0.4, handlelength=1)
+    plt.grid(axis='y', alpha=0.3, zorder=0)
 
-# Layout adjustments
-plt.tight_layout()
+    # Layout adjustments
+    plt.tight_layout()
 
-# Save and show the plot
-plt.savefig("figure14a.pdf", bbox_inches='tight')
-plt.show()
+    # Save and show the plot
+    plt.savefig("figure14a.pdf", bbox_inches='tight')
+    plt.show()
 
 
 
