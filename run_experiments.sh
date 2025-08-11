@@ -59,7 +59,7 @@ echo "----------------------------------------------------"
 
 echo "Step 3/7:Downloading datasets from TUB cloud..."
 
-mkdir -p datasets datasets_test
+mkdir -p datasets
 cd datasets
 for f in inputeventsm.csv.tar.gz iotm.csv.tar.gz lineitem.tbl.tar.gz lineitem_sf10.csv.tar.gz ss13husallm.csv.tar.gz; do
     if [ ! -f "$f" ]; then
@@ -68,7 +68,7 @@ for f in inputeventsm.csv.tar.gz iotm.csv.tar.gz lineitem.tbl.tar.gz lineitem_sf
 done
 cd ..
 echo "Extracting datasets..."
-find datasets -type f -name "*.tar.gz" -exec tar -xzf {} -C datasets_test \;
+find datasets -type f -name "*.tar.gz" -exec tar --overwrite -xzf {} -C /dev/shm \;
 
 
 echo "Datasets downloaded and extracted successfully."
