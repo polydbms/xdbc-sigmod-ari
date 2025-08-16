@@ -24,6 +24,8 @@ run_figure18:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure18.py"
 run_figure19:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure19.py"
+run_figure20:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure20.py"
 run_figure8a:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure8a.py"
 run_figure8b:

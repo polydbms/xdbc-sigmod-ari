@@ -645,7 +645,8 @@ fixed_params = {
 try:
     csv_file_path = os.path.join('res', f'{filename}.csv')
     df_data = pd.read_csv(csv_file_path, header=None, skiprows=1)
-    cols_to_keep = list(range(18)) + [25, 26]
+    # cols_to_keep = list(range(18)) + [25, 26]
+    cols_to_keep = list(range(20))
     df = df_data[cols_to_keep]
     final_headers = [
         'timestamp', 'env_name', 'repetition', 'read_par', 'deser_par',

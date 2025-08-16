@@ -22,11 +22,26 @@ def generate_historical_data(env, show_output=(False, False)):
     # Define different buffer sizes to test.
     buffer_size_options = [256, 1024, 4096, 16384]
     
+    # Define the compression libraries to generate data for
+    compression_options = ['nocomp', 'zstd', 'lz4', 'lzo', 'snappy']
+
     # Define different buffer pool sizes. These are often linked to buffer_size
     # and parallelism, so we'll calculate them dynamically.
 
     # Define valid combinations for skip_ser and skip_deser
     skip_options = [(0, 0), (1, 1)]
+
+    # --- Calculate and Print Total Number of Runs ---
+    num_tables = len(env.get('tables', []))
+    num_buffer_sizes = len(buffer_size_options)
+    # There are 8 parallelism parameters in the itertools.product call
+    num_par_combos = len(parallelism_options) ** 8
+    num_skip_options = len(skip_options)
+    num_comp_options = len(compression_options)
+    max_total_runs = num_tables * num_buffer_sizes * num_par_combos * num_skip_options * num_comp_options
+    
+    print(f"\n📈 Planning to generate historical data...")
+    print(f"Maximum possible runs: {max_total_runs}")
 
     # --- Iteration and Execution ---
     run_counter = 1
@@ -69,46 +84,46 @@ def generate_historical_data(env, show_output=(False, False)):
                     continue
 
                 for skip_ser, skip_deser in skip_options:
-                    print(f"\n--- Starting Run {run_counter} for table {table_name} ---")
-                    
-                    # Dynamically calculate buffer pool sizes.
-                    # A common heuristic is to have enough buffers for each parallel stage.
-                    server_buffpool_size = buffer_size * (read_par + deser_par + comp_par + send_par) * 2
-                    client_buffpool_size = buffer_size * (rcv_par + decomp_par + ser_par + write_par) * 2
+                    # Add the new loop for compression libraries
+                    for compression_lib in compression_options:
+                        print(f"\n--- Starting Run {run_counter}/{max_total_runs} for table {table_name}   ---")
+                        
+                        # Dynamically calculate buffer pool sizes.
+                        # A common heuristic is to have enough buffers for each parallel stage.
+                        server_buffpool_size = buffer_size * (read_par + deser_par + comp_par + send_par) * 2
+                        client_buffpool_size = buffer_size * (rcv_par + decomp_par + ser_par + write_par) * 2
 
-                    # Construct the configuration dictionary for the current run.
-                    config = {
-                        'buffer_size': buffer_size,
-                        'server_buffpool_size': server_buffpool_size,
-                        'client_buffpool_size': client_buffpool_size,
-                        'read_par': read_par,
-                        'deser_par': deser_par,
-                        'comp_par': comp_par,
-                        'send_par': send_par,
-                        'rcv_par': rcv_par,
-                        'decomp_par': decomp_par,
-                        'ser_par': ser_par,
-                        'write_par': write_par,
-                        # For this data generation, we focus on no compression and no skipping
-                        # of serialization, which is a common baseline.
-                        'compression_lib': 'nocomp',
-                        'format': 1,
-                        'skip_ser': skip_ser,
-                        'skip_deser': skip_deser,
-                    }
+                        # Construct the configuration dictionary for the current run.
+                        config = {
+                            'buffer_size': buffer_size,
+                            'server_buffpool_size': server_buffpool_size,
+                            'client_buffpool_size': client_buffpool_size,
+                            'read_par': read_par,
+                            'deser_par': deser_par,
+                            'comp_par': comp_par,
+                            'send_par': send_par,
+                            'rcv_par': rcv_par,
+                            'decomp_par': decomp_par,
+                            'ser_par': ser_par,
+                            'write_par': write_par,
+                            'compression_lib': compression_lib,
+                            'format': 1,
+                            'skip_ser': skip_ser,
+                            'skip_deser': skip_deser,
+                        }
 
-                    # Execute the data transfer with the current configuration.
-                    # The run_xdbserver_and_xdbclient function will handle writing the results
-                    # to the corresponding CSV files.
-                    run_xdbserver_and_xdbclient(
-                        config=config,
-                        env=env,
-                        perf_dir=perf_dir,
-                        sleep=2,  # Give the server time to start
-                        show_output=show_output # Suppress stdout from client/server
-                    )
-                    
-                    run_counter += 1
+                        # Execute the data transfer with the current configuration.
+                        # The run_xdbserver_and_xdbclient function will handle writing the results
+                        # to the corresponding CSV files.
+                        run_xdbserver_and_xdbclient(
+                            config=config,
+                            env=env,
+                            perf_dir=perf_dir,
+                            sleep=2,  # Give the server time to start
+                            show_output=show_output # Suppress stdout from client/server
+                        )
+                        
+                        run_counter += 1
 
     print("\n--- Historical data generation complete. ---")
 

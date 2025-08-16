@@ -84,7 +84,7 @@ echo "----------------------------------------------------"
 # --- Step 5: Prepare Data and Experiments ---
 echo "🛠️  Step 2/4: Preparing data sources and experiments..."
 # make prepare_postgres
-make prepare_parquet
+# make prepare_parquet
 echo "Data sources prepared."
 echo "----------------------------------------------------"
 
@@ -110,6 +110,7 @@ echo "Step 6/7: Running all figure generation scripts..."
 # make run_figure17b
 # make run_figure18
 # make run_figure19
+make run_figure20
 
 echo "All figure experiments completed successfully."
 echo "----------------------------------------------------"

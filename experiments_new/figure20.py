@@ -28,7 +28,8 @@ environments = [
     #         'target_format': 2,
     #         'server_container': 'xdbcserver',
     #         'client_container': 'xdbcpython',
-    #         'table': 'iotm'
+    #         'tables': ['iotm'], 
+    #         'table': 'iotm',
     #     }
     # },
     {
@@ -45,6 +46,7 @@ environments = [
             'target_format': 1,
             'server_container': 'xdbcserver',
             'client_container': 'xdbcclient',
+            'tables': ['lineitem_sf10'], 
             'table': 'lineitem_sf10'
         }
     },
@@ -62,26 +64,28 @@ environments = [
     #         'target_format': 2,
     #         'server_container': 'xdbcserver',
     #         'client_container': 'xdbcpython',
+    #         'tables': ['inputeventsm'], 
     #         'table': 'inputeventsm'
     #     }
     # },
-    {
-        'name': "copy",
-        'env': {
-            'server_cpu': 8,
-            'client_cpu': 8,
-            'network': 0,
-            'network_latency': 0,
-            'network_loss': 0,
-            'src': 'csv',
-            'src_format': 1,
-            'target': 'csv',
-            'target_format': 1,
-            'server_container': 'xdbcserver',
-            'client_container': 'xdbcclient',
-            'table': 'lineitem_sf10'
-        }
-    },
+    # {
+    #     'name': "copy",
+    #     'env': {
+    #         'server_cpu': 8,
+    #         'client_cpu': 8,
+    #         'network': 0,
+    #         'network_latency': 0,
+    #         'network_loss': 0,
+    #         'src': 'csv',
+    #         'src_format': 1,
+    #         'target': 'csv',
+    #         'target_format': 1,
+    #         'server_container': 'xdbcserver',
+    #         'client_container': 'xdbcclient',
+    #         'tables': ['lineitem_sf10'], 
+    #         'table': 'lineitem_sf10'
+    #     }
+    # },
     # {
     #     'name': "etl",
     #     'env': {
@@ -96,26 +100,28 @@ environments = [
     #         'target_format': 1,
     #         'server_container': 'xdbcserver',
     #         'client_container': 'xdbcspark',
+    #         'tables': ['lineitem_sf10'], 
     #         'table': 'lineitem_sf10'
     #     }
     # },
-    {
-        'name': "pg",
-        'env': {
-            'server_cpu': 16,
-            'client_cpu': 16,
-            'network': 100,
-            'network_latency': 0,
-            'network_loss': 0,
-            'src': 'postgres',
-            'src_format': 1,
-            'target': 'postgres',
-            'target_format': 1,
-            'server_container': 'xdbcserver',
-            'client_container': 'xdbcpostgres',
-            'table': 'lineitem_sf10'
-        }
-    }
+    # {
+    #     'name': "pg",
+    #     'env': {
+    #         'server_cpu': 16,
+    #         'client_cpu': 16,
+    #         'network': 100,
+    #         'network_latency': 0,
+    #         'network_loss': 0,
+    #         'src': 'postgres',
+    #         'src_format': 1,
+    #         'target': 'postgres',
+    #         'target_format': 1,
+    #         'server_container': 'xdbcserver',
+    #         'client_container': 'xdbcpostgres',
+    #         'tables': ['lineitem_sf10'], 
+    #         'table': 'lineitem_sf10'
+    #     }
+    # }
 ]
 
 # compression_types = ['nocomp', 'lz4', 'lzo', 'snappy', 'zstd']
@@ -176,23 +182,23 @@ fixed_configs = [
     #         'format': 2
     #     }
     # },
-    {
-        'name': "copy",
-        'config_type': {
-            'read_par': 4,
-            'deser_par': 4,
-            'comp_par': 2,
-            'send_par': 2,
-            'rcv_par': 2,
-            'decomp_par': 2,
-            'write_par': 4,
-            'compression_lib': 'lz4',
-            'buffer_size': 512,
-            'server_buffpool_size': 4 * 512 * 20,
-            'client_buffpool_size': 4 * 512 * 20,
-            'format': 1
-        }
-    },
+    # {
+    #     'name': "copy",
+    #     'config_type': {
+    #         'read_par': 4,
+    #         'deser_par': 4,
+    #         'comp_par': 2,
+    #         'send_par': 2,
+    #         'rcv_par': 2,
+    #         'decomp_par': 2,
+    #         'write_par': 4,
+    #         'compression_lib': 'lz4',
+    #         'buffer_size': 512,
+    #         'server_buffpool_size': 4 * 512 * 20,
+    #         'client_buffpool_size': 4 * 512 * 20,
+    #         'format': 1
+    #     }
+    # },
     # {
     #     'name': "etl",
     #     'config_type': {
@@ -210,23 +216,23 @@ fixed_configs = [
     #         'format': 2
     #     }
     # },
-    {
-        'name': "pg",
-        'config_type': {
-            'read_par': 4,
-            'deser_par': 3,
-            'comp_par': 3,
-            'send_par': 2,
-            'rcv_par': 2,
-            'decomp_par': 4,
-            'write_par': 1,
-            'compression_lib': 'zstd',
-            'buffer_size': 256,
-            'server_buffpool_size': 2 * 256 * 20,
-            'client_buffpool_size': 2 * 256 * 20,
-            'format': 1
-        }
-    }
+    # {
+    #     'name': "pg",
+    #     'config_type': {
+    #         'read_par': 4,
+    #         'deser_par': 3,
+    #         'comp_par': 3,
+    #         'send_par': 2,
+    #         'rcv_par': 2,
+    #         'decomp_par': 4,
+    #         'write_par': 1,
+    #         'compression_lib': 'zstd',
+    #         'buffer_size': 256,
+    #         'server_buffpool_size': 2 * 256 * 20,
+    #         'client_buffpool_size': 2 * 256 * 20,
+    #         'format': 1
+    #     }
+    # }
 ]
 
 configurations = []
@@ -244,14 +250,14 @@ for config in fixed_configs:
 
     # Create the run_config dictionary
     run_config = {
-        'read_par': config['config_type']['server_read_par'],
-        'deser_par': config['config_type']['server_deser_par'],
-        'write_par': config['config_type']['client_write_par'],
-        'send_par': config['config_type']['network_parallelism'],
-        'rcv_par': config['config_type']['network_parallelism'],
-        'comp_par': config['config_type']['server_comp_par'],
-        'decomp_par': config['config_type']['client_decomp_par'],
-        'ser_par': config['config_type']['client_write_par'],
+        'read_par': config['config_type']['read_par'],
+        'deser_par': config['config_type']['deser_par'],
+        'write_par': config['config_type']['write_par'],
+        'send_par': config['config_type']['send_par'],
+        'rcv_par': config['config_type']['rcv_par'],
+        'comp_par': config['config_type']['comp_par'],
+        'decomp_par': config['config_type']['decomp_par'],
+        'ser_par': config['config_type']['write_par'],
         'buffer_size': config['config_type']['buffer_size'],
         'server_buffpool_size': config['config_type']['server_buffpool_size'],
         'client_buffpool_size': config['config_type']['client_buffpool_size'],
@@ -281,7 +287,7 @@ sample_cur_conf = create_conf(**sample_run_config) # Generate a sample to get it
 # Create CSV with a header that matches the logged data
 if not os.path.exists(csv_file_path):
     header_base = [
-        "timestamp", "env_name", "repetition"
+        "timestamp", "env_name", "config_name", "repetition"
     ]
     # Use keys from the ACTUAL data structure that will be written to the file
     run_config_keys = list(sample_cur_conf.keys())
@@ -291,15 +297,77 @@ if not os.path.exists(csv_file_path):
         writer.writerow(full_header)
 
 
-total_iterations = len(environments) * len(configurations) * repetitions
+total_iterations = len(environments) * (len(configurations)+2) * repetitions
 global_iteration_counter = 0
 print(f"--- Starting {total_iterations}  experiments. ---")
 
 # Main experiment loop
 for env_config in environments:
     env = env_config['env']
+    env_name = env_config['name']
     print(f"--- Preparing environment: {env_config['name']} ---")
     set_env(env)
+
+    # Generate historical data for optimization
+    generate_historical_data(env) # Generate historical data for optimization and store in local_measurements_new
+    
+    print(f"--- Heuristics Optimize for environment: {env_name} ---")
+    n, best_config, estimated_thr, opt_time = optimize(env, 'xdbc', 'heuristic', False, False)
+    print(f"Optimizer found best configuration in {opt_time:.2f}s. Estimated throughput: {estimated_thr:.2f} MB/s")
+    print(f"--- Running Heuristic configuration for {env_name} ---")
+    for i in range(repetitions):
+        print(f"Running Rep {i+1}/{repetitions}")
+        
+        perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
+        
+        # Use a deepcopy to avoid modifying the original config object
+        t, data_size = run_xdbserver_and_xdbclient(copy.deepcopy(best_config), env, perf_dir, show_output=(False, False), return_size=True)
+        print(f"Result: {t:.4f} seconds\n")
+        
+        # Log results for the optimal run
+        timestamp = int(datetime.datetime.now().timestamp())
+        with open(csv_file_path, mode="a", newline="") as file:
+            writer = csv.writer(file)
+            row_data = [
+                timestamp, env_name, "xdbc", i + 1
+            ]
+            row_data.extend(best_config.values())
+            row_data.extend([t, data_size])
+            writer.writerow(row_data)
+        
+        with open(f"res/xdbc_plans/{timestamp}_optimal_{env_name}.json", "w") as file:
+            json.dump(best_config, file, indent=4)
+            
+
+
+    print(f"--- Bruteforce Optimize for environment: {env_name} ---")
+    n, best_config, estimated_thr, opt_time = optimize(env, 'xdbc', 'bruteforce', False, False)
+    print(f"Optimizer found best configuration in {opt_time:.2f}s. Estimated throughput: {estimated_thr:.2f} MB/s")
+    print(f"--- Running Bruteforce configuration for {env_name} ---")
+    for i in range(repetitions):
+        print(f"Running Rep {i+1}/{repetitions}")
+        
+        perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
+        
+        # Use a deepcopy to avoid modifying the original config object
+        t, data_size = run_xdbserver_and_xdbclient(copy.deepcopy(best_config), env, perf_dir, show_output=(False, False), return_size=True)
+        print(f"Result: {t:.4f} seconds\n")
+        
+        # Log results for the optimal run
+        timestamp = int(datetime.datetime.now().timestamp())
+        with open(csv_file_path, mode="a", newline="") as file:
+            writer = csv.writer(file)
+            row_data = [
+                timestamp, env_name, "bf", i + 1
+            ]
+            row_data.extend(best_config.values())
+            row_data.extend([t, data_size])
+            writer.writerow(row_data)
+        
+        with open(f"res/xdbc_plans/{timestamp}_optimal_{env_name}.json", "w") as file:
+            json.dump(best_config, file, indent=4)
+
+
 
     for transfer_config in configurations:
         # if not transfer_config['name'].startswith(env_config['name'].split('_Lineitem')[0].split('_ICU')[0]):
@@ -331,6 +399,7 @@ for env_config in environments:
                 row_data = [
                     timestamp,
                     env_config['name'],
+                    transfer_config['name'],
                     i + 1
                 ]
                 row_data.extend(cur_conf.values())
@@ -349,24 +418,3 @@ for env_config in environments:
             
 
 print("--- All experiments completed. ---")
-
-
-generate_historical_data(env) # Generate historical data for optimization and store in local_measurements_new
-perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements')) # Store performance data in local_measurements after optimization
-for table in test_env['env']['tables']:
-    for i in range(repetitions):
-        env['table'] = table
-
-        for skip_ser in [0, 1]:
-            n, best_config, estimated_thr, opt_time = optimize(env, 'xdbc', 'heuristic', False, skip_ser)
-            t = run_xdbserver_and_xdbclient(best_config, env, perf_dir)
-
-            print(f"xdbc for {table}: {t} s")
-
-            timestamp = int(datetime.datetime.now().timestamp())
-            with open(csv_file_path, mode="a", newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow([timestamp, test_env['name'], i + 1, f"xdbc-skip{skip_ser}", table, t])
-
-            with open(f"res/xdbc_plans/{timestamp}.json", "w") as file:
-                json.dump(best_config, file, indent=4)
