@@ -39,14 +39,14 @@ Figure 12         | a. figureACSVCSV.py             | Completed
 Figure 13         | a. figureACSVCSVOpt.py          | Completed 
                   | b. figureBCSVPGOpt.py           | Completed 
 Figure 14         | a. figureXArrow.py              | Completed
-                  | b. figureYParquet.py            | xdbcpy is stuck even though server runs fine
+                  | b. figureYParquet.py            | Completed*
 Figure 15         | a. figure1516a.py               | Completed
                     b. figure1516b.py               | Completed
 Figure 16         | a. figure1516a.py               | Completed
                     b. figure1516b.py               | Completed
 Figure 17         | a. figureMemoryManagement.py    | Completed 
                   | b. figure17b.py                 | Completed 
-Figure 18         | figure18.py                     | Completed (a*,b*,c,d,e,f)
+Figure 18         | figure18.py                     | Completed (a,b,c,d,e,f)
 Figure 19         | figure19.py                     | Completed
 Figure 20         | xxxx                            | Need expert config
 Figure 21         | xxxx                            | Need expert config

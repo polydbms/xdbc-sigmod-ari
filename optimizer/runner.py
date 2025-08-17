@@ -100,7 +100,7 @@ def run_xdbserver_and_xdbclient(config, env, perf_dir, sleep=2, show_output=(Fal
         elif env['target'] == 'pandas':
             print("Running pandas")
             subprocess.run(["docker", "exec", "-it", env['client_container'], "bash", "-c",
-                            f"""python /workspace/tests/pandas_xdbc.py \
+                            f"""export LD_LIBRARY_PATH=$(python3.9 -c "import pyarrow, os; print(os.path.dirname(pyarrow.__file__))"):$LD_LIBRARY_PATH && python3.9 /workspace/tests/pandas_xdbc.py \
                             --env_name "PyXDBC Client" \
                             --table "{env['table']}" \
                             --iformat {config['format']} \

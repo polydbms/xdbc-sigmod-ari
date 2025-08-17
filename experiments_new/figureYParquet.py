@@ -14,8 +14,8 @@ env = test_env['env']
 
 set_env(env)
 
-show_server_output = False
-show_client_output = False
+show_server_output = True
+show_client_output = True
 
 show_stdout_server = None if show_server_output else subprocess.DEVNULL
 show_stdout_client = None if show_client_output else subprocess.DEVNULL
@@ -50,7 +50,7 @@ for baseline in baselines:
             a = datetime.datetime.now()
 
             subprocess.run(["docker", "exec", "-it", env['client_container'], "bash", "-c",
-                            f"""python /workspace/tests/pandas_parquet.py --table '{table}' --debug=0 --system {baseline}
+                            f"""python3.9 /workspace/tests/pandas_parquet.py --table '{table}' --debug=0 --system {baseline}
                                     """], check=True, stdout=show_stdout_client)
 
             b = datetime.datetime.now()
@@ -65,30 +65,30 @@ subprocess.run(["docker", "exec", "-it", env['server_container'], "pkill", "-f",
                check=True)
 
 # run xdbc
-# perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
+perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
 
-# confs = [normal_conf, skip_ser_conf]
+confs = [normal_conf, skip_ser_conf]
 
-# for j, conf in enumerate(confs):
-#     for table in test_env['env']['tables']:
-#         for i in range(repetitions):
-#             env['table'] = table
-#             t = run_xdbserver_and_xdbclient(conf, env, perf_dir, show_output=(True, True))
+for j, conf in enumerate(confs):
+    for table in test_env['env']['tables']:
+        for i in range(repetitions):
+            env['table'] = table
+            t = run_xdbserver_and_xdbclient(conf, env, perf_dir, show_output=(True, True))
 
-#             conf_name = "wrong"
-#             if j == 0:
-#                 conf_name = "[col]"
-#             elif j == 1:
-#                 conf_name = "[parquet]"
+            conf_name = "wrong"
+            if j == 0:
+                conf_name = "[col]"
+            elif j == 1:
+                conf_name = "[parquet]"
 
-#             print(f"xdbc for conf {conf_name} and table {table}: {t} s")
+            print(f"xdbc for conf {conf_name} and table {table}: {t} s")
 
-#             timestamp = int(datetime.datetime.now().timestamp())
+            timestamp = int(datetime.datetime.now().timestamp())
 
-#             with open(csv_file_path, mode="a", newline="") as file:
-#                 writer = csv.writer(file)
-#                 writer.writerow(
-#                     [timestamp, test_env['name'], i + 1, f"xdbc{conf_name}", table, t])
+            with open(csv_file_path, mode="a", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerow(
+                    [timestamp, test_env['name'], i + 1, f"xdbc{conf_name}", table, t])
 
-#             with open(f"res/xdbc_plans/{timestamp}.json", "w") as file:
-#                 json.dump(conf, file, indent=4)
+            with open(f"res/xdbc_plans/{timestamp}.json", "w") as file:
+                json.dump(conf, file, indent=4)
