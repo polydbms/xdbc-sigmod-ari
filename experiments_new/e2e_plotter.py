@@ -27,7 +27,8 @@ RUN_SECTION_12 = False  # Figure 15a (Parallelism Scaling - Env 2)
 RUN_SECTION_13 = False  # Figure 15b (Config Comparison - Env 2)
 RUN_SECTION_14 = False  # Figures 6a & 6b (Configuration Runtimes)
 RUN_SECTION_15 = False   # Figure 7a (Commented out)
-RUN_SECTION_16 = True    # figureYParquet.py => figure14b
+RUN_SECTION_16 = False    # figureYParquet.py => figure14b
+RUN_SECTION_17 = True   # figure8b.py => figure7b
 
 # This final section combines all generated PDFs.
 # Set this to True if you have generated new figures and want to merge them.
@@ -1517,6 +1518,73 @@ if RUN_SECTION_16:
     plt.tight_layout()
     plt.savefig(output_file, bbox_inches='tight')
 
+#* ******************************** Section17: Generate figure 7b *******************************
+if RUN_SECTION_17:
+    print("\n--- Running Section 17: Generating Figure 7b (Runtime Comparison) ---")
+    filename = "figure8b.csv"
+    csv_file_path = os.path.join('res', filename)
+
+
+    # Read the CSV file
+    data = pd.read_csv(csv_file_path)
+
+    # Replace mismatched table names
+    data['table'] = data['table'].replace({
+        'lineitem_sf10': 'lineitem',
+        'ss13husallm': 'acs',
+        'iotm': 'iot',
+        'inputeventsm': 'icu'
+    })
+
+    # Calculate the average time for each combination of table and system
+    average_times = (
+        data.groupby(['table', 'system'])['time']
+        .mean()
+        .reset_index()
+        .pivot(index='table', columns='system', values='time')
+    )
+
+    # Define the order of systems and datasets for consistency
+    systems = ['xdbc', 'read_csv_url']
+    tables = ['lineitem', 'acs', 'iot', 'icu']
+
+    # Reindex to ensure proper order and fill missing values with 0 (if any)
+    average_times = average_times.reindex(index=tables, columns=systems, fill_value=0)
+
+    # Extract data for plotting
+    approach_times = [average_times[system].values for system in systems]
+
+    # Set up plot style
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Computer Modern Roman']
+    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+
+    # Create the plot
+    datasets = ['lineitem', 'acs', 'iot', 'icu']  # Adjust dataset names for readability
+    formal_palette = sns.color_palette("colorblind", len(systems))
+    bar_width = 0.2
+    x_indexes = np.arange(len(datasets))
+
+    plt.figure(figsize=(6, 3.75))
+
+    # Plotting each approach with offset for bar positions
+    for i, (system, times) in enumerate(zip(systems, approach_times)):
+        plt.bar(x_indexes + (i - 0.5) * bar_width, times, width=bar_width, color=formal_palette[i], label=system, zorder=3)
+
+    # Labels and Title
+    plt.xlabel('Datasets')
+    plt.ylabel('Time (s)')
+    plt.xticks(ticks=x_indexes, labels=datasets)
+    plt.legend(loc='best')
+
+    # Grid for better readability
+    plt.grid(axis='y', alpha=0.3, zorder=0)
+
+    # Display the plot
+    output_file = f'figure7b.pdf'
+    plt.tight_layout()
+    plt.savefig(output_file, bbox_inches='tight')
 
     # ********************* Combine the pdfs    *******************************
 if RUN_PDF_MERGER:

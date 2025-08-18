@@ -2,11 +2,18 @@ import itertools
 import os
 from optimizer.runner import run_xdbserver_and_xdbclient
 
-def generate_historical_data(env, show_output=(False, False)):
+def generate_historical_data(env, show_output=(False, False), all_compression_types=False, all_buffer_size_types=True):
     """
     Generates historical performance data by running a series of data transfers
     with varying configurations. This populates the CSV files needed by the
     optimizer.
+    
+    Args:
+        env (dict): Environment configuration dictionary
+        show_output (tuple): Whether to show server and client output
+        all_compression_types (bool): If True, generate data for all compression types.
+                                     If False, only generate 'nocomp' data.
+        buffer_size_options_override (list): If provided, overrides the default buffer size options.
     """
     # # Define the specific environment for which to generate data.
 
@@ -20,10 +27,20 @@ def generate_historical_data(env, show_output=(False, False)):
     parallelism_options = [1]
 
     # Define different buffer sizes to test.
-    buffer_size_options = [256, 1024, 4096, 16384]
+    if all_buffer_size_types:
+        buffer_size_options = [1024]
+    else:
+        buffer_size_options = [256, 1024, 4096, 16384]
     
-    # Define the compression libraries to generate data for
-    compression_options = ['nocomp', 'zstd', 'lz4', 'lzo', 'snappy']
+    print(f"Using buffer size options: {buffer_size_options}")
+    
+    # Set compression options based on the argument
+    if all_compression_types:
+        compression_options = ['nocomp', 'zstd', 'lz4', 'lzo', 'snappy']
+    else:
+        compression_options = ['nocomp']
+    
+    print(f"Generating data for compression types: {compression_options}")
 
     # Define different buffer pool sizes. These are often linked to buffer_size
     # and parallelism, so we'll calculate them dynamically.
@@ -145,4 +162,13 @@ if __name__ == '__main__':
     # To run this script, you would execute:
     # python your_script_name.py
     # Make sure you have the 'optimizer' package and its dependencies available.
+    
+    # Example usage:
+    # Generate data for all compression types (default)
+    # generate_historical_data(env_demo)
+    
+    # Generate only 'nocomp' data
+    # generate_historical_data(env_demo, all_compression_types=False)
+
+    
     generate_historical_data(env_demo)

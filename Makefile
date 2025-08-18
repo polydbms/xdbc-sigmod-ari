@@ -61,6 +61,9 @@ prepare_postgres:
 prepare_parquet:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && ./prepare_parquet.sh"
 
+prepare_tbl:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && ./prepare_tbl.sh"
+
 run_expts:
 	run_figureACSVCSV run_figure11 run_figure8a run_figure8b run_figureACSVCSVOpt run_figureBCSVPGOpt run_figureBCSVPG run_figureCloudFogCSV run_figureCloudFogPG run_figureMemoryManagement run_figurePandasPGCPUNet run_figureXArrow run_figureYParquet run_figureZParquetCSV
 	

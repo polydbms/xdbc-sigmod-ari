@@ -32,6 +32,7 @@ COPY optimizer ./optimizer
 
 RUN chmod +x /app/experiments_new/prepare_postgres.sh
 RUN chmod +x /app/experiments_new/prepare_parquet.sh
+RUN chmod +x /app/experiments_new/prepare_tbl.sh
 #RUN chmod +x /app/experiments_new/run_experiments.sh
 
 # Create necessary directories

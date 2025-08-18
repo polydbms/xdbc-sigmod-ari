@@ -108,6 +108,7 @@ if [ "$RUN_STEP_5_PREPARE" = true ]; then
     echo "🛠️  Step 5/7: Preparing data sources and experiments..."
     make prepare_postgres
     make prepare_parquet
+    make prepare_tbl
     echo "Data sources prepared."
 else
     echo "Skipping Step 5: Preparing Data and Experiments."
@@ -122,7 +123,7 @@ if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
     # make run_figure7
     # make run_figure7b
     # make run_figure8a
-    # make run_figure8b
+    make run_figure8b
     # make run_figurePandasPGCPUNet
     # make run_figureZParquetCSV
     # make run_figure11
