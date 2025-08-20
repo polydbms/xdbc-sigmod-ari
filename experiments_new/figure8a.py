@@ -31,7 +31,7 @@ subprocess.Popen(["docker", "exec", "-it", env['server_container'], "bash", "-c"
 
 print(test_env)
 
-csv_file_path = "res/figurePandasPGCPU.csv"
+csv_file_path = "res/figure8a.csv"
 create_file(csv_file_path)
 # run baselines
 
@@ -62,6 +62,8 @@ for table in test_env['env']['tables']:
             with open(csv_file_path, mode="a", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerow([int(a.timestamp()), test_env['name'], i + 1, baseline, table, c])
+
+subprocess.run(["docker", "exec", "-it", env['server_container'], "pkill", "-f", "RangeHTTPServer"], check=True)
 
 # run xdbc
 generate_historical_data(env,show_output = (show_server_output,show_client_output)) # Generate historical data for optimization and store in local_measurements_new

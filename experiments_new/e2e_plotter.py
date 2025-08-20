@@ -28,7 +28,9 @@ RUN_SECTION_13 = False  # Figure 15b (Config Comparison - Env 2)
 RUN_SECTION_14 = False  # Figures 6a & 6b (Configuration Runtimes)
 RUN_SECTION_15 = False   # Figure 7a (Commented out)
 RUN_SECTION_16 = False    # figureYParquet.py => figure14b
-RUN_SECTION_17 = True   # figure8b.py => figure7b
+RUN_SECTION_17 = False   # figure8b.py => figure7b
+RUN_SECTION_18 = True   # figure8b.py => figure7b4
+RUN_SECTION_19 = False   # figure8b.py => figure7b
 
 # This final section combines all generated PDFs.
 # Set this to True if you have generated new figures and want to merge them.
@@ -1585,6 +1587,140 @@ if RUN_SECTION_17:
     output_file = f'figure7b.pdf'
     plt.tight_layout()
     plt.savefig(output_file, bbox_inches='tight')
+
+# ******************************** Section18: Generate figure7a *******************************
+if RUN_SECTION_18:
+    print("\n--- Running Section 18: Generating Figure 7a (Runtime Comparison) ---")
+    filename = "figure8a.csv"
+    csv_file_path = os.path.join('res', filename)
+
+    # Read the CSV file
+    data = pd.read_csv(csv_file_path)
+
+    # Replace mismatched table names
+    data['table'] = data['table'].replace({
+        'lineitem_sf10': 'lineitem',
+        'ss13husallm': 'acs',
+        'iotm': 'iot',
+        'inputeventsm': 'icu'
+    })
+
+    # Calculate the average time for each combination of table and system
+    average_times = (
+        data.groupby(['table', 'system'])['time']
+        .mean()
+        .reset_index()
+        .pivot(index='table', columns='system', values='time')
+    )
+
+    # Define the order of systems and datasets for consistency
+    systems = ['xdbc', 'connectorx', 'duckdb', 'modin', 'turbodbc']
+    tables = ['lineitem', 'acs', 'iot', 'icu']
+
+    # Reindex to ensure proper order and fill missing values with 0 (if any)
+    average_times = average_times.reindex(index=tables, columns=systems, fill_value=0)
+
+    # Extract data for plotting
+    approach_times = [average_times[system].values for system in systems]
+
+    # Set up plot style
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Computer Modern Roman']
+    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+
+    # Create the plot
+    datasets = ['lineitem', 'acs', 'iot', 'icu']  # Adjust dataset names for readability
+    formal_palette = sns.color_palette("colorblind", len(systems))
+    bar_width = 0.17
+    x_indexes = np.arange(len(datasets))
+
+    plt.figure(figsize=(6, 3.75))
+
+    # Plotting each approach with offset for bar positions
+    for i, (system, times) in enumerate(zip(systems, approach_times)):
+        plt.bar(x_indexes + (i - 2) * bar_width, times, width=bar_width, color=formal_palette[i], label=system, zorder=3)
+
+    # Labels and Title
+    plt.xlabel('Datasets')
+    plt.ylabel('Time (s)')
+    plt.xticks(ticks=x_indexes, labels=datasets)
+    plt.legend(loc='best')
+
+    # Grid for better readability
+    plt.grid(axis='y', alpha=0.3, zorder=0)
+
+    # Display the plot
+    plt.tight_layout()
+    plt.savefig('figure7a.pdf', bbox_inches='tight')
+    plt.show()
+
+# ******************************** Section19: Generate figure 8 *******************************
+if RUN_SECTION_19:
+    print("\n--- Running Section 19: Generating Figure 8 (Runtime Comparison) ---")
+    filename = "figure9.csv"
+    csv_file_path = os.path.join('res', filename)
+    
+    # Read the CSV file
+    data = pd.read_csv(csv_file_path)
+    data = pd.read_csv("figurePandasPGCPU.csv")
+
+    # Filter for network == 0 and include conf1, conf2, and connector-x
+    systems = ['xdbc[aggressive]', 'xdbc[conservative]', 'connector-x[aggressive]','connector-x[conservative]']
+    data = data[(data['network'] == 0) & (data['system'].isin(systems))]
+
+    # Calculate the average time for each combination of CPU cores and system
+    average_times = (
+        data.groupby(['client_cpu', 'system'])['time']
+        .mean()
+        .reset_index()
+        .pivot(index='client_cpu', columns='system', values='time')
+    )
+
+    # Define the order of systems and CPU cores for consistency
+
+    cpu_cores = [1,2, 4, 8, 16]
+
+    # Reindex to ensure proper order and fill missing values with 0 (if any)
+    average_times = average_times.reindex(index=cpu_cores, columns=systems, fill_value=0)
+
+    # Extract data for plotting
+    approach_times = [average_times[system].values for system in systems]
+
+    # Set up plot style
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Computer Modern Roman']
+    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+
+    # Create the plot
+    datasets = ['1', '2', '4', '8', '16']  # Adjust dataset names for readability
+    formal_palette = sns.color_palette("colorblind", 2)
+    bar_width = 0.2
+    x_indexes = np.arange(len(datasets))
+
+    plt.figure(figsize=(6, 3.75))
+
+    # Plotting each approach with specified colors and hatches
+    plt.bar(x_indexes - bar_width, approach_times[0], width=bar_width, color=formal_palette[0], label=systems[0], zorder=3)
+    plt.bar(x_indexes, approach_times[1], width=bar_width, color=formal_palette[0], label=systems[1], hatch='/', edgecolor='white', zorder=3)
+    plt.bar(x_indexes + bar_width, approach_times[2], width=bar_width, color=formal_palette[1], label=systems[2], edgecolor='white', zorder=3)
+    plt.bar(x_indexes + bar_width*2, approach_times[3], width=bar_width, color=formal_palette[1], label=systems[3], hatch='/', edgecolor='white', zorder=3)
+
+    # Labels and Title
+    plt.xlabel('CPU Cores')
+    plt.ylabel('Time (s)')
+    plt.xticks(ticks=x_indexes, labels=datasets)
+    plt.legend(loc='upper right')
+
+    # Grid for better readability
+    plt.grid(axis='y', alpha=0.3, zorder=0)
+
+    # Display the plot
+    plt.tight_layout()
+    plt.savefig('figure8.pdf', bbox_inches='tight')
+    plt.show()
+
 
     # ********************* Combine the pdfs    *******************************
 if RUN_PDF_MERGER:

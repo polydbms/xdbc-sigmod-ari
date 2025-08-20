@@ -22,7 +22,7 @@ show_stdout_client = None if show_client_output else subprocess.DEVNULL
 
 print(test_env)
 
-
+csv_file_path = "res/figurePandasPG.csv"
 if not os.path.exists(csv_file_path):
     with open(csv_file_path, mode="w", newline="") as file:
         writer = csv.writer(file)
@@ -48,7 +48,6 @@ networks = [125, 250, 500, 1000, 0]
 
 # run baselines
 baseline = "connectorx"
-'''
 for client_cpu in client_cpus:
     for i in range(repetitions):
         # change client cpu
@@ -78,7 +77,7 @@ for client_cpu in client_cpus:
                 writer.writerow(
                     [int(a.timestamp()), test_env['name'], i + 1, env['client_cpu'], env['network'], baselineText,
                      table, c])
-'''
+
 env['client_cpu'] = 8
 
 for network in networks:
@@ -105,7 +104,7 @@ for network in networks:
             writer.writerow(
                 [int(a.timestamp()), test_env['name'], i + 1, env['client_cpu'], env['network'], baseline, table, c])
 
-'''
+
 # run xdbc
 perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
 env['table'] = table
@@ -167,4 +166,3 @@ for network in networks:
 
             with open(f"res/xdbc_plans/{timestamp}.json", "w") as file:
                 json.dump(conf, file, indent=4)
-'''

@@ -123,7 +123,7 @@ if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
     # make run_figure7
     # make run_figure7b
     # make run_figure8a
-    make run_figure8b
+    # make run_figure8b
     # make run_figurePandasPGCPUNet
     # make run_figureZParquetCSV
     # make run_figure11
