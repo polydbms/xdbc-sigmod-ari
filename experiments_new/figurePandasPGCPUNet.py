@@ -20,6 +20,10 @@ show_client_output = False
 show_stdout_server = None if show_server_output else subprocess.DEVNULL
 show_stdout_client = None if show_client_output else subprocess.DEVNULL
 
+subprocess.Popen(["docker", "exec", "-it", env['server_container'], "bash", "-c",
+                  f"cd /dev/shm && python3 -m RangeHTTPServer 1234"],
+                 stdout=show_stdout_server)
+
 print(test_env)
 
 csv_file_path = "res/figurePandasPG.csv"
@@ -47,26 +51,34 @@ client_cpus = [1, 2, 4, 8, 16]
 networks = [125, 250, 500, 1000, 0]
 
 # run baselines
+# run baselines
 baseline = "connectorx"
 for client_cpu in client_cpus:
     for i in range(repetitions):
         # change client cpu
         env['client_cpu'] = client_cpu
         set_env(env)
-        for par in [8, client_cpu]:
+        for par_config in ['aggressive', 'conservative']:
+            if par_config == 'aggressive':
+                par = 16  # Aggressive always uses 16 threads
+            else:
+                par = min(client_cpu, 8)  # Conservative uses available cores, max 8
+            
             a = datetime.datetime.now()
 
             subprocess.run(["docker", "exec", "-it", env['client_container'], "bash", "-c",
-                            f"""python /workspace/tests/pandas_baselines.py \
+                            f"""python3.9 /workspace/tests/pandas_baselines.py \
                                 --parallelism {par} \
                                 --table "{table}" \
                                 --chunksize 42 \
                                 --library "{baseline}"
                                 """], check=True, stdout=show_stdout_client)
 
-            baselineText = f"{baseline}[conservative]"
-            if par == 8:
+            # CORRECTED LABELING LOGIC
+            if par_config == 'aggressive':
                 baselineText = f"{baseline}[aggressive]"
+            else:
+                baselineText = f"{baseline}[conservative]"
 
             b = datetime.datetime.now()
             c = (b - a).total_seconds()
@@ -78,6 +90,7 @@ for client_cpu in client_cpus:
                     [int(a.timestamp()), test_env['name'], i + 1, env['client_cpu'], env['network'], baselineText,
                      table, c])
 
+
 env['client_cpu'] = 8
 
 for network in networks:
@@ -88,7 +101,7 @@ for network in networks:
         a = datetime.datetime.now()
 
         subprocess.run(["docker", "exec", "-it", env['client_container'], "bash", "-c",
-                        f"""python /workspace/tests/pandas_baselines.py \
+                        f"""python3.9 /workspace/tests/pandas_baselines.py \
                             --parallelism 8 \
                             --table "{table}" \
                             --chunksize 42 \
@@ -103,6 +116,8 @@ for network in networks:
             writer = csv.writer(file)
             writer.writerow(
                 [int(a.timestamp()), test_env['name'], i + 1, env['client_cpu'], env['network'], baseline, table, c])
+
+subprocess.run(["docker", "exec", "-it", env['server_container'], "pkill", "-f", "RangeHTTPServer"], check=True)
 
 
 # run xdbc

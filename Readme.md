@@ -29,7 +29,7 @@ Figure 6          |figure7.py                       | Completed
                   |figure7b.py                      | Completed
 Figure 7          |figure8a.py                      | Completed*
                   |figure8b.py                      | Completed
-Figure 8          |figurePandasPGCPUNet.py          | xdbcpy is stuck even though server runs fine
+Figure 8          |figurePandasPGCPUNet.py          | Completed*
 Figure 9          |spark                            | xdbcpy is stuck even though server runs fine
 Figure 10         |figureZParquetCSV.py             | Completed. (check duckdb bar)
 Figure 11         | a. figure11.py                  | Completed
