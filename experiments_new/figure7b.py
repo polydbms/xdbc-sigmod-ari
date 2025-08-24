@@ -9,6 +9,15 @@ import copy
 import pprint
 import random
 
+import argparse
+parser = argparse.ArgumentParser(description='Run XDB experiment with configurable parameters')
+parser.add_argument('--max-configurations', type=int, default=12, 
+                   help='Maximum number of configurations to generate')
+args = parser.parse_args()
+
+# --- Experiment Configuration ---
+max_configurations = args.max_configurations  # Use this instead of the hardcoded value
+
 # --- Experiment Configuration ---
 
 
@@ -51,7 +60,7 @@ repetitions = 1
 sweep_values = [1, 2, 4, 8]
 
 # --- 3. Generate Random Configurations ---
-max_configurations = 1150
+# max_configurations = 1150
 configurations = []
 # This set will store a tuple representation of each generated config to prevent duplicates.
 seen_configurations = set()
@@ -160,7 +169,7 @@ if not os.path.exists(csv_file_path):
     if configurations:
         run_config_keys = list(sample_cur_conf.keys())
         full_header = header_base + run_config_keys + ["time"] + ["data_size"]
-        with open(csv_file_path, mode="w", newline="") as file:
+        with open(csv_file_path, mode="a", newline="") as file:
             writer = csv.writer(file)
             writer.writerow(full_header)
     else:

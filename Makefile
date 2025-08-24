@@ -6,12 +6,14 @@ clean:
 	docker compose -f docker-compose.yml down --remove-orphans
 open_docker:
 	docker exec -it xdbcexpt bash
+clean_csvs:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new/res && rm -f *.csv"
 run_figureACSVCSV:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figureACSVCSV.py"
 run_figure7:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure7.py"
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure7.py --max-configurations 23"
 run_figure7b:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure7b.py"
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure7b.py --max-configurations 12"
 run_figure11:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure11.py"
 run_figure1516a:

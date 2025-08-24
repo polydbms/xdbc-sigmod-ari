@@ -149,7 +149,7 @@ if not os.path.exists(csv_file_path):
     # Use keys from the ACTUAL data structure that will be written to the file
     run_config_keys = list(sample_cur_conf.keys())
     full_header = header_base + run_config_keys + ["time"] + ["data_size"]
-    with open(csv_file_path, mode="w", newline="") as file:
+    with open(csv_file_path, mode="a", newline="") as file:
         writer = csv.writer(file)
         writer.writerow(full_header)
 

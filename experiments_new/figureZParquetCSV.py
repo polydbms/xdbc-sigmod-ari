@@ -26,7 +26,7 @@ print(test_env)
 csv_file_path = "res/figureZParquetCSV.csv"
 
 if not os.path.exists(csv_file_path):
-    with open(csv_file_path, mode="w", newline="") as file:
+    with open(csv_file_path, mode="a", newline="") as file:
         writer = csv.writer(file)
 
         writer.writerow(["timestamp", "env", "repetition", "system", "network", "table", "time"])
@@ -75,7 +75,7 @@ for network in networks:
             a = datetime.datetime.now()
 
             subprocess.run(["docker", "exec", "-it", env2['client_container'], "bash", "-c",
-                            f"""python parquet_to_csv.py --system duckdb --filename 'http://xdbcserver:1234/{table}' --output /dev/shm/testcsv
+                            f"""python3.9 parquet_to_csv.py --system duckdb --filename 'http://xdbcserver:1234/{table}' --output /dev/shm/testcsv
                                     """], check=True, stdout=show_stdout_client)
 
             b = datetime.datetime.now()

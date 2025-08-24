@@ -14,24 +14,24 @@ from profiling_phase import generate_historical_data
 
 #1 .  create environments 
 environments = [
-    # {
-    #     'name': "iot_analysis",
-    #     'env': {
-    #         'server_cpu': 16,
-    #         'client_cpu': 8,
-    #         'network': 100,
-    #         'network_latency': 0,
-    #         'network_loss': 0,
-    #         'src': 'postgres',
-    #         'src_format': 1,
-    #         'target': 'pandas',
-    #         'target_format': 2,
-    #         'server_container': 'xdbcserver',
-    #         'client_container': 'xdbcpython',
-    #         'tables': ['iotm'], 
-    #         'table': 'iotm',
-    #     }
-    # },
+    {
+        'name': "iot_analysis",
+        'env': {
+            'server_cpu': 16,
+            'client_cpu': 8,
+            'network': 100,
+            'network_latency': 0,
+            'network_loss': 0,
+            'src': 'postgres',
+            'src_format': 1,
+            'target': 'pandas',
+            'target_format': 2,
+            'server_container': 'xdbcserver',
+            'client_container': 'xdbcpython',
+            'tables': ['iotm'], 
+            'table': 'iotm',
+        }
+    },
     {
         'name': "backup",
         'env': {
@@ -50,60 +50,60 @@ environments = [
             'table': 'lineitem_sf10'
         }
     },
-    # {
-    #     'name': "icu_analysis",
-    #     'env': {
-    #         'server_cpu': 16,
-    #         'client_cpu': 12,
-    #         'network': 50,
-    #         'network_latency': 0,
-    #         'network_loss': 0,
-    #         'src': 'csv',
-    #         'src_format': 1,
-    #         'target': 'pandas',
-    #         'target_format': 2,
-    #         'server_container': 'xdbcserver',
-    #         'client_container': 'xdbcpython',
-    #         'tables': ['inputeventsm'], 
-    #         'table': 'inputeventsm'
-    #     }
-    # },
-    # {
-    #     'name': "copy",
-    #     'env': {
-    #         'server_cpu': 8,
-    #         'client_cpu': 8,
-    #         'network': 0,
-    #         'network_latency': 0,
-    #         'network_loss': 0,
-    #         'src': 'csv',
-    #         'src_format': 1,
-    #         'target': 'csv',
-    #         'target_format': 1,
-    #         'server_container': 'xdbcserver',
-    #         'client_container': 'xdbcclient',
-    #         'tables': ['lineitem_sf10'], 
-    #         'table': 'lineitem_sf10'
-    #     }
-    # },
-    # {
-    #     'name': "etl",
-    #     'env': {
-    #         'server_cpu': 8,
-    #         'client_cpu': 8,
-    #         'network': 500,
-    #         'network_latency': 0,
-    #         'network_loss': 0,
-    #         'src': 'postgres',
-    #         'src_format': 1,
-    #         'target': 'spark',
-    #         'target_format': 1,
-    #         'server_container': 'xdbcserver',
-    #         'client_container': 'xdbcspark',
-    #         'tables': ['lineitem_sf10'], 
-    #         'table': 'lineitem_sf10'
-    #     }
-    # },
+    {
+        'name': "icu_analysis",
+        'env': {
+            'server_cpu': 16,
+            'client_cpu': 12,
+            'network': 50,
+            'network_latency': 0,
+            'network_loss': 0,
+            'src': 'csv',
+            'src_format': 1,
+            'target': 'pandas',
+            'target_format': 2,
+            'server_container': 'xdbcserver',
+            'client_container': 'xdbcpython',
+            'tables': ['inputeventsm'], 
+            'table': 'inputeventsm'
+        }
+    },
+    {
+        'name': "copy",
+        'env': {
+            'server_cpu': 8,
+            'client_cpu': 8,
+            'network': 0,
+            'network_latency': 0,
+            'network_loss': 0,
+            'src': 'csv',
+            'src_format': 1,
+            'target': 'csv',
+            'target_format': 1,
+            'server_container': 'xdbcserver',
+            'client_container': 'xdbcclient',
+            'tables': ['lineitem_sf10'], 
+            'table': 'lineitem_sf10'
+        }
+    },
+    {
+        'name': "etl",
+        'env': {
+            'server_cpu': 8,
+            'client_cpu': 8,
+            'network': 500,
+            'network_latency': 0,
+            'network_loss': 0,
+            'src': 'postgres',
+            'src_format': 1,
+            'target': 'spark',
+            'target_format': 1,
+            'server_container': 'xdbcserver',
+            'client_container': 'xdbcspark',
+            'tables': ['lineitem_sf10'], 
+            'table': 'lineitem_sf10'
+        }
+    },
     # {
     #     'name': "pg",
     #     'env': {
@@ -131,23 +131,23 @@ environments = [
 repetitions = 1 # Set how many times each experiment should be repeated
 
 fixed_configs = [
-    # {
-    #     'name': "iot_analysis",
-    #     'config_type': {
-    #         'read_par': 4,
-    #         'deser_par': 4,
-    #         'comp_par': 4,
-    #         'send_par': 2,
-    #         'rcv_par': 2,
-    #         'decomp_par': 3,
-    #         'write_par': 3,
-    #         'compression_lib': 'zstd',
-    #         'buffer_size': 128,
-    #         'server_buffpool_size': 4 * 128 * 20,
-    #         'client_buffpool_size': 2 * 128 * 20,
-    #         'format': 2
-    #     }
-    # },
+    {
+        'name': "iot_analysis",
+        'config_type': {
+            'read_par': 4,
+            'deser_par': 4,
+            'comp_par': 4,
+            'send_par': 2,
+            'rcv_par': 2,
+            'decomp_par': 3,
+            'write_par': 3,
+            'compression_lib': 'zstd',
+            'buffer_size': 128,
+            'server_buffpool_size': 4 * 128 * 20,
+            'client_buffpool_size': 2 * 128 * 20,
+            'format': 2
+        }
+    },
     {
         'name': "backup",
         'config_type': {
@@ -165,57 +165,57 @@ fixed_configs = [
             'format': 1
         }
     },
-    # {
-    #     'name': "icu_analysis",
-    #     'config_type': {
-    #         'read_par': 4,
-    #         'deser_par': 4,
-    #         'comp_par': 2,
-    #         'send_par': 2,
-    #         'rcv_par': 2,
-    #         'decomp_par': 2,
-    #         'write_par': 2,
-    #         'compression_lib': 'zstd',
-    #         'buffer_size': 64,
-    #         'server_buffpool_size': 4 * 64 * 20,
-    #         'client_buffpool_size': 2 * 64 * 20,
-    #         'format': 2
-    #     }
-    # },
-    # {
-    #     'name': "copy",
-    #     'config_type': {
-    #         'read_par': 4,
-    #         'deser_par': 4,
-    #         'comp_par': 2,
-    #         'send_par': 2,
-    #         'rcv_par': 2,
-    #         'decomp_par': 2,
-    #         'write_par': 4,
-    #         'compression_lib': 'lz4',
-    #         'buffer_size': 512,
-    #         'server_buffpool_size': 4 * 512 * 20,
-    #         'client_buffpool_size': 4 * 512 * 20,
-    #         'format': 1
-    #     }
-    # },
-    # {
-    #     'name': "etl",
-    #     'config_type': {
-    #         'read_par': 8,
-    #         'deser_par': 6,
-    #         'comp_par': 6,
-    #         'send_par': 4,
-    #         'rcv_par': 4,
-    #         'decomp_par': 6,
-    #         'write_par': 8,
-    #         'compression_lib': 'zstd',
-    #         'buffer_size': 256,
-    #         'server_buffpool_size': 15000,
-    #         'client_buffpool_size': 3 * 256 * 20,
-    #         'format': 2
-    #     }
-    # },
+    {
+        'name': "icu_analysis",
+        'config_type': {
+            'read_par': 4,
+            'deser_par': 4,
+            'comp_par': 2,
+            'send_par': 2,
+            'rcv_par': 2,
+            'decomp_par': 2,
+            'write_par': 2,
+            'compression_lib': 'zstd',
+            'buffer_size': 64,
+            'server_buffpool_size': 4 * 64 * 20,
+            'client_buffpool_size': 2 * 64 * 20,
+            'format': 2
+        }
+    },
+    {
+        'name': "copy",
+        'config_type': {
+            'read_par': 4,
+            'deser_par': 4,
+            'comp_par': 2,
+            'send_par': 2,
+            'rcv_par': 2,
+            'decomp_par': 2,
+            'write_par': 4,
+            'compression_lib': 'lz4',
+            'buffer_size': 512,
+            'server_buffpool_size': 4 * 512 * 20,
+            'client_buffpool_size': 4 * 512 * 20,
+            'format': 1
+        }
+    },
+    {
+        'name': "etl",
+        'config_type': {
+            'read_par': 8,
+            'deser_par': 6,
+            'comp_par': 6,
+            'send_par': 4,
+            'rcv_par': 4,
+            'decomp_par': 6,
+            'write_par': 8,
+            'compression_lib': 'zstd',
+            'buffer_size': 256,
+            'server_buffpool_size': 15000,
+            'client_buffpool_size': 3 * 256 * 20,
+            'format': 2
+        }
+    },
     # {
     #     'name': "pg",
     #     'config_type': {
@@ -292,7 +292,7 @@ if not os.path.exists(csv_file_path):
     # Use keys from the ACTUAL data structure that will be written to the file
     run_config_keys = list(sample_cur_conf.keys())
     full_header = header_base + run_config_keys + ["time"] + ["data_size"]
-    with open(csv_file_path, mode="w", newline="") as file:
+    with open(csv_file_path, mode="a", newline="") as file:
         writer = csv.writer(file)
         writer.writerow(full_header)
 
@@ -309,7 +309,7 @@ for env_config in environments:
     set_env(env)
 
     # Generate historical data for optimization
-    generate_historical_data(env) # Generate historical data for optimization and store in local_measurements_new
+    generate_historical_data(env,all_compression_types = True) # Generate historical data for optimization and store in local_measurements_new
     
     print(f"--- Heuristics Optimize for environment: {env_name} ---")
     n, best_config, estimated_thr, opt_time = optimize(env, 'xdbc', 'heuristic', False, False)

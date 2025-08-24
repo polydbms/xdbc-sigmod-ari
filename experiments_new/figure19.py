@@ -84,7 +84,7 @@ if not os.path.exists("res/xdbc_plans"):
 
 # Create CSV with a new header that includes 'compression'
 if not os.path.exists(csv_file_path):
-    with open(csv_file_path, mode="w", newline="") as file:
+    with open(csv_file_path, mode="a", newline="") as file:
         writer = csv.writer(file)
         writer.writerow([
             "timestamp", "env", "repetition", "compression",

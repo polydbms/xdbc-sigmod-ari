@@ -40,7 +40,7 @@ prepare_dataset() {
 
   # Run the Python script to convert CSV to Parquet
   echo "Converting ${csv_file} to Parquet format inside container '${PYTHON_CONTAINER}'..."
-  docker exec -i "${PYTHON_CONTAINER}" python3 /workspace/convert_csv_to_parquet.py \
+  docker exec -i "${PYTHON_CONTAINER}" python3.9 /workspace/convert_csv_to_parquet.py \
     --csv_file "${csv_file}" \
     --schema_file "${schema_file}" \
     --output_dir "${output_dir}" \

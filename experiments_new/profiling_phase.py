@@ -2,7 +2,7 @@ import itertools
 import os
 from optimizer.runner import run_xdbserver_and_xdbclient
 
-def generate_historical_data(env, show_output=(False, False), all_compression_types=False, all_buffer_size_types=True):
+def generate_historical_data(env, show_output=(False, False), all_compression_types=False, all_buffer_size_types=True, all_skip_options=False):
     """
     Generates historical performance data by running a series of data transfers
     with varying configurations. This populates the CSV files needed by the
@@ -46,7 +46,10 @@ def generate_historical_data(env, show_output=(False, False), all_compression_ty
     # and parallelism, so we'll calculate them dynamically.
 
     # Define valid combinations for skip_ser and skip_deser
-    skip_options = [(0, 0), (1, 1)]
+    if all_skip_options:
+        skip_options = [(0, 0), (1, 1)]
+    else:
+        skip_options = [(0, 0)]
 
     # --- Calculate and Print Total Number of Runs ---
     num_tables = len(env.get('tables', []))
@@ -143,6 +146,7 @@ def generate_historical_data(env, show_output=(False, False), all_compression_ty
                         run_counter += 1
 
     print("\n--- Historical data generation complete. ---")
+    print(f"Outputting performance data to: {perf_dir}")
 
 if __name__ == '__main__':
     env_demo = {

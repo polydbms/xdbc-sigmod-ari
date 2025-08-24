@@ -28,7 +28,7 @@ print(test_env)
 
 csv_file_path = "res/figurePandasPG.csv"
 if not os.path.exists(csv_file_path):
-    with open(csv_file_path, mode="w", newline="") as file:
+    with open(csv_file_path, mode="a", newline="") as file:
         writer = csv.writer(file)
 
         writer.writerow(["timestamp", "env", "repetition", "client_cpu", "network", "system", "table", "time"])

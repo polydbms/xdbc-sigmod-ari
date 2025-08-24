@@ -22,10 +22,10 @@ RUN_STEP_2_SETUP=false
 RUN_STEP_3_DOWNLOAD=false
 RUN_STEP_4_BUILD=true
 RUN_STEP_5_PREPARE=false
-RUN_STEP_6_EXPERIMENTS=true
+RUN_STEP_6_EXPERIMENTS=false
 RUN_STEP_7_PLOT=true
 
-
+    
 # --- Introduction ---
 echo "Starting the experiment and plotting pipeline..."
 echo "----------------------------------------------------"
@@ -34,7 +34,7 @@ echo "----------------------------------------------------"
 # --- Step 1: Cloning XDBC Repositories ---
 if [ "$RUN_STEP_1_CLONE" = true ]; then
     echo "Step 1/7: Cloning XDBC repository..."
-
+    cd ..
     # remove if cloned already before
     rm -rf xdbc-client
     git clone --branch test/dima_cluster --single-branch https://github.com/polydbms/xdbc-client.git
@@ -42,6 +42,7 @@ if [ "$RUN_STEP_1_CLONE" = true ]; then
     git clone --branch test/dima_cluster --single-branch https://github.com/polydbms/xdbc-server.git
     #rm -rf xdbc-python
     #git clone https://github.com/polydbms/xdbc-python.git # TODO
+    cd xdbc-sigmod-ari
 
     echo "Cloned XDBC repository successfully."
 else
@@ -55,13 +56,14 @@ if [ "$RUN_STEP_2_SETUP" = true ]; then
     echo "Step 2/7: Setting up XDBC..."
 
     # Create Docker network if it doesn't exist
-    docker network create xdbc-net 2>/dev/null || true
-
-    make -C ./xdbc-client
-    make -C ./xdbc-server
-    #make -C ./xdbc-python
-    docker compose -f ./xdbc-client/docker-xdbc.yml up -d
-    docker compose -f ./xdbc-client/docker-tc.yml up -d
+    # docker network create xdbc-net 2>/dev/null || true
+    make -C .././xdbc-client
+    make -C .././xdbc-server
+    make -C .././xdbc-python
+    make -C .././xdbc-spark
+    docker compose -f .././xdbc-client/docker-xdbc.yml up -d
+    docker compose -f .././xdbc-client/docker-tc.yml up -d
+    docker run -d -it --rm --name xdbcspark --network xdbc-net -p 4040:4040 -p 18080:18080 spark3io-sbt:latest
 
     echo "XDBC setup completed successfully."
 else
@@ -119,14 +121,19 @@ echo "----------------------------------------------------"
 # --- Step 6: Run All Figure Experiments ---
 if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
     echo "Step 6/7: Running all figure generation scripts..."
+    # Clean previous CSV results
+    make clean_csvs
+
+    # Run experiments for each figure
+    # Uncomment the lines below to run specific figures
 
     # make run_figure7
     # make run_figure7b
     # make run_figure8a
     # make run_figure8b
-    make run_figurePandasPGCPUNet
+    # make run_figurePandasPGCPUNet
     # make run_figureZParquetCSV
-    # make run_figure11
+    # make run_figure11 
     # make run_figureACSVCSV
     # make run_figureBCSVPG
     # make run_figureACSVCSVOpt

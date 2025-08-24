@@ -12,26 +12,30 @@ from io import BytesIO
 # Set the sections you want to run to True and others to False.
 # This allows you to run only the parts of the script you need.
 
-RUN_SECTION_01 = False  # Figures 12 & 13 (Parallelism Scaling)
+RUN_SECTION_01 = False  # Figures 12 & 13 (Parallelism Scaling)        : figureACSVCSV.csv, figureACSVCSVOpt, figureBCSVPG, figureBCSVPGOpt (N24)
 RUN_SECTION_02 = False  # Figure 17a (Memory Management)
 RUN_SECTION_03 = False  # Figure 11b (Physical Nodes)
-RUN_SECTION_04 = False  # Figures 10a & 10b (Parquet/CSV Comparison)
+RUN_SECTION_04 = True  # Figures 10a & 10b (Parquet/CSV Comparison)    : figureZParquetCSV.csv (N28*)
 RUN_SECTION_05 = False  # Figure 11a (Skip Serialization)
-RUN_SECTION_06 = False  # Figure 14a (Arrow Formats)
+RUN_SECTION_06 = False  # Figure 14a (Arrow Formats)                     : figureXArrow.csv (N24*)
 RUN_SECTION_07 = False  # Figures 19a & 19b (Compression Scaling)
 RUN_SECTION_08 = False  # Figure 17b (Network vs. Compression)
 RUN_SECTION_09 = False  # Figure 18 (Buffer Size vs. Compression/Format)
 RUN_SECTION_10 = False  # Figure 16a (Parallelism Scaling - Env 1)
 RUN_SECTION_11 = False  # Figure 16b (Config Comparison - Env 1)
-RUN_SECTION_12 = False  # Figure 15a (Parallelism Scaling - Env 2)
-RUN_SECTION_13 = False  # Figure 15b (Config Comparison - Env 2)
-RUN_SECTION_14 = False  # Figures 6a & 6b (Configuration Runtimes)
-RUN_SECTION_15 = False  # Figure 7a (Commented out)
-RUN_SECTION_16 = False  # figureYParquet.py => figure14b
-RUN_SECTION_17 = False  # figure8b.py => figure7b
-RUN_SECTION_18 = False  # figure8a.py => figure7b4
-RUN_SECTION_19 = True   # figurePandasPG.py => figure8a
-RUN_SECTION_20 = True   # figurePandasPG.py => figure8b
+RUN_SECTION_12 = False  # Figure 15a (Parallelism Scaling - Env 2)       : figure1516a.csv (N24*)
+RUN_SECTION_13 = False  # Figure 15b (Config Comparison - Env 2)         : figure1516b.csv (N24*)
+RUN_SECTION_14 = False  # Figures 6a & 6b (Configuration Runtimes)      : figure7.csv, figure7b.csv (N23*)
+RUN_SECTION_15 = False  # Figure 7a                                     : figure8a.csv (N23*)
+RUN_SECTION_16 = False  # figureYParquet.py => figure14b                : figureYParquet.csv (N24*)
+RUN_SECTION_17 = False  # figure8b.py => figure7b                       : figure8b.csv (N23*)
+RUN_SECTION_18 = False  # figure8a.py => figure7b4                      : figure8a.csv (N23*)
+RUN_SECTION_19 = False   # figurePandasPG.py => figure8a              : figurePandasPG.csv (N28*)
+RUN_SECTION_20 = False   # figurePandasPG.py => figure8b              : figurePandasPG.csv (N28*)
+RUN_SECTION_21 = False   # figure20.py => figure8b
+RUN_SECTION_22 = False   # figure20.py => figure8a
+RUN_SECTION_23 = True   # figure9a
+RUN_SECTION_24 = True   # figure9b
 
 # This final section combines all generated PDFs.
 # Set this to True if you have generated new figures and want to merge them.
@@ -1784,6 +1788,421 @@ if RUN_SECTION_20:
     plt.savefig('figure8b.pdf', bbox_inches='tight')
     plt.show()
 
+# ******************************** Section21: Generate figure 8b *******************************
+if RUN_SECTION_21:
+    print("\n--- Running Section 20: Generating Figure 8b (Runtime Comparison) ---")
+    filename = "figure20.csv"
+    csv_file_path = os.path.join('res', filename)
+    df = pd.read_csv(csv_file_path)
+    df['config_name'] = df['config_name'].replace('xdbc-bruteforce', 'bf')
+    df['config_name'] = df['config_name'].replace('xdbc-heuristic', 'xdbc')
+    #display(df)
+    #display(df)
+    plt.rcParams['axes.titlesize'] = 22
+    plt.rcParams['axes.labelsize'] = 22 
+    plt.rcParams['xtick.labelsize'] = 22
+    plt.rcParams['ytick.labelsize'] = 22
+
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Computer Modern Roman']
+    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+
+    legend_fontsize=21.9
+    borderpad=0
+    labelspacing=0
+    borderaxespad=0.18
+    handlelength=.95
+    edgecolor='white'
+    frameon=True
+    # Define the custom sorting order for the optimizer column
+
+    #df['optimizer'] = df['optimizer'].cat.add_categories('expert_icu_anal.')
+    #df['optimizer'] = df['optimizer'].cat.add_categories('expert_iot_anal.')
+    df.loc[df['config_name'] == 'icu_analysis', 'config_name'] = 'icu_anal.'
+    df.loc[df['config_name'] == 'iot_analysis', 'config_name'] = 'iot_anal.'
+
+    custom_order = [
+        'copy', 'icu_anal.', 'backup', 
+        'iot_anal.', 'etl', 'pg', 'bf','xdbc'
+    ]
+
+    # Convert the 'optimizer' column to a categorical type with the custom order
+    df['config_name'] = pd.Categorical(df['config_name'], categories=custom_order, ordered=True)
+
+    env_sizes = {
+        'iot_analysis': 3667,
+        'backup': 10935,
+        'icu_analysis': 3601,
+        'copy': 10473,
+        'etl': 10473,
+        'pg': 10473
+    }
+
+    env_bounds = {
+        'iot_analysis': 17,
+        'backup': 20,
+        'icu_analysis': 10.7,
+        'copy': 10,
+        'etl': 40,
+        'pg': 40
+    }
+
+
+
+    env_chars = {
+        'iot_anal' : {
+            'src_size': 3506,
+            'compressed': 800,
+            'bound' : 100,
+            'reason' : 'slowest is pandas at 205MB/s, size 3500/205=17'
+            
+        },
+        'backup' : {
+            'src_size': 10000,
+            'compressed': 2888,
+            'bound' : 250,
+            'reason' : 'serialization bound at 500MBps, size 10000/500=20'
+            
+        },
+        'icu' : {
+            'src_size': 2200,
+            'compressed': 350,
+            'bound' : 50,
+            'reason': 'pandas bound at 205MB/s, size 2200/205=10.7'
+        },
+        'copy' : {
+            'src_size': 10000,
+            'compressed': 2000,
+            'bound' : 0,
+            'reason' : ''
+        },
+        'etl' : {
+            'src_size': 10000,
+            'compressed': 2000,
+            'bound' : 500,
+            '': '5serialization bound at 250MBps, size 10000/250=40'
+        },
+        'db_migr' : {
+            'src_size': 10000,
+            'compressed': 2000,
+            'bound' : 100,
+            'reason' : 'serialization bound at 250MBps, size 10000/250=40'
+        }
+        
+        
+    }
+
+
+    # Sort the DataFrame according to the custom order
+    df = df.sort_values('config_name')
+    # Get the unique environments
+    environments = df['env_name'].unique()
+
+    # Define a colorblind-friendly color palette
+    color_palette = sns.color_palette("colorblind")
+
+    # Iterate through each environment and create a plot
+    for env in environments:
+        # Filter the DataFrame for the current environment
+        env_df = df[df['env_name'] == env]
+
+        # Extract optimizers and runtimes for this environment
+        optimizers = env_df['config_name'][::-1]
+        runtimes = env_df['time'][::-1]
+        #print(env)
+        #print(runtimes)
+
+        # Create a new figure for the environment
+        plt.figure(figsize=(6, 3.75))
+
+        # Plot each optimizer with a unique color from the colorblind-friendly palette
+        bars = plt.bar(optimizers, runtimes, color=color_palette[:len(optimizers)], zorder=3)
+        plt.axhline(y=env_bounds[env], color='lightblue', linestyle='--', linewidth=1.5, zorder=5)
+
+
+        # Add titles and labels
+        #plt.title(f'Runtime Comparison for {env}')
+        plt.xlabel('Optimizer Configuration')
+        plt.ylabel('Time (s)')
+        plt.xticks([])
+        plt.ylim(0, max(runtimes) * 1.3)
+        plt.grid(axis='y', alpha=0.3)
+
+        optimizers = optimizers.str.replace('expert_', '')
+        # Create a legend for the optimizers
+        plt.legend(bars, optimizers, labelspacing=labelspacing,ncols=4, handletextpad=0.25, columnspacing=0.15, 
+                fontsize=legend_fontsize, loc='upper center', handlelength=handlelength,borderpad=borderpad, 
+                borderaxespad=borderaxespad, frameon=frameon, edgecolor=edgecolor)
+
+        ax = plt.gca()
+        ax.tick_params(axis='y', pad=-2)
+        # Save the figure as PNG
+        plt.savefig(f'figure20_{env}.pdf', bbox_inches='tight', pad_inches=0.05)
+        
+        plt.show()
+        plt.close()
+
+    # ******************************** Section22: Generate figure 21*******************************
+if RUN_SECTION_22:
+    print("\n--- Running Section 22: Generating Figure 21 (Runtime Comparison) ---")
+    filename = "figure20.csv"
+    csv_file_path = os.path.join('res', filename)
+    data = pd.read_csv(csv_file_path)
+
+    df_runs = pd.read_csv(csv_file_path)
+    df_csv = pd.read_csv(csv_file_path)
+    #df_runs.sort_values(by='optimizer', ascending=True, inplace=True)
+    #df_runs.reset_index(drop=True, inplace=True)
+    #display(df_runs)
+
+    #estimated_throughput = [('iot_analysis', 'xdbc-bruteforce', 506.22), ('iot_analysis', 'xdbc-heuristic', 368.1079999999999), ('backup', 'xdbc-bruteforce', 160.60500000000002), ('backup', 'xdbc-heuristic', 273.0285), ('icu_analysis', 'xdbc-bruteforce', 44.61), ('icu_analysis', 'xdbc-heuristic', 44.61), ('copy', 'xdbc-bruteforce', 451.7759999999999), ('copy', 'xdbc-heuristic', 451.7759999999999), ('etl', 'xdbc-bruteforce', 211.805), ('etl', 'xdbc-heuristic', 255.037), ('pg', 'xdbc-bruteforce', 204.07), ('pg', 'xdbc-heuristic', 204.07),('iot_analysis', 'xdbc', 368.1079999999999), ('iot_analysis', 'expert_iot_analysis', 219.44899999999996), ('iot_analysis', 'expert_backup', 417.6609999999999), ('iot_analysis', 'expert_icu_analysis', 219.44899999999996), ('iot_analysis', 'expert_copy', 219.44899999999996), ('iot_analysis', 'expert_etl', 417.6609999999999), ('iot_analysis', 'expert_pg', 219.28), ('backup', 'xdbc', 273.0285), ('backup', 'expert_iot_analysis', 160.60500000000002), ('backup', 'expert_backup', 160.60500000000002), ('backup', 'expert_icu_analysis', 141.406), ('backup', 'expert_copy', 160.60500000000002), ('backup', 'expert_etl', 160.60500000000002), ('backup', 'expert_pg', 83.18), ('icu_analysis', 'xdbc', 44.61), ('icu_analysis', 'expert_iot_analysis', 44.61), ('icu_analysis', 'expert_backup', 44.61), ('icu_analysis', 'expert_icu_analysis', 44.61), ('icu_analysis', 'expert_copy', 44.61), ('icu_analysis', 'expert_etl', 44.61), ('icu_analysis', 'expert_pg', 44.61), ('copy', 'xdbc', 451.7759999999999), ('copy', 'expert_iot_analysis', 208.51199999999994), ('copy', 'expert_backup', 634.2239999999999), ('copy', 'expert_icu_analysis', 147.696), ('copy', 'expert_copy', 269.328), ('copy', 'expert_etl', 512.5919999999999), ('copy', 'expert_pg', 86.88), ('etl', 'xdbc', 255.037), ('etl', 'expert_iot_analysis', 211.805), ('etl', 'expert_backup', 211.805), ('etl', 'expert_icu_analysis', 211.805), ('etl', 'expert_copy', 211.805), ('etl', 'expert_etl', 211.805), ('etl', 'expert_pg', 211.805), ('pg', 'xdbc', 204.07), ('pg', 'expert_iot_analysis', 204.07), ('pg', 'expert_backup', 204.07), ('pg', 'expert_icu_analysis', 204.07), ('pg', 'expert_copy', 204.07), ('pg', 'expert_etl', 204.07), ('pg', 'expert_pg', 204.07)]
+    #estimated_throughput = [('iot_analysis', 'xdbc-bruteforce', 377.97499999999997), ('iot_analysis', 'xdbc-heuristic', 377.97499999999997), ('backup', 'xdbc-bruteforce', 160.60500000000002), ('backup', 'xdbc-heuristic', 273.0285), ('icu_analysis', 'xdbc-bruteforce', 44.61), ('icu_analysis', 'xdbc-heuristic', 44.61), ('copy', 'xdbc-bruteforce', 451.7759999999999), ('copy', 'xdbc-heuristic', 451.7759999999999), ('etl', 'xdbc-bruteforce', 211.805), ('etl', 'xdbc-heuristic', 255.037), ('pg', 'xdbc-bruteforce', 204.07), ('pg', 'xdbc-heuristic', 204.07)]
+
+
+    # Create a DataFrame from the estimated throughput list
+    #df_estimated = pd.DataFrame(list(estimated_throughput), columns=['env_name', 'optimizer', 'est_throughput'])
+
+
+    # Dictionary of environment sizes (in MB, GB, etc. as applicable)
+    env_sizes = {
+        'iot_analysis': 3667,
+        'backup': 10935,
+        'icu_analysis': 3601,
+        'copy': 10473,
+        'etl': 10473,
+        'pg': 10473
+    }
+
+
+    # Map the size to the CSV DataFrame based on 'env_name'
+    df_runs['size'] = df_runs['env_name'].map(env_sizes)
+    #display(df_runs)
+    # Calculate real throughput (real throughput = size / runtime)
+    df_runs['real_throughput'] = df_runs['size'] / df_runs['time']
+    #display(df_runs)
+    # Merge the CSV with the estimated throughputs based on 'env_name' and 'optimizer'
+    #df_merged = pd.merge(df_csv, df_estimated[['env_name', 'optimizer', 'estimated_throughput']], on=['env_name', 'optimizer'], how='left')
+    #display(df_merged)
+    # Extract the lists of estimated and real throughputs, maintaining the same order
+    estimated_throughput = df_runs['est_throughput'].tolist()
+    real_throughput = df_runs['real_throughput'].tolist()
+
+    # Create a new DataFrame with the required columns
+    df_result = df_runs[['env_name', 'config_name', 'est_throughput', 'real_throughput']]
+
+    # Rename the columns for clarity
+    df_result.columns = ['Environment Name', 'Optimizer', 'Estimated Throughput', 'Real Throughput']
+        
+    env_name_map = {
+        'iot_analysis': 'IoT Anal.',
+        'backup': 'Backup',
+        'icu_analysis': 'ICU Anal.',
+        'copy': 'Copy',
+        'etl': 'ETL',
+        'pg': 'DB Mig.'
+    }
+    #names = [env_name_map[env] for env in df_merged['env_name']]
+    names = [env_name_map[env] for env in df_runs['env_name']]
+    #names = ['IoT Anal.', 'Backup', 'ICU Anal.', 'Copy', 'ETL', 'DB Mig.']
+
+    #estimated_throughput = [368,273,44,451,211,204]
+    #real_throughput =      [203,295,157,551,205,193]
+
+    unique_env_names = list(env_name_map.values()) 
+
+    # Set colorblind-friendly palette
+    sns.set_palette("colorblind")
+    palette = sns.color_palette()
+
+    # Create a mapping from names to colors
+    name_color_map = {}
+    for i, name in enumerate(unique_env_names):
+        name_color_map[name] = palette[i % len(palette)]
+    plt.figure(figsize=(8, 4.5))
+    marker_size = 110
+    scatter_points = []
+
+    zorder=3
+    # Plot each point individually to associate colors and names
+    for i in range(len(estimated_throughput)):
+        if df_runs['config_name'].iloc[i] != 'xdbc-heuristic' and df_runs['config_name'].iloc[i] != 'xdbc-bruteforce':
+            scatter = plt.scatter(
+                estimated_throughput[i],
+                real_throughput[i],
+                color=name_color_map[names[i]],
+                label=names[i],
+                s=marker_size,
+                edgecolor='white',zorder=zorder,
+            )
+        
+        
+            
+            scatter_points.append(scatter)
+    zorder=3
+    for i in range(len(estimated_throughput)):    
+        if df_runs['config_name'].iloc[i] == 'xdbc-heuristic' or df_runs['config_name'].iloc[i] == 'xdbc-bruteforce':
+
+            scatter = plt.scatter(
+                estimated_throughput[i],
+                real_throughput[i],
+                color=name_color_map[names[i]],
+                label=names[i],
+                s=marker_size,
+                edgecolor='white',zorder=zorder,
+            )
+            markersymbol = '*'
+            if df_runs['config_name'].iloc[i] == 'xdbc-bruteforce':
+                markersymbol = '+'
+            
+            scatter = plt.scatter(
+                df_runs['est_throughput'].iloc[i],
+                df_runs['real_throughput'].iloc[i],
+                color='white',  # Transparent center
+                edgecolor='white',  # Black hatch
+                marker=markersymbol,  # Cross marker to simulate hatch
+                s=marker_size / 5,  # Smaller size for the cross
+                #linewidths=2,  # Thicker lines for the hatch
+                zorder=zorder,  # Higher zorder to overlay it on top
+            )
+            zorder+=1
+            scatter_points.append(scatter)
+    # Add y = x line
+    max_val = max(max(estimated_throughput), max(real_throughput))
+    plt.plot([0, max_val], [0, max_val], '--', color='black', label='Optimizer')
+    # Remove duplicate labels in legend
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = dict(zip(labels, handles))
+    legend = plt.legend(by_label.values(), by_label.keys(), ncols=3, handletextpad=0.25, columnspacing=0.25, loc='upper left', handlelength=1.3,borderpad=.15, borderaxespad=0.2)
+    plt.grid(alpha=0.3)
+    # Labels and title
+    plt.xlabel('Estimated Throughput (MB)')
+    plt.ylabel('Real Throughput (MB)')
+
+
+    # Now, add the second legend with only the "Optimizer" entry
+    optimizer_scatter = plt.scatter([], [], color='black', marker='*', s=100, label='Optimizer')
+    optimizer_scatter2 = plt.scatter([], [], color='black', marker='+', s=100, label='BF')
+
+    # Create the second legend for "Optimizer", placing it in the bottom-left corner
+
+
+    # Re-add the first legend to ensure both legends are shown
+    plt.gca().add_artist(legend)
+    leg2 = plt.legend([optimizer_scatter], ['Optimizer'], bbox_to_anchor=(0.25, .86),handletextpad=.25)
+    plt.gca().add_artist(leg2)
+    plt.legend([optimizer_scatter2], ['Bruteforce'], bbox_to_anchor=(0.49, .86),handletextpad=.25)
+    # Show plot
+    #plt.show()
+    plt.savefig(f'figure21.pdf', bbox_inches='tight', pad_inches=0.05)
+
+    # ******************************** Section23: Generate figure 9*******************************
+if RUN_SECTION_23:
+    print("\n--- Running Section 23: Generating Figure 9  ---")
+    # filename = "figure9.csv"
+    # csv_file_path = os.path.join('res', filename)
+    # data = pd.read_csv(csv_file_path)
+
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Computer Modern Roman']
+    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+
+    # Data for the plot
+    datasets = ['lineitem', 'acs', 'iot', 'icu']
+    approach_1_times = np.array([42, 22, 25, 16])
+    approach_2_times = np.array([218, 46, 124, 53])
+
+    # Names and colors for the approaches
+    approaches = ['xdbc', 'jdbc']
+
+    # Formal, colorblind-friendly palette
+    formal_palette = sns.color_palette("colorblind", 2)
+    colors = formal_palette  # Using formal palette
+
+    # Bar width and positions for the groups
+    bar_width = 0.2
+    x_indexes = np.arange(len(datasets))
+
+    # Create the plot
+    plt.figure(figsize=(6, 3.75))
+
+    # Plotting each approach with offset for bar positions
+    plt.bar(x_indexes - bar_width / 2, approach_1_times, width=bar_width, color=colors[0], label=approaches[0], zorder=3)
+    plt.bar(x_indexes + bar_width / 2, approach_2_times, width=bar_width, color=colors[1], label=approaches[1], zorder=3)
+
+
+    # Labels and Title
+    plt.xlabel('Datasets')
+    plt.ylabel('Time (s)')
+    #plt.title('Comparison of Approaches on Different Datasets', fontsize=14)
+
+    # X-axis ticks and legend
+    plt.xticks(ticks=x_indexes, labels=datasets)
+    plt.legend(loc='best')
+
+    # Grid for better readability
+    plt.grid(axis='y', alpha=0.3)
+
+    # Display the plot
+    plt.tight_layout()
+    #plt.show()
+    plt.savefig(f'figure9a.pdf', bbox_inches='tight')
+
+
+# ******************************** Section24: Generate figure 9b*******************************
+if RUN_SECTION_24:
+
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Computer Modern Roman']
+    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+
+    # Data for the plot
+    datasets = ['lineitem', 'acs', 'iot', 'icu']
+    approach_1_times = np.array([115, 20, 48, 27])
+    approach_2_times = np.array([302, 76, 259, 65])
+    approach_3_times = np.array([0, 236, 437, 211])
+
+    # Names and colors for the approaches
+    approaches = ['xdbc', 'native','jdbc']
+
+    # Formal, colorblind-friendly palette
+    formal_palette = sns.color_palette("colorblind", 3)
+    colors = formal_palette  # Using formal palette
+
+    # Bar width and positions for the groups
+    bar_width = 0.2
+    x_indexes = np.arange(len(datasets))
+
+    # Create the plot
+    plt.figure(figsize=(6, 3.75))
+
+    # Plotting each approach with offset for bar positions
+    plt.bar(x_indexes - bar_width, approach_1_times, width=bar_width, color=colors[0], label=approaches[0], zorder=3)
+    plt.bar(x_indexes, approach_2_times, width=bar_width, color=colors[1], label=approaches[1], edgecolor='white', zorder=3)
+    plt.bar(x_indexes + bar_width, approach_3_times, width=bar_width, color=colors[2], label=approaches[2], edgecolor='white', zorder=3)
+
+    plt.text(x_indexes[0] + bar_width+.01, 10, r"\textbf{Timeout after 20m}", ha='center', va='bottom', fontsize=18, fontweight=1000, color=colors[2], rotation=90)
+
+
+    # Labels and Title
+    plt.xlabel('Dataset')
+    plt.ylabel('Time (s)')
+    #plt.title('Comparison of Approaches on Different Datasets', fontsize=14)
+
+    # X-axis ticks and legend
+    plt.xticks(ticks=x_indexes, labels=datasets)
+    plt.legend(loc='best')
+
+    # Grid for better readability
+    plt.grid(axis='y', alpha=0.3)
+
+    # Display the plot
+    plt.tight_layout()
+    #plt.show()
+    plt.savefig(f'figure9b.pdf', bbox_inches='tight')
+
 
     # ********************* Combine the pdfs    *******************************
 if RUN_PDF_MERGER:
@@ -1821,7 +2240,14 @@ if RUN_PDF_MERGER:
         ('figure18e.pdf', 'Figure 18e'),
         ('figure18f.pdf', 'Figure 18f'),
         ('figure19a.pdf', 'Figure 19a'),
-        ('figure19b.pdf', 'Figure 19b')
+        ('figure19b.pdf', 'Figure 19b'),
+        ('figure19b.pdf', 'Figure 19b'),
+        ('figure20_backup.pdf', 'Figure 20b'),
+        ('figure20_copy.pdf', 'Figure 20d'),
+        ('figure20_icu_analysis.pdf', 'Figure 20c'),
+        ('figure20_iot_analysis.pdf', 'Figure 20a'),
+        ('figure20_etl.pdf', 'Figure 20e'),
+        # ('figure20_pg.pdf', 'Figure 20PG'),
     ]
 
     output_filename = 'combined_figures.pdf'
