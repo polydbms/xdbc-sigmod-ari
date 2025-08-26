@@ -37,15 +37,15 @@ if [ "$RUN_STEP_1_CLONE" = true ]; then
     cd ..
     # remove if cloned already before
     rm -rf xdbc-client
-    git clone --branch origin/test/reproduce --single-branch https://github.com/polydbms/xdbc-client.git
+    git clone --branch test/reproduce --single-branch https://github.com/polydbms/xdbc-client.git
     rm -rf xdbc-server
-    git clone --branch origin/test/reproduce --single-branch https://github.com/polydbms/xdbc-server.git
+    git clone --branch test/reproduce --single-branch https://github.com/polydbms/xdbc-server.git
     rm -rf xdbc-python
-    git clone --branch origin/midhun/test/dima_cluster --single-branch https://github.com/polydbms/xdbc-python.git 
+    git clone --branch midhun/test/dima_cluster --single-branch https://github.com/polydbms/xdbc-python.git 
     rm -rf xdbc-spark
     git clone  --single-branch https://github.com/polydbms/xdbc-spark.git
-    rm -rf xdbc-postgres
-    git clone --branch origin/adjusting --single-branch https://github.com/polydbms/pg_xdbc_fdw.git
+    rm -rf pg_xdbc_fdw
+    git clone --branch adjusting --single-branch https://github.com/polydbms/pg_xdbc_fdw.git
     cd xdbc-sigmod-ari
 
     echo "Cloned XDBC repository successfully."
@@ -65,7 +65,7 @@ if [ "$RUN_STEP_2_SETUP" = true ]; then
     make -C .././xdbc-server
     make -C .././xdbc-python
     make -C .././xdbc-spark
-    make -C .././xdbc-postgres
+    make -C .././pg_xdbc_fdw
     docker compose -f .././xdbc-client/docker-xdbc.yml up -d
     docker compose -f .././xdbc-client/docker-tc.yml up -d
     docker run -d -it --rm --name xdbcspark --network xdbc-net -p 4040:4040 -p 18080:18080 spark3io-sbt:latest
