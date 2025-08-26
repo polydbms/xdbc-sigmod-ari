@@ -32,10 +32,8 @@ RUN_SECTION_17 = True  # figure8b.py => figure7b                       : figure8
 RUN_SECTION_18 = True  # figure8a.py => figure7b4                      : figure8a.csv (N23)
 RUN_SECTION_19 = True   # figurePandasPG.py => figure8a              : figurePandasPG.csv (N28)
 RUN_SECTION_20 = True   # figurePandasPG.py => figure8b              : figurePandasPG.csv (N28)
-RUN_SECTION_21 = False   # figure20.py
+RUN_SECTION_21 = True   # figure20.py
 RUN_SECTION_22 = False   # figure20.py
-RUN_SECTION_23 = False   # figure9a
-RUN_SECTION_24 = False   # figure9b
 
 # This final section combines all generated PDFs.
 # Set this to True if you have generated new figures and want to merge them.
@@ -193,54 +191,6 @@ if RUN_SECTION_02:
         plt.tight_layout()
         plt.savefig("figure17a.pdf", bbox_inches='tight')
         plt.show()
-
-
-
-# # ******************************Section3: Generate figure for physical nodes**************************
-if RUN_SECTION_03:
-    print("\n--- Running Section 3: Generating Figure 11b (Physical Nodes) ---")
-    # Define the environments and approaches
-    environments = ['big-big', 'small-big', 'big-laptop', 'small-laptop']
-    approaches = ['xdbc[comp]', 'xdbc[nocomp]', 'xdbc[nocomp+skipser]', 'netcat[comp]', 'netcat[nocomp]']
-
-    # Define the hardcoded times for each approach and environment
-    times = np.array([
-        [29, 24, 212, 242],  # xdbc[comp]
-        [88, 89, 943, 1008],  # xdbc[nocomp]
-        [69, 71, 760, 770],  # xdbc[nocomp+skipser]
-        [12+21+16, 19+22+16, 19+235+13, 19+234+13],   # netcat[comp]
-        [66, 66, 725, 730]     # netcat[nocomp]
-    ])
-
-    # Set up plot style
-    plt.rcParams['text.usetex'] = True
-    plt.rcParams['font.family'] = 'serif'
-    plt.rcParams['font.serif'] = ['Computer Modern Roman']
-    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
-
-    # Set the bar width and positions
-    bar_width = 0.15
-    x_indexes = np.arange(len(environments))
-    colors = sns.color_palette("colorblind", len(approaches))
-
-    # Create the plot
-    plt.figure(figsize=(6, 3.75))
-
-    for i, (approach, color) in enumerate(zip(approaches, colors)):
-        plt.bar(x_indexes + (i - 1.5) * bar_width, times[i], width=bar_width, label=approach, color=color, zorder=3)
-
-    # Labels and title
-    plt.xlabel('Environments')
-    plt.ylabel('Time (s)')
-    plt.xticks(ticks=x_indexes, labels=environments)
-    plt.legend(loc='best')
-
-    # Add grid for better readability
-    plt.grid(axis='y', alpha=0.3, zorder=0)
-
-    # Display the plot
-    plt.tight_layout()
-    plt.savefig('figure11b.pdf', bbox_inches='tight')
 
 
 # # ******************************* Section4: Generate figure for Parquet CSV*******************************
@@ -2096,112 +2046,7 @@ if RUN_SECTION_22:
     #plt.show()
     plt.savefig(f'figure21.pdf', bbox_inches='tight', pad_inches=0.05)
 
-    # ******************************** Section23: Generate figure 9*******************************
-if RUN_SECTION_23:
-    print("\n--- Running Section 23: Generating Figure 9  ---")
-    # filename = "figure9.csv"
-    # csv_file_path = os.path.join('res', filename)
-    # data = pd.read_csv(csv_file_path)
 
-    plt.rcParams['text.usetex'] = True
-    plt.rcParams['font.family'] = 'serif'
-    plt.rcParams['font.serif'] = ['Computer Modern Roman']
-    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
-
-    # Data for the plot
-    datasets = ['lineitem', 'acs', 'iot', 'icu']
-    approach_1_times = np.array([42, 22, 25, 16])
-    approach_2_times = np.array([218, 46, 124, 53])
-
-    # Names and colors for the approaches
-    approaches = ['xdbc', 'jdbc']
-
-    # Formal, colorblind-friendly palette
-    formal_palette = sns.color_palette("colorblind", 2)
-    colors = formal_palette  # Using formal palette
-
-    # Bar width and positions for the groups
-    bar_width = 0.2
-    x_indexes = np.arange(len(datasets))
-
-    # Create the plot
-    plt.figure(figsize=(6, 3.75))
-
-    # Plotting each approach with offset for bar positions
-    plt.bar(x_indexes - bar_width / 2, approach_1_times, width=bar_width, color=colors[0], label=approaches[0], zorder=3)
-    plt.bar(x_indexes + bar_width / 2, approach_2_times, width=bar_width, color=colors[1], label=approaches[1], zorder=3)
-
-
-    # Labels and Title
-    plt.xlabel('Datasets')
-    plt.ylabel('Time (s)')
-    #plt.title('Comparison of Approaches on Different Datasets', fontsize=14)
-
-    # X-axis ticks and legend
-    plt.xticks(ticks=x_indexes, labels=datasets)
-    plt.legend(loc='best')
-
-    # Grid for better readability
-    plt.grid(axis='y', alpha=0.3)
-
-    # Display the plot
-    plt.tight_layout()
-    #plt.show()
-    plt.savefig(f'figure9a.pdf', bbox_inches='tight')
-
-
-# ******************************** Section24: Generate figure 9b*******************************
-if RUN_SECTION_24:
-
-    plt.rcParams['text.usetex'] = True
-    plt.rcParams['font.family'] = 'serif'
-    plt.rcParams['font.serif'] = ['Computer Modern Roman']
-    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
-
-    # Data for the plot
-    datasets = ['lineitem', 'acs', 'iot', 'icu']
-    approach_1_times = np.array([115, 20, 48, 27])
-    approach_2_times = np.array([302, 76, 259, 65])
-    approach_3_times = np.array([0, 236, 437, 211])
-
-    # Names and colors for the approaches
-    approaches = ['xdbc', 'native','jdbc']
-
-    # Formal, colorblind-friendly palette
-    formal_palette = sns.color_palette("colorblind", 3)
-    colors = formal_palette  # Using formal palette
-
-    # Bar width and positions for the groups
-    bar_width = 0.2
-    x_indexes = np.arange(len(datasets))
-
-    # Create the plot
-    plt.figure(figsize=(6, 3.75))
-
-    # Plotting each approach with offset for bar positions
-    plt.bar(x_indexes - bar_width, approach_1_times, width=bar_width, color=colors[0], label=approaches[0], zorder=3)
-    plt.bar(x_indexes, approach_2_times, width=bar_width, color=colors[1], label=approaches[1], edgecolor='white', zorder=3)
-    plt.bar(x_indexes + bar_width, approach_3_times, width=bar_width, color=colors[2], label=approaches[2], edgecolor='white', zorder=3)
-
-    plt.text(x_indexes[0] + bar_width+.01, 10, r"\textbf{Timeout after 20m}", ha='center', va='bottom', fontsize=18, fontweight=1000, color=colors[2], rotation=90)
-
-
-    # Labels and Title
-    plt.xlabel('Dataset')
-    plt.ylabel('Time (s)')
-    #plt.title('Comparison of Approaches on Different Datasets', fontsize=14)
-
-    # X-axis ticks and legend
-    plt.xticks(ticks=x_indexes, labels=datasets)
-    plt.legend(loc='best')
-
-    # Grid for better readability
-    plt.grid(axis='y', alpha=0.3)
-
-    # Display the plot
-    plt.tight_layout()
-    #plt.show()
-    plt.savefig(f'figure9b.pdf', bbox_inches='tight')
 
 
     # ********************* Combine the pdfs    *******************************
