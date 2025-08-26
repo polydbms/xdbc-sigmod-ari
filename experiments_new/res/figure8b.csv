@@ -1,0 +1,17 @@
+timestamp,env,repetition,system,table,time
+1756034770,figure_8b,1,read_csv_url,lineitem_sf10,60.023417
+1756034830,figure_8b,2,read_csv_url,lineitem_sf10,60.274506
+1756034890,figure_8b,1,read_csv_url,ss13husallm,9.406813
+1756034899,figure_8b,2,read_csv_url,ss13husallm,9.593602
+1756034909,figure_8b,1,read_csv_url,iotm,18.478796
+1756034927,figure_8b,2,read_csv_url,iotm,19.01203
+1756034946,figure_8b,1,read_csv_url,inputeventsm,9.48482
+1756034956,figure_8b,2,read_csv_url,inputeventsm,9.509449
+1756035123,figure_8b,1,xdbc,lineitem_sf10,39.883754
+1756035173,figure_8b,2,xdbc,lineitem_sf10,43.374204
+1756035183,figure_8b,1,xdbc,ss13husallm,4.273618
+1756035194,figure_8b,2,xdbc,ss13husallm,4.418593
+1756035208,figure_8b,1,xdbc,iotm,8.62492
+1756035223,figure_8b,2,xdbc,iotm,8.66927
+1756035243,figure_8b,1,xdbc,inputeventsm,14.599762
+1756035264,figure_8b,2,xdbc,inputeventsm,14.56385

@@ -1,0 +1,8 @@
+timestamp,env_name,config_name,repetition,read_par,deser_par,comp_par,send_par,rcv_par,decomp_par,ser_par,write_par,buffer_size,server_buffpool_size,client_buffpool_size,format,compression_lib,skip_ser,skip_deser,time,data_size
+1756123766,backup,xdbc,1,14,3,1,2,2,1,12,1,1024,61440,49152,nocomp,1,0,0,29.321223,10387423743
+1756123859,backup,bf,1,12,2,5,1,1,4,10,1,zstd,0,0,256,102400,81920,2,23.583164,2690514326
+1756123910,backup,iot_analysis,1,4,4,4,2,2,3,3,3,128,10240,5120,2,zstd,0,0,43.748917,3010655456
+1756123944,backup,backup,1,8,8,4,2,2,4,10,10,256,40960,20480,1,snappy,0,0,26.399816,4103798245
+1756124013,backup,icu_analysis,1,4,4,2,2,2,2,2,2,64,5120,2560,2,zstd,0,0,61.212399,3420535494
+1756124059,backup,copy,1,4,4,2,2,2,2,4,4,512,40960,40960,1,lz4,0,0,38.331179,4168605429
+1756124093,backup,etl,1,8,6,6,4,4,6,8,8,256,15000,15360,2,zstd,0,0,26.499834,2692659818

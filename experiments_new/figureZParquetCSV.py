@@ -16,7 +16,7 @@ env = test_env['env']
 set_env(env)
 
 show_server_output = False
-show_client_output = False
+show_client_output = True
 
 show_stdout_server = None if show_server_output else subprocess.DEVNULL
 show_stdout_client = None if show_client_output else subprocess.DEVNULL
@@ -26,13 +26,13 @@ print(test_env)
 csv_file_path = "res/figureZParquetCSV.csv"
 
 if not os.path.exists(csv_file_path):
-    with open(csv_file_path, mode="w", newline="") as file:
+    with open(csv_file_path, mode="a", newline="") as file:
         writer = csv.writer(file)
 
         writer.writerow(["timestamp", "env", "repetition", "system", "network", "table", "time"])
 
 bpsize = 65536 * 10 * 3
-bsize = 65536
+bsize = 32768
 
 normal_conf = create_conf(read_par=4, deser_par=4, comp_par=1, send_par=1, rcv_par=1, decomp_par=1, ser_par=4,
                           write_par=1,
@@ -61,7 +61,7 @@ networks = [0, 125]
 
 # run baselines
 baseline = "duckdb"
-subprocess.Popen(["docker", "exec", "-it", env['server_container'], "bash", "-c",
+subprocess.Popen(["docker", "exec", "-d", env['server_container'], "bash", "-c",
                   f"cd /dev/shm && python3 -m RangeHTTPServer 1234"],
                  stdout=show_stdout_server)
 
@@ -75,7 +75,7 @@ for network in networks:
             a = datetime.datetime.now()
 
             subprocess.run(["docker", "exec", "-it", env2['client_container'], "bash", "-c",
-                            f"""python parquet_to_csv.py --system duckdb --filename 'http://xdbcserver:1234/{table}' --output /dev/shm/testcsv
+                            f"""python3.9 parquet_to_csv.py --system duckdb --filename 'http://xdbcserver:1234/{table}' --output /dev/shm/testcsv
                                     """], check=True, stdout=show_stdout_client)
 
             b = datetime.datetime.now()

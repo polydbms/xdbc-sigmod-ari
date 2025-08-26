@@ -17,6 +17,7 @@ def optimize(env, optimizer, optimizer_opt, run=True, consider_skip_ser=1):
     mode = 2
     perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements_new'))
 
+    print(f"Searching for throughput data in: {perf_dir}")
     throughput_data = Helpers.load_throughput(env, perf_dir, consider_skip_ser=consider_skip_ser)
 
     optimize = False

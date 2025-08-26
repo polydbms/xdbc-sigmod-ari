@@ -14,8 +14,8 @@ env = test_env['env']
 
 set_env(env)
 
-show_server_output = False
-show_client_output = False
+show_server_output = True
+show_client_output = True
 
 show_stdout_server = None if show_server_output else subprocess.DEVNULL
 show_stdout_client = None if show_client_output else subprocess.DEVNULL
@@ -27,7 +27,7 @@ csv_file_path = "res/figureYParquet.csv"
 create_file(csv_file_path)
 
 bpsize = 65536 * 10 * 3
-bsize = 65536
+bsize = 32768
 
 normal_conf = create_conf(read_par=4, deser_par=4, comp_par=1, send_par=1, rcv_par=1, decomp_par=1, ser_par=4,
                           write_par=4, buffer_size=bsize, server_buffpool_size=bpsize, client_buffpool_size=bpsize,
@@ -38,7 +38,7 @@ skip_ser_conf = create_conf(read_par=4, deser_par=4, comp_par=1, send_par=1, rcv
                             format=4, compression_lib='nocomp', skip_ser=1, skip_deser=1)
 
 # run baselines
-baselines = ["read_parquet[pyarrow]", "duckdb"]
+baselines = ["pyarrow", "duckdb"]
 
 subprocess.Popen(["docker", "exec", "-it", env['server_container'], "bash", "-c",
                   f"cd /dev/shm && python3 -m RangeHTTPServer 1234"],
@@ -50,7 +50,7 @@ for baseline in baselines:
             a = datetime.datetime.now()
 
             subprocess.run(["docker", "exec", "-it", env['client_container'], "bash", "-c",
-                            f"""python /workspace/tests/pandas_parquet.py --table '{table}' --debug=0 --system {baseline}
+                            f"""python3.9 /workspace/tests/pandas_parquet.py --table '{table}' --debug=0 --system {baseline}
                                     """], check=True, stdout=show_stdout_client)
 
             b = datetime.datetime.now()

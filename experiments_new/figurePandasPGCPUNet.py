@@ -20,12 +20,15 @@ show_client_output = False
 show_stdout_server = None if show_server_output else subprocess.DEVNULL
 show_stdout_client = None if show_client_output else subprocess.DEVNULL
 
+subprocess.Popen(["docker", "exec", "-it", env['server_container'], "bash", "-c",
+                  f"cd /dev/shm && python3 -m RangeHTTPServer 1234"],
+                 stdout=show_stdout_server)
+
 print(test_env)
 
-ashply
-
+csv_file_path = "res/figurePandasPG.csv"
 if not os.path.exists(csv_file_path):
-    with open(csv_file_path, mode="w", newline="") as file:
+    with open(csv_file_path, mode="a", newline="") as file:
         writer = csv.writer(file)
 
         writer.writerow(["timestamp", "env", "repetition", "client_cpu", "network", "system", "table", "time"])
@@ -48,27 +51,34 @@ client_cpus = [1, 2, 4, 8, 16]
 networks = [125, 250, 500, 1000, 0]
 
 # run baselines
+# run baselines
 baseline = "connectorx"
-'''
 for client_cpu in client_cpus:
     for i in range(repetitions):
         # change client cpu
         env['client_cpu'] = client_cpu
         set_env(env)
-        for par in [8, client_cpu]:
+        for par_config in ['aggressive', 'conservative']:
+            if par_config == 'aggressive':
+                par = 8  # Aggressive always uses 8 threads
+            else:
+                par = min(client_cpu, 8)  # Conservative uses available cores, max 8
+            
             a = datetime.datetime.now()
 
             subprocess.run(["docker", "exec", "-it", env['client_container'], "bash", "-c",
-                            f"""python /workspace/tests/pandas_baselines.py \
+                            f"""python3.9 /workspace/tests/pandas_baselines.py \
                                 --parallelism {par} \
                                 --table "{table}" \
                                 --chunksize 42 \
                                 --library "{baseline}"
                                 """], check=True, stdout=show_stdout_client)
 
-            baselineText = f"{baseline}[conservative]"
-            if par == 8:
+            # CORRECTED LABELING LOGIC
+            if par_config == 'aggressive':
                 baselineText = f"{baseline}[aggressive]"
+            else:
+                baselineText = f"{baseline}[conservative]"
 
             b = datetime.datetime.now()
             c = (b - a).total_seconds()
@@ -79,7 +89,8 @@ for client_cpu in client_cpus:
                 writer.writerow(
                     [int(a.timestamp()), test_env['name'], i + 1, env['client_cpu'], env['network'], baselineText,
                      table, c])
-'''
+
+
 env['client_cpu'] = 8
 
 for network in networks:
@@ -90,7 +101,7 @@ for network in networks:
         a = datetime.datetime.now()
 
         subprocess.run(["docker", "exec", "-it", env['client_container'], "bash", "-c",
-                        f"""python /workspace/tests/pandas_baselines.py \
+                        f"""python3.9 /workspace/tests/pandas_baselines.py \
                             --parallelism 8 \
                             --table "{table}" \
                             --chunksize 42 \
@@ -106,12 +117,14 @@ for network in networks:
             writer.writerow(
                 [int(a.timestamp()), test_env['name'], i + 1, env['client_cpu'], env['network'], baseline, table, c])
 
-'''
+subprocess.run(["docker", "exec", "xdbcserver", "bash", "-c", "pkill -f RangeHTTPServer || true"])
+
+
 # run xdbc
 perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
 env['table'] = table
 confs = [conf1, conf2]
-
+env['network'] = 0
 for client_cpu in client_cpus:
     # change client cpu
     env['client_cpu'] = client_cpu
@@ -138,6 +151,9 @@ for client_cpu in client_cpus:
 
             with open(f"res/xdbc_plans/{timestamp}.json", "w") as file:
                 json.dump(conf, file, indent=4)
+
+
+
 
 confs = [conf1, conf3]
 env['client_cpu'] = 8
@@ -168,4 +184,3 @@ for network in networks:
 
             with open(f"res/xdbc_plans/{timestamp}.json", "w") as file:
                 json.dump(conf, file, indent=4)
-'''
