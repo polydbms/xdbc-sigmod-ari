@@ -112,7 +112,7 @@ echo "----------------------------------------------------"
 
 # --- Step 5: Prepare Data and Experiments ---
 if [ "$RUN_STEP_5_PREPARE" = true ]; then
-    echo "🛠️  Step 5/7: Preparing data sources and experiments..."
+    echo "Step 5/7: Preparing data sources and experiments..."
     make prepare_postgres
     make prepare_parquet
     make prepare_tbl
@@ -132,22 +132,22 @@ if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
     # Run experiments for each figure
     # Uncomment the lines below to run specific figures
 
-    make run_figure7
+    make run_figure6
+    make run_figure6b
+    make run_figure7a
     make run_figure7b
-    make run_figure8a
-    make run_figure8b
-    make run_figurePandasPGCPUNet
-    make run_figureZParquetCSV
+    make run_figure8PandasPGCPUNet
+    make run_figure10ZParquetCSV
     make run_figure11 
-    make run_figureACSVCSV
-    make run_figureBCSVPG
-    make run_figureACSVCSVOpt
-    make run_figureBCSVPGOpt
-    make run_figureXArrow
-    make run_figureYParquet
+    make run_figure12aCSVCSV
+    make run_figure12bCSVPG
+    make run_figure13aCSVCSVOpt
+    make run_figure13bCSVPGOpt
+    make run_figure14aXArrow
+    make run_figure14bYParquet
     make run_figure1516a
     make run_figure1516b
-    make run_figureMemoryManagement
+    make run_figure17aMemoryManagement
     make run_figure17b
     make run_figure18
     make run_figure19

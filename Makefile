@@ -10,12 +10,12 @@ clean_csvs:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new/res && rm -f *.csv"
 clean_pdfs:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new/res/pdf_plots && rm -f *.pdf"
-run_figureACSVCSV:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figureACSVCSV.py"
-run_figure7:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure7.py --max-configurations 23"
-run_figure7b:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure7b.py --max-configurations 12"
+run_figure12aCSVCSV:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure12aCSVCSV.py"
+run_figure6:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure6.py --max-configurations 23"
+run_figure6b:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure6b.py --max-configurations 12"
 run_figure11:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure11.py"
 run_figure1516a:
@@ -30,30 +30,30 @@ run_figure19:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure19.py"
 run_figure20:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure20.py"
-run_figure8a:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure8a.py"
-run_figure8b:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure8b.py"
-run_figureACSVCSVOpt:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figureACSVCSVOpt.py"
-run_figureBCSVPGOpt:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figureBCSVPGOpt.py"
-run_figureBCSVPG:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figureBCSVPG.py"
+run_figure7a:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure7a.py"
+run_figure7b:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure7b.py"
+run_figure13aCSVCSVOpt:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure13aCSVCSVOpt.py"
+run_figure13bCSVPGOpt:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure13bCSVPGOpt.py"
+run_figure12bCSVPG:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure12bCSVPG.py"
 run_figureCloudFogCSV:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figureCloudFogCSV.py"
 run_figureCloudFogPG:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figureCloudFogPG.py"
-run_figureMemoryManagement:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figureMemoryManagement.py"
-run_figurePandasPGCPUNet:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figurePandasPGCPUNet.py"
-run_figureXArrow:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figureXArrow.py"
-run_figureYParquet:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figureYParquet.py"
-run_figureZParquetCSV:
-	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figureZParquetCSV.py"
+run_figure17aMemoryManagement:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure17aMemoryManagement.py"
+run_figure8PandasPGCPUNet:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure8PandasPGCPUNet.py"
+run_figure14aXArrow:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure14aXArrow.py"
+run_figure14bYParquet:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure14bYParquet.py"
+run_figure10ZParquetCSV:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figure10ZParquetCSV.py"
 run_prepare_experiments:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 prepare_experiments.py"
 run_testPostgresCSV:
