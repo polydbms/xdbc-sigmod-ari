@@ -8,6 +8,8 @@ open_docker:
 	docker exec -it xdbcexpt bash
 clean_csvs:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new/res && rm -f *.csv"
+clean_pdfs:
+	docker exec -it xdbcexpt bash -c "cd /app/experiments_new/res/pdf_plots && rm -f *.pdf"
 run_figureACSVCSV:
 	docker exec -it xdbcexpt bash -c "cd /app/experiments_new && PYTHONPATH=.. python3 figureACSVCSV.py"
 run_figure7:

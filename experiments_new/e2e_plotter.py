@@ -12,30 +12,30 @@ from io import BytesIO
 # Set the sections you want to run to True and others to False.
 # This allows you to run only the parts of the script you need.
 
-RUN_SECTION_01 = False  # Figures 12 & 13 (Parallelism Scaling)        : figureACSVCSV.csv, figureACSVCSVOpt, figureBCSVPG, figureBCSVPGOpt (N24)
-RUN_SECTION_02 = False  # Figure 17a (Memory Management)
-RUN_SECTION_03 = False  # Figure 11b (Physical Nodes)
-RUN_SECTION_04 = True  # Figures 10a & 10b (Parquet/CSV Comparison)    : figureZParquetCSV.csv (N28*)
-RUN_SECTION_05 = False  # Figure 11a (Skip Serialization)
-RUN_SECTION_06 = False  # Figure 14a (Arrow Formats)                     : figureXArrow.csv (N24*)
-RUN_SECTION_07 = False  # Figures 19a & 19b (Compression Scaling)
-RUN_SECTION_08 = False  # Figure 17b (Network vs. Compression)
-RUN_SECTION_09 = False  # Figure 18 (Buffer Size vs. Compression/Format)
-RUN_SECTION_10 = False  # Figure 16a (Parallelism Scaling - Env 1)
-RUN_SECTION_11 = False  # Figure 16b (Config Comparison - Env 1)
-RUN_SECTION_12 = False  # Figure 15a (Parallelism Scaling - Env 2)       : figure1516a.csv (N24*)
-RUN_SECTION_13 = False  # Figure 15b (Config Comparison - Env 2)         : figure1516b.csv (N24*)
-RUN_SECTION_14 = False  # Figures 6a & 6b (Configuration Runtimes)      : figure7.csv, figure7b.csv (N23*)
-RUN_SECTION_15 = False  # Figure 7a                                     : figure8a.csv (N23*)
-RUN_SECTION_16 = False  # figureYParquet.py => figure14b                : figureYParquet.csv (N24*)
-RUN_SECTION_17 = False  # figure8b.py => figure7b                       : figure8b.csv (N23*)
-RUN_SECTION_18 = False  # figure8a.py => figure7b4                      : figure8a.csv (N23*)
-RUN_SECTION_19 = False   # figurePandasPG.py => figure8a              : figurePandasPG.csv (N28*)
-RUN_SECTION_20 = False   # figurePandasPG.py => figure8b              : figurePandasPG.csv (N28*)
-RUN_SECTION_21 = False   # figure20.py => figure8b
-RUN_SECTION_22 = False   # figure20.py => figure8a
-RUN_SECTION_23 = True   # figure9a
-RUN_SECTION_24 = True   # figure9b
+RUN_SECTION_01 = True  # Figures 12 & 13 (Parallelism Scaling)        : figureACSVCSV.csv, figureACSVCSVOpt, figureBCSVPG, figureBCSVPGOpt (N24)
+RUN_SECTION_02 = True  # Figure 17a (Memory Management)                : figureMemoryManagement.csv (N24*)
+RUN_SECTION_03 = True  # Figure 11b (Physical Nodes)
+RUN_SECTION_04 = True  # Figures 10a & 10b (Parquet/CSV Comparison)    : figureZParquetCSV.csv (N28)
+RUN_SECTION_05 = True  # Figure 11a (Skip Serialization)                : figure11.csv (N24*)
+RUN_SECTION_06 = True  # Figure 14a (Arrow Formats)                     : figureXArrow.csv (N24)
+RUN_SECTION_07 = True  # Figures 19a & 19b (Compression Scaling)      : figure17b.csv (N24*)
+RUN_SECTION_08 = True  # Figure 17b (Network vs. Compression)          : figure17b.csv (N24*)
+RUN_SECTION_09 = True  # Figure 18 (Buffer Size vs. Compression/Format) : figure18.csv (N24*)
+RUN_SECTION_10 = True  # Figure 16a (Parallelism Scaling - Env 1)      : figure1516a.csv (N24)
+RUN_SECTION_11 = True  # Figure 16b (Config Comparison - Env 1)         : figure1516b.csv (N24)
+RUN_SECTION_12 = True  # Figure 15a (Parallelism Scaling - Env 2)       : figure1516a.csv (N24)
+RUN_SECTION_13 = True  # Figure 15b (Config Comparison - Env 2)         : figure1516b.csv (N24)
+RUN_SECTION_14 = True  # Figures 6a & 6b (Configuration Runtimes)      : figure7.csv, figure7b.csv (N23)
+RUN_SECTION_15 = True  # Figure 7a                                     : figure8a.csv (N23)
+RUN_SECTION_16 = True  # figureYParquet.py => figure14b                : figureYParquet.csv (N24)
+RUN_SECTION_17 = True  # figure8b.py => figure7b                       : figure8b.csv (N23)
+RUN_SECTION_18 = True  # figure8a.py => figure7b4                      : figure8a.csv (N23)
+RUN_SECTION_19 = True   # figurePandasPG.py => figure8a              : figurePandasPG.csv (N28)
+RUN_SECTION_20 = True   # figurePandasPG.py => figure8b              : figurePandasPG.csv (N28)
+RUN_SECTION_21 = False   # figure20.py
+RUN_SECTION_22 = False   # figure20.py
+RUN_SECTION_23 = False   # figure9a
+RUN_SECTION_24 = False   # figure9b
 
 # This final section combines all generated PDFs.
 # Set this to True if you have generated new figures and want to merge them.

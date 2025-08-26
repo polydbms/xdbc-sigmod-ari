@@ -47,7 +47,7 @@ test_envs = [
             'network_latency': 0,
             'network_loss': 0,
             'src': 'postgres',
-            'src_format': 1,
+            'src_format': 2,
             'target': 'pandas',
             'target_format': 2,
             'server_container': 'xdbcserver',

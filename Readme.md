@@ -27,9 +27,9 @@ Figure in paper   |      Py file                    | Status
 ----------------- | --------------------------------| ----------------------
 Figure 6          |figure7.py                       | Verified with less samples
                   |figure7b.py                      | Verified with less samples
-Figure 7          |figure8a.py                      | Completed*
-                  |figure8b.py                      | Completed
-Figure 8          |figurePandasPGCPUNet.py          | Completed*
+Figure 7          |figure8a.py                      | Verified*
+                  |figure8b.py                      | Verified
+Figure 8          |figurePandasPGCPUNet.py          | Verified
 Figure 9          |spark. manual run                | Verified
 Figure 10         |figureZParquetCSV.py             | Verified. (check duckdb bar)
 Figure 11         | a. figure11.py                  | Completed
@@ -38,10 +38,10 @@ Figure 12         | a. figureACSVCSV.py             | Verified
                   | b. figureBCSVPG.py              | Verified
 Figure 13         | a. figureACSVCSVOpt.py          | Verified 
                   | b. figureBCSVPGOpt.py           | Verified* 
-Figure 14         | a. figureXArrow.py              | Completed
-                  | b. figureYParquet.py            | Completed*
-Figure 15         | a. figure1516a.py               | Completed
-                    b. figure1516b.py               | Completed
+Figure 14         | a. figureXArrow.py              | Verified
+                  | b. figureYParquet.py            | Verified
+Figure 15         | a. figure1516a.py               | Verified
+                    b. figure1516b.py               | Verified
 Figure 16         | a. figure1516a.py               | Completed
                     b. figure1516b.py               | Completed
 Figure 17         | a. figureMemoryManagement.py    | Completed 

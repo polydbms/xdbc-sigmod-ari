@@ -60,7 +60,7 @@ for client_cpu in client_cpus:
         set_env(env)
         for par_config in ['aggressive', 'conservative']:
             if par_config == 'aggressive':
-                par = 16  # Aggressive always uses 16 threads
+                par = 8  # Aggressive always uses 8 threads
             else:
                 par = min(client_cpu, 8)  # Conservative uses available cores, max 8
             
@@ -117,14 +117,14 @@ for network in networks:
             writer.writerow(
                 [int(a.timestamp()), test_env['name'], i + 1, env['client_cpu'], env['network'], baseline, table, c])
 
-subprocess.run(["docker", "exec", "-it", env['server_container'], "pkill", "-f", "RangeHTTPServer"], check=True)
+subprocess.run(["docker", "exec", "xdbcserver", "bash", "-c", "pkill -f RangeHTTPServer || true"])
 
 
 # run xdbc
 perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
 env['table'] = table
 confs = [conf1, conf2]
-
+env['network'] = 0
 for client_cpu in client_cpus:
     # change client cpu
     env['client_cpu'] = client_cpu
@@ -151,6 +151,9 @@ for client_cpu in client_cpus:
 
             with open(f"res/xdbc_plans/{timestamp}.json", "w") as file:
                 json.dump(conf, file, indent=4)
+
+
+
 
 confs = [conf1, conf3]
 env['client_cpu'] = 8

@@ -146,7 +146,7 @@ if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
     # make run_figure17b
     # make run_figure18
     # make run_figure19
-    # make run_figure20
+    make run_figure20
 
     echo "All figure experiments completed successfully."
 else
@@ -158,6 +158,7 @@ echo "----------------------------------------------------"
 # --- Step 7: Generate Plots and Copy Results ---
 if [ "$RUN_STEP_7_PLOT" = true ]; then
     echo "Step 7/7: Generating plots and copying results with 'make run_plot'..."
+    make clean_pdfs
     make run_plot
     echo "Plotting and file copying complete."
 else
