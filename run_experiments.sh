@@ -45,7 +45,7 @@ if [ "$RUN_STEP_1_CLONE" = true ]; then
     rm -rf xdbc-spark
     git clone  --single-branch https://github.com/polydbms/xdbc-spark.git
     rm -rf xdbc-postgres
-    git clone  --single-branch https://github.com/polydbms/pg_xdbc_fdw.git
+    git clone --branch origin/adjusting --single-branch https://github.com/polydbms/pg_xdbc_fdw.git
     cd xdbc-sigmod-ari
 
     echo "Cloned XDBC repository successfully."
