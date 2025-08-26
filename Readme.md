@@ -10,11 +10,11 @@
 
 XDBC consists of multiple repositories covering the cross-system functionality. For the reproducibility experiments the following repositories will be cloned and used :
 
-- [`xdbc-client`](https://github.com/polydbms/xdbc-client) Client-side of the application initiating data transfers.
-- [`xdbc-server`](https://github.com/polydbms/xdbc-server) Server-side providing the requested datasets to different data systems.
-- [`xdbc-python`](https://github.com/polydbms/xdbc-python) Python bindings for XDBC with pandas integration.
-- [`xdbc-spark`](https://github.com/polydbms/xdbc-spark) Apache Spark integration for XDBC.
-- [`pg_xdbc_fdw`](https://github.com/polydbms/pg_xdbc_fdw) Foreign Data Wrapper for PostgreSQL to enable interaction with XDBC.
+- [`xdbc-client`](https://github.com/polydbms/xdbc-client) Client-side module, for loading data into the target system.
+- [`xdbc-server`](https://github.com/polydbms/xdbc-server) Server-side module, for extracting the data from the source system.
+- [`xdbc-python`](https://github.com/polydbms/xdbc-python) Python bindings for loading data into Pandas (through pybind).
+- [`xdbc-spark`](https://github.com/polydbms/xdbc-spark) Spark bindings, for loading data into a Spark RDD (through a custom DataSource with JNI).
+- [`pg_xdbc_fdw`](https://github.com/polydbms/pg_xdbc_fdw) PostgreSQL Foreign Data Wrapper, for loading data into a table.
 
 
 
@@ -29,12 +29,12 @@ To reproduce our experiments, one needs to execute the run_experiments.sh script
 4. The container for handling the experiments is set up.
 5. The data for the transfer experiments is prepared.
 6. The actual experiments will be executed. If specific experiments should be re-run, comment-out the specific commands between lines 135-154.
-7. The plots are created and copied in a pdf file to xdbc-sigmod-ari/experiments_new/res/pdf_plots/ .
+7. The plots are created and copied in a pdf file to xdbc-sigmod-ari/experiment_files/res/pdf_plots/ .
 
 
 - The specific commands executed to run the experiments are located in the Makefile.
-- The specific code the execute the experiments is located in ./experiments_new .
-- The code to create the plots is located in ./experiments_new/e2e_plotter.py .
+- The specific code the execute the experiments is located in ./experiment_files .
+- The code to create the plots is located in ./experiment_files/e2e_plotter.py .
 - The code for the heuristic optimizer used in the experiments is located under ./optimizer
 
 
