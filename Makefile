@@ -37,12 +37,13 @@ run_figure7b:
 run_figure9a:
 	docker exec -it xdbcexpt bash -c "cd /app/experiment_files && ./spark_expt.sh"
 run_figure9b:
-	@echo "Running Figure 9b experiments..."
-	cd ../pg_xdbc_fdw/experiments && ./run_experiments_for_datasets.sh 1 && cd ../../xdbc-sigmod-ari
-	@echo "Figure 9b experiments completed."
-	@echo "Copying averages.csv from host to docker container..."
-	docker cp ../pg_xdbc_fdw/averages.csv xdbcexpt:/app/experiment_files/res/
-	@echo "averages.csv copied successfully to docker container."
+	docker exec -it xdbcexpt bash -c "cd /app/experiment_files && ./run_experiments_for_datasets.sh 1"
+# 	@echo "Running Figure 9b experiments..."
+# 	cd ../pg_xdbc_fdw/experiments && ./run_experiments_for_datasets.sh 1 && cd ../../xdbc-sigmod-ari
+# 	@echo "Figure 9b experiments completed."
+# 	@echo "Copying averages.csv from host to docker container..."
+# 	docker cp ../pg_xdbc_fdw/averages.csv xdbcexpt:/app/experiment_files/res/
+# 	@echo "averages.csv copied successfully to docker container."
 run_figure13aCSVCSVOpt:
 	docker exec -it xdbcexpt bash -c "cd /app/experiment_files && PYTHONPATH=.. python3 figure13aCSVCSVOpt.py"
 run_figure13bCSVPGOpt:

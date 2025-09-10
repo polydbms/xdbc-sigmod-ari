@@ -34,6 +34,8 @@ RUN chmod +x /app/experiment_files/prepare_postgres.sh
 RUN chmod +x /app/experiment_files/prepare_parquet.sh
 RUN chmod +x /app/experiment_files/prepare_tbl.sh
 RUN chmod +x /app/experiment_files/spark_expt.sh
+RUN chmod +x /app/experiment_files/run_experiments_for_datasets.sh
+
 #RUN chmod +x /app/experiment_files/run_experiments.sh
 
 # Create necessary directories
