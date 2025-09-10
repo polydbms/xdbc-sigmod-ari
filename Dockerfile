@@ -27,12 +27,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY experiment_files ./experiment_files
 COPY sql_scripts ./sql_scripts
 COPY schemas ./schemas
-COPY experiments_new ./experiments_new
+# COPY experiments_new ./experiments_new
 COPY optimizer ./optimizer
 
 RUN chmod +x /app/experiment_files/prepare_postgres.sh
 RUN chmod +x /app/experiment_files/prepare_parquet.sh
 RUN chmod +x /app/experiment_files/prepare_tbl.sh
+RUN chmod +x /app/experiment_files/spark_expt.sh
 #RUN chmod +x /app/experiment_files/run_experiments.sh
 
 # Create necessary directories

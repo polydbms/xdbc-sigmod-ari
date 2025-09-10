@@ -34,7 +34,8 @@ RUN_SECTION_19 = False   # figurePandasPG.py => figure8a              : figurePa
 RUN_SECTION_20 = False   # figurePandasPG.py => figure8b              : figurePandasPG.csv (N28)
 RUN_SECTION_21 = False   # figure20.py
 RUN_SECTION_22 = False   # figure20.py
-RUN_SECTION_23 = False   # figure9
+RUN_SECTION_23 = True   # figure9a
+RUN_SECTION_24 = True   # figure9b
 
 # This final section combines all generated PDFs.
 # Set this to True if you have generated new figures and want to merge them.
@@ -2048,7 +2049,295 @@ if RUN_SECTION_22:
     plt.savefig(f'figure21.pdf', bbox_inches='tight', pad_inches=0.05)
 
 
+    # ******************************** Section23: Generate figure 9a*******************************
+if RUN_SECTION_23:
+    print("\n--- Running Section 23: Generating Figure 9a ---")
+    # Define the path to the CSV file
+    csv_file_path = os.path.join('res', 'figure9a.csv')
 
+    # Read the CSV file if it exists
+    if os.path.exists(csv_file_path):
+        data = pd.read_csv(csv_file_path)
+        print(f"Data loaded from {csv_file_path}")
+        print("Raw CSV data:")
+        print(data)
+        print(f"Columns: {data.columns.tolist()}")
+    else:
+        print(f"CSV file not found at {csv_file_path}")
+        # Create empty DataFrame with expected structure
+        # data = pd.DataFrame(columns=['fdw', 'dataset', 'execution_time'])
+        data = pd.DataFrame(columns=['table_name', 'system', 'elapsed_time_ms', 'timestamp'])
+
+    # Set up the plot style
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Computer Modern Roman']
+    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+
+    # Define the dataset mapping
+    dataset_mapping = {
+        'lineitem_sf10': 'lineitem',
+        'ss13husallm': 'acs',
+        'iotm': 'iot',
+        'inputeventsm': 'icu'
+    }
+
+    # Define the expected datasets and approaches
+    expected_datasets = ['lineitem', 'acs', 'iot', 'icu']
+    expected_approaches = ['xdbc', 'jdbc']
+
+    # Process the data from the CSV
+    if not data.empty:
+        print("\nProcessing data from CSV...")
+        
+        # Map dataset names to display names
+        data['dataset_display'] = data['table_name'].map(dataset_mapping)
+        print(f"Data after mapping:")
+        print(data)
+        
+        # Remove any rows with unmapped datasets
+        data = data.dropna(subset=['dataset_display'])
+        print(f"Data after removing unmapped datasets:")
+        print(data)
+
+        data['elapsed_time_s'] = data['elapsed_time_ms'] / 1000.0
+        
+        # Pivot the data to get execution times for each approach
+        pivot_data = data.pivot(index='dataset_display', columns='system', values='elapsed_time_ms')
+        print(f"Pivoted data:")
+        print(pivot_data)
+        
+        # Get available datasets and approaches
+        available_datasets = [ds for ds in expected_datasets if ds in pivot_data.index]
+        available_approaches = [app for app in expected_approaches if app in pivot_data.columns]
+        
+        print(f"Available datasets: {available_datasets}")
+        print(f"Available approaches: {available_approaches}")
+        
+        # Extract the execution times for each approach
+        approach_times = {}
+        for approach in available_approaches:
+            approach_times[approach] = []
+            for ds in available_datasets:
+                if ds in pivot_data.index and approach in pivot_data.columns and not pd.isna(pivot_data.loc[ds, approach]):
+                    value = pivot_data.loc[ds, approach]
+                    approach_times[approach].append(value)
+                    print(f"Value for {approach} on {ds}: {value}")
+                else:
+                    approach_times[approach].append(0)  # Use 0 for missing data
+                    print(f"Missing value for {approach} on {ds}, using 0")
+        
+        print(f"Final approach times: {approach_times}")
+    else:
+        print("CSV data is empty")
+        available_datasets = []
+        available_approaches = []
+        approach_times = {}
+
+    # Map approach names to display names
+    approach_display_names = {
+        'xdbc': 'xdbc',
+        'jdbc': 'jdbc'
+    }
+
+    # Formal, colorblind-friendly palette
+    formal_palette = sns.color_palette("colorblind", len(expected_approaches))
+    colors = formal_palette
+
+    # Bar width and positions for the groups
+    bar_width = 0.2
+    x_indexes = np.arange(len(available_datasets))
+
+    print(f"\nPlotting data:")
+    print(f"Available datasets: {available_datasets}")
+    print(f"Available approaches: {available_approaches}")
+    print(f"Approach times: {approach_times}")
+
+    # Create the plot
+    plt.figure(figsize=(6, 3.75))
+
+    # Plotting each approach with offset for bar positions
+    for i, approach in enumerate(expected_approaches):
+        if approach not in available_approaches:
+            print(f"Skipping {approach} as it's not available")
+            continue
+        offset = bar_width * (i - (len(available_approaches)-1)/2)
+        values = approach_times[approach]
+        print(f"Plotting {approach} with values {values} at offset {offset}")
+        
+        plt.bar(x_indexes + offset, values, width=bar_width, 
+                color=colors[i], label=approach_display_names.get(approach, approach), 
+                edgecolor='white', zorder=3)
+
+    # # Add timeout annotation if jdbc data is available and has zero values (indicating timeout)
+    # if 'jdbc' in approach_times and any(t == 0 for t in approach_times['jdbc']):
+    #     timeout_idx = next((i for i, t in enumerate(approach_times['jdbc']) if t == 0), 0)
+    #     plt.text(x_indexes[timeout_idx] + bar_width + 0.01, 10, r"\textbf{Timeout after 20m}", 
+    #             ha='center', va='bottom', fontsize=18, fontweight=1000, 
+    #             color=colors[available_approaches.index('jdbc')], rotation=90)
+
+    # Labels and Title
+    plt.xlabel('Dataset')
+    plt.ylabel('Time (s)')
+
+    # X-axis ticks and legend
+    plt.xticks(ticks=x_indexes, labels=available_datasets)
+    plt.legend(loc='best')
+
+    # Grid for better readability
+    plt.grid(axis='y', alpha=0.3)
+
+    # Display the plot
+    plt.tight_layout()
+    plt.savefig('figure9a.pdf', bbox_inches='tight')
+    plt.close()
+
+    print("Figure 9a generated successfully!") 
+
+    # ******************************** Section24: Generate figure 9b*******************************
+if RUN_SECTION_24:
+
+    print("\n--- Running Section 24: Generating Figure 9b ---")
+
+    # Define the path to the CSV file
+    csv_file_path = os.path.join('res', 'averages.csv')
+
+    # Read the CSV file if it exists
+    if os.path.exists(csv_file_path):
+        data = pd.read_csv(csv_file_path)
+        print(f"Data loaded from {csv_file_path}")
+        print("Raw CSV data:")
+        print(data)
+        print(f"Columns: {data.columns.tolist()}")
+    else:
+        print(f"CSV file not found at {csv_file_path}")
+        # Create empty DataFrame with expected structure
+        data = pd.DataFrame(columns=['fdw', 'dataset', 'execution_time'])
+
+    # Set up the plot style
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Computer Modern Roman']
+    plt.rcParams.update({'font.size': 16, 'axes.labelsize': 16, 'axes.titlesize': 16, 'legend.fontsize': 14})
+
+    # Define the dataset mapping
+    dataset_mapping = {
+        'lineitem_sf10': 'lineitem',
+        'ss13husallm': 'acs',
+        'iotm': 'iot',
+        'inputeventsm': 'icu'
+    }
+
+    # Define the expected datasets and approaches
+    expected_datasets = ['lineitem', 'acs', 'iot', 'icu']
+    expected_approaches = ['xdbc', 'native_fdw', 'jdbc']
+
+    # Process the data from the CSV
+    if not data.empty:
+        print("\nProcessing data from CSV...")
+        
+        # Map dataset names to display names
+        data['dataset_display'] = data['dataset'].map(dataset_mapping)
+        print(f"Data after mapping:")
+        print(data)
+        
+        # Remove any rows with unmapped datasets
+        data = data.dropna(subset=['dataset_display'])
+        print(f"Data after removing unmapped datasets:")
+        print(data)
+        
+        # Pivot the data to get execution times for each approach
+        pivot_data = data.pivot(index='dataset_display', columns='fdw', values='execution_time')
+        print(f"Pivoted data:")
+        print(pivot_data)
+        
+        # Get available datasets and approaches
+        available_datasets = [ds for ds in expected_datasets if ds in pivot_data.index]
+        available_approaches = [app for app in expected_approaches if app in pivot_data.columns]
+        
+        print(f"Available datasets: {available_datasets}")
+        print(f"Available approaches: {available_approaches}")
+        
+        # Extract the execution times for each approach
+        approach_times = {}
+        for approach in available_approaches:
+            approach_times[approach] = []
+            for ds in available_datasets:
+                if ds in pivot_data.index and approach in pivot_data.columns and not pd.isna(pivot_data.loc[ds, approach]):
+                    value = pivot_data.loc[ds, approach]
+                    approach_times[approach].append(value)
+                    print(f"Value for {approach} on {ds}: {value}")
+                else:
+                    approach_times[approach].append(0)  # Use 0 for missing data
+                    print(f"Missing value for {approach} on {ds}, using 0")
+        
+        print(f"Final approach times: {approach_times}")
+    else:
+        print("CSV data is empty")
+        available_datasets = []
+        available_approaches = []
+        approach_times = {}
+
+    # Map approach names to display names
+    approach_display_names = {
+        'xdbc': 'xdbc',
+        'native_fdw': 'native',
+        'jdbc': 'jdbc'
+    }
+
+    # Formal, colorblind-friendly palette
+    formal_palette = sns.color_palette("colorblind", len(expected_approaches))
+    colors = formal_palette
+
+    # Bar width and positions for the groups
+    bar_width = 0.2
+    x_indexes = np.arange(len(available_datasets))
+
+    print(f"\nPlotting data:")
+    print(f"Available datasets: {available_datasets}")
+    print(f"Available approaches: {available_approaches}")
+    print(f"Approach times: {approach_times}")
+
+    # Create the plot
+    plt.figure(figsize=(6, 3.75))
+
+    # Plotting each approach with offset for bar positions
+    for i, approach in enumerate(expected_approaches):
+        if approach not in available_approaches:
+            print(f"Skipping {approach} as it's not available")
+            continue
+        offset = bar_width * (i - (len(available_approaches)-1)/2)
+        values = approach_times[approach]
+        print(f"Plotting {approach} with values {values} at offset {offset}")
+        
+        plt.bar(x_indexes + offset, values, width=bar_width, 
+                color=colors[i], label=approach_display_names.get(approach, approach), 
+                edgecolor='white', zorder=3)
+
+    # Add timeout annotation if jdbc data is available and has zero values (indicating timeout)
+    if 'jdbc' in approach_times and any(t == 0 for t in approach_times['jdbc']):
+        timeout_idx = next((i for i, t in enumerate(approach_times['jdbc']) if t == 0), 0)
+        plt.text(x_indexes[timeout_idx] + bar_width + 0.01, 10, r"\textbf{Timeout after 20m}", 
+                ha='center', va='bottom', fontsize=18, fontweight=1000, 
+                color=colors[available_approaches.index('jdbc')], rotation=90)
+
+    # Labels and Title
+    plt.xlabel('Dataset')
+    plt.ylabel('Time (s)')
+
+    # X-axis ticks and legend
+    plt.xticks(ticks=x_indexes, labels=available_datasets)
+    plt.legend(loc='best')
+
+    # Grid for better readability
+    plt.grid(axis='y', alpha=0.3)
+
+    # Display the plot
+    plt.tight_layout()
+    plt.savefig('figure9b.pdf', bbox_inches='tight')
+    plt.close()
+
+    print("Figure 9b generated successfully!")
 
     # ********************* Combine the pdfs    *******************************
 if RUN_PDF_MERGER:
@@ -2161,3 +2450,5 @@ if RUN_PDF_MERGER:
             temp_filename = f"temp_{pdf_file}"
             if os.path.exists(temp_filename):
                 os.remove(temp_filename)
+
+print(f"Plotting completed")

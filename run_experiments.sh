@@ -18,12 +18,12 @@ set -e
 # Set the following variables to 'true' to run the corresponding step,
 # or 'false' to skip it.
 RUN_STEP_1_CLONE=false
-RUN_STEP_2_SETUP=true
+RUN_STEP_2_SETUP=false
 RUN_STEP_3_DOWNLOAD=false
-RUN_STEP_4_BUILD=false
+RUN_STEP_4_BUILD=true
 RUN_STEP_5_PREPARE=false
 RUN_STEP_6_EXPERIMENTS=true
-RUN_STEP_7_PLOT=false
+RUN_STEP_7_PLOT=true
 
     
 # --- Introduction ---
@@ -60,12 +60,12 @@ if [ "$RUN_STEP_2_SETUP" = true ]; then
     echo "Step 2/7: Setting up XDBC..."
 
     # Create Docker network if it doesn't exist
-    # docker network create xdbc-net 2>/dev/null || true
+    docker network create xdbc-net 2>/dev/null || true
 
-    # make -C .././xdbc-client
-    # make -C .././xdbc-server
-    # make -C .././xdbc-python
-    # make -C .././xdbc-spark
+    make -C .././xdbc-client
+    make -C .././xdbc-server
+    make -C .././xdbc-python
+    make -C .././xdbc-spark
     
     # Navigate to pg_xdbc_fdw and update submodules
     cd ../pg_xdbc_fdw
@@ -73,9 +73,9 @@ if [ "$RUN_STEP_2_SETUP" = true ]; then
     cd ../xdbc-sigmod-ari  # Return to original directory
     make -C .././pg_xdbc_fdw/docker
 
-    # docker compose -f .././xdbc-client/docker-xdbc.yml up -d
-    # docker compose -f .././xdbc-client/docker-tc.yml up -d
-    # docker run -d -it --rm --name xdbcspark --network xdbc-net -p 4040:4040 -p 18080:18080 spark3io-sbt:latest
+    docker compose -f .././xdbc-client/docker-xdbc.yml up -d
+    docker compose -f .././xdbc-client/docker-tc.yml up -d
+    docker run -d -it --rm --name xdbcspark --network xdbc-net -p 4040:4040 -p 18080:18080 spark3io-sbt:latest
 
     docker compose -f .././pg_xdbc_fdw/docker-xdbc-fdw.yml up -d
     docker exec pg_xdbc_client bash -c "cd /pg_xdbc_fdw/experiments/ && psql -d db1 -f clean.sql"
@@ -147,7 +147,7 @@ if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
     # make run_figure6b
     # make run_figure7a
     # make run_figure7b
-    # make run_figure9a
+    make run_figure9a
     make run_figure9b
     # make run_figure8PandasPGCPUNet
     # make run_figure10ZParquetCSV
