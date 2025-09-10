@@ -1,0 +1,1 @@
+date,xdbc_version,host,run,server_cpu,client_cpu,network,network_latency,network_loss,source_system,target_system,table,server_bufferpool_size,client_bufferpool_size,buffer_size,compression,format,skip_ser,skip_deser,read_par,read_partitions,deser_par,comp_par,send_par,rcv_par,decomp_par,ser_par,write_par,time,datasize,avg_cpu_server,avg_cpu_client

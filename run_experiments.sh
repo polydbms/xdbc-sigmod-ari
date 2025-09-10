@@ -37,15 +37,15 @@ if [ "$RUN_STEP_1_CLONE" = true ]; then
     cd ..
     # remove if cloned already before
     rm -rf xdbc-client
-    git clone --branch origin/test/reproduce --single-branch https://github.com/polydbms/xdbc-client.git
+    git clone --branch test/reproduce --single-branch https://github.com/polydbms/xdbc-client.git
     rm -rf xdbc-server
-    git clone --branch origin/test/reproduce --single-branch https://github.com/polydbms/xdbc-server.git
+    git clone --branch test/reproduce --single-branch https://github.com/polydbms/xdbc-server.git
     rm -rf xdbc-python
-    git clone --branch origin/midhun/test/dima_cluster --single-branch https://github.com/polydbms/xdbc-python.git 
+    git clone --branch midhun/test/dima_cluster --single-branch https://github.com/polydbms/xdbc-python.git 
     rm -rf xdbc-spark
     git clone  --single-branch https://github.com/polydbms/xdbc-spark.git
-    rm -rf xdbc-postgres
-    git clone  --single-branch https://github.com/polydbms/pg_xdbc_fdw.git
+    rm -rf pg_xdbc_fdw
+    git clone --branch midhun/test/dima_cluster --single-branch https://github.com/polydbms/pg_xdbc_fdw.git
     cd xdbc-sigmod-ari
 
     echo "Cloned XDBC repository successfully."
@@ -60,15 +60,26 @@ if [ "$RUN_STEP_2_SETUP" = true ]; then
     echo "Step 2/7: Setting up XDBC..."
 
     # Create Docker network if it doesn't exist
-    # docker network create xdbc-net 2>/dev/null || true
+    docker network create xdbc-net 2>/dev/null || true
+
     make -C .././xdbc-client
     make -C .././xdbc-server
     make -C .././xdbc-python
     make -C .././xdbc-spark
-    make -C .././xdbc-postgres
+    
+    # Navigate to pg_xdbc_fdw and update submodules
+    cd ../pg_xdbc_fdw
+    git submodule update --init --recursive
+    cd ../xdbc-sigmod-ari  # Return to original directory
+    make -C .././pg_xdbc_fdw/docker
+
     docker compose -f .././xdbc-client/docker-xdbc.yml up -d
     docker compose -f .././xdbc-client/docker-tc.yml up -d
     docker run -d -it --rm --name xdbcspark --network xdbc-net -p 4040:4040 -p 18080:18080 spark3io-sbt:latest
+
+    docker compose -f .././pg_xdbc_fdw/docker-xdbc-fdw.yml up -d
+    docker exec pg_xdbc_client bash -c "cd /pg_xdbc_fdw/experiments/ && psql -d db1 -f clean.sql"
+    docker exec pg_xdbc_client bash -c "cd pg_xdbc_fdw/experiments/ && ./setup_fdws.sh" 
 
     echo "XDBC setup completed successfully."
 else
@@ -112,7 +123,7 @@ echo "----------------------------------------------------"
 
 # --- Step 5: Prepare Data and Experiments ---
 if [ "$RUN_STEP_5_PREPARE" = true ]; then
-    echo "🛠️  Step 5/7: Preparing data sources and experiments..."
+    echo "Step 5/7: Preparing data sources and experiments..."
     make prepare_postgres
     make prepare_parquet
     make prepare_tbl
@@ -132,22 +143,24 @@ if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
     # Run experiments for each figure
     # Uncomment the lines below to run specific figures
 
-    make run_figure7
+    make run_figure6
+    make run_figure6b
+    make run_figure7a
     make run_figure7b
-    make run_figure8a
-    make run_figure8b
-    make run_figurePandasPGCPUNet
-    make run_figureZParquetCSV
+    make run_figure9a
+    make run_figure9b
+    make run_figure8PandasPGCPUNet
+    make run_figure10ZParquetCSV
     make run_figure11 
-    make run_figureACSVCSV
-    make run_figureBCSVPG
-    make run_figureACSVCSVOpt
-    make run_figureBCSVPGOpt
-    make run_figureXArrow
-    make run_figureYParquet
+    make run_figure12aCSVCSV
+    make run_figure12bCSVPG
+    make run_figure13aCSVCSVOpt
+    make run_figure13bCSVPGOpt
+    make run_figure14aXArrow
+    make run_figure14bYParquet
     make run_figure1516a
     make run_figure1516b
-    make run_figureMemoryManagement
+    make run_figure17aMemoryManagement
     make run_figure17b
     make run_figure18
     make run_figure19
