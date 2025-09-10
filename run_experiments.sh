@@ -17,11 +17,11 @@ set -e
 # --- Configuration: Select which steps to run ---
 # Set the following variables to 'true' to run the corresponding step,
 # or 'false' to skip it.
-RUN_STEP_1_CLONE=false
-RUN_STEP_2_SETUP=false
-RUN_STEP_3_DOWNLOAD=false
+RUN_STEP_1_CLONE=true
+RUN_STEP_2_SETUP=true
+RUN_STEP_3_DOWNLOAD=true
 RUN_STEP_4_BUILD=true
-RUN_STEP_5_PREPARE=false
+RUN_STEP_5_PREPARE=true
 RUN_STEP_6_EXPERIMENTS=true
 RUN_STEP_7_PLOT=true
 
@@ -143,28 +143,28 @@ if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
     # Run experiments for each figure
     # Uncomment the lines below to run specific figures
 
-    # make run_figure6
-    # make run_figure6b
-    # make run_figure7a
-    # make run_figure7b
-    # make run_figure9a
+    make run_figure6
+    make run_figure6b
+    make run_figure7a
+    make run_figure7b
+    make run_figure9a
     make run_figure9b
-    # make run_figure8PandasPGCPUNet
-    # make run_figure10ZParquetCSV
-    # make run_figure11 
-    # make run_figure12aCSVCSV
-    # make run_figure12bCSVPG
-    # make run_figure13aCSVCSVOpt
-    # make run_figure13bCSVPGOpt
-    # make run_figure14aXArrow
-    # make run_figure14bYParquet
-    # make run_figure1516a
-    # make run_figure1516b
-    # make run_figure17aMemoryManagement
-    # make run_figure17b
-    # make run_figure18
-    # make run_figure19
-    # make run_figure20
+    make run_figure8PandasPGCPUNet
+    make run_figure10ZParquetCSV
+    make run_figure11 
+    make run_figure12aCSVCSV
+    make run_figure12bCSVPG
+    make run_figure13aCSVCSVOpt
+    make run_figure13bCSVPGOpt
+    make run_figure14aXArrow
+    make run_figure14bYParquet
+    make run_figure1516a
+    make run_figure1516b
+    make run_figure17aMemoryManagement
+    make run_figure17b
+    make run_figure18
+    make run_figure19
+    make run_figure20
 
     echo "All figure experiments completed successfully."
 else
