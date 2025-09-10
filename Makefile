@@ -41,7 +41,7 @@ run_figure9b:
 	cd ../pg_xdbc_fdw/experiments && ./run_experiments_for_datasets.sh 1 && cd ../../xdbc-sigmod-ari
 	@echo "Figure 9b experiments completed."
 	@echo "Copying averages.csv from host to docker container..."
-	docker cp ../pg_xdbc_fdw/experiment_results/averages.csv xdbcexpt:/app/experiment_files/res/
+	docker cp ../pg_xdbc_fdw/averages.csv xdbcexpt:/app/experiment_files/res/
 	@echo "averages.csv copied successfully to docker container."
 run_figure13aCSVCSVOpt:
 	docker exec -it xdbcexpt bash -c "cd /app/experiment_files && PYTHONPATH=.. python3 figure13aCSVCSVOpt.py"

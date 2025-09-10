@@ -34,7 +34,7 @@ RUN_SECTION_19 = False   # figurePandasPG.py => figure8a              : figurePa
 RUN_SECTION_20 = False   # figurePandasPG.py => figure8b              : figurePandasPG.csv (N28)
 RUN_SECTION_21 = False   # figure20.py
 RUN_SECTION_22 = False   # figure20.py
-RUN_SECTION_23 = True   # figure9a
+RUN_SECTION_23 = False   # figure9a
 RUN_SECTION_24 = True   # figure9b
 
 # This final section combines all generated PDFs.
@@ -2066,7 +2066,7 @@ if RUN_SECTION_23:
         print(f"CSV file not found at {csv_file_path}")
         # Create empty DataFrame with expected structure
         # data = pd.DataFrame(columns=['fdw', 'dataset', 'execution_time'])
-        data = pd.DataFrame(columns=['table_name', 'system', 'elapsed_time_ms', 'timestamp'])
+        data = pd.DataFrame(columns=['table_name', 'system', 'config', 'elapsed_time_ms', 'timestamp'])
 
     # Set up the plot style
     plt.rcParams['text.usetex'] = True
@@ -2103,7 +2103,7 @@ if RUN_SECTION_23:
         data['elapsed_time_s'] = data['elapsed_time_ms'] / 1000.0
         
         # Pivot the data to get execution times for each approach
-        pivot_data = data.pivot(index='dataset_display', columns='system', values='elapsed_time_ms')
+        pivot_data = data.pivot(index='dataset_display', columns='system', values='elapsed_time_s')
         print(f"Pivoted data:")
         print(pivot_data)
         

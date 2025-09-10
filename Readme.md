@@ -17,7 +17,23 @@ XDBC consists of multiple repositories covering the cross-system functionality. 
 - [`pg_xdbc_fdw`](https://github.com/polydbms/pg_xdbc_fdw) PostgreSQL Foreign Data Wrapper, for loading data into a table.
 
 
+## Requirements
 
+The experiments were validated on **Ubuntu 22.04 LTS**, and should work on **Ubuntu 22.04 or later** (and generally on recent Linux distributions).  
+On Ubuntu, the following packages are required:
+
+- `bash`
+- `docker-ce` (tested with version 28.3.3)
+- `docker-compose-plugin` (tested with version v2.39.1)
+- `git`
+- `make`
+
+You can install them with:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y bash docker-ce docker-compose-plugin git make
+```
 
 ## How to reproduce
 
