@@ -17,13 +17,13 @@ set -e
 # --- Configuration: Select which steps to run ---
 # Set the following variables to 'true' to run the corresponding step,
 # or 'false' to skip it.
-RUN_STEP_1_CLONE=true
+RUN_STEP_1_CLONE=false
 RUN_STEP_2_SETUP=true
-RUN_STEP_3_DOWNLOAD=true
-RUN_STEP_4_BUILD=true
-RUN_STEP_5_PREPARE=true
+RUN_STEP_3_DOWNLOAD=false
+RUN_STEP_4_BUILD=false
+RUN_STEP_5_PREPARE=false
 RUN_STEP_6_EXPERIMENTS=true
-RUN_STEP_7_PLOT=true
+RUN_STEP_7_PLOT=false
 
     
 # --- Introduction ---
@@ -45,7 +45,7 @@ if [ "$RUN_STEP_1_CLONE" = true ]; then
     rm -rf xdbc-spark
     git clone  --single-branch https://github.com/polydbms/xdbc-spark.git
     rm -rf pg_xdbc_fdw
-    git clone --branch adjusting --single-branch https://github.com/polydbms/pg_xdbc_fdw.git
+    git clone --branch midhun/test/dima_cluster --single-branch https://github.com/polydbms/pg_xdbc_fdw.git
     cd xdbc-sigmod-ari
 
     echo "Cloned XDBC repository successfully."
@@ -61,14 +61,25 @@ if [ "$RUN_STEP_2_SETUP" = true ]; then
 
     # Create Docker network if it doesn't exist
     # docker network create xdbc-net 2>/dev/null || true
-    make -C .././xdbc-client
-    make -C .././xdbc-server
-    make -C .././xdbc-python
-    make -C .././xdbc-spark
-    make -C .././pg_xdbc_fdw
-    docker compose -f .././xdbc-client/docker-xdbc.yml up -d
-    docker compose -f .././xdbc-client/docker-tc.yml up -d
-    docker run -d -it --rm --name xdbcspark --network xdbc-net -p 4040:4040 -p 18080:18080 spark3io-sbt:latest
+
+    # make -C .././xdbc-client
+    # make -C .././xdbc-server
+    # make -C .././xdbc-python
+    # make -C .././xdbc-spark
+    
+    # Navigate to pg_xdbc_fdw and update submodules
+    cd ../pg_xdbc_fdw
+    git submodule update --init --recursive
+    cd ../xdbc-sigmod-ari  # Return to original directory
+    make -C .././pg_xdbc_fdw/docker
+
+    # docker compose -f .././xdbc-client/docker-xdbc.yml up -d
+    # docker compose -f .././xdbc-client/docker-tc.yml up -d
+    # docker run -d -it --rm --name xdbcspark --network xdbc-net -p 4040:4040 -p 18080:18080 spark3io-sbt:latest
+
+    docker compose -f .././pg_xdbc_fdw/docker-xdbc-fdw.yml up -d
+    docker exec pg_xdbc_client bash -c "cd /pg_xdbc_fdw/experiments/ && psql -d db1 -f clean.sql"
+    docker exec pg_xdbc_client bash -c "cd pg_xdbc_fdw/experiments/ && ./setup_fdws.sh" 
 
     echo "XDBC setup completed successfully."
 else
@@ -132,26 +143,28 @@ if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
     # Run experiments for each figure
     # Uncomment the lines below to run specific figures
 
-    make run_figure6
-    make run_figure6b
-    make run_figure7a
-    make run_figure7b
-    make run_figure8PandasPGCPUNet
-    make run_figure10ZParquetCSV
-    make run_figure11 
-    make run_figure12aCSVCSV
-    make run_figure12bCSVPG
-    make run_figure13aCSVCSVOpt
-    make run_figure13bCSVPGOpt
-    make run_figure14aXArrow
-    make run_figure14bYParquet
-    make run_figure1516a
-    make run_figure1516b
-    make run_figure17aMemoryManagement
-    make run_figure17b
-    make run_figure18
-    make run_figure19
-    make run_figure20
+    # make run_figure6
+    # make run_figure6b
+    # make run_figure7a
+    # make run_figure7b
+    # make run_figure9a
+    make run_figure9b
+    # make run_figure8PandasPGCPUNet
+    # make run_figure10ZParquetCSV
+    # make run_figure11 
+    # make run_figure12aCSVCSV
+    # make run_figure12bCSVPG
+    # make run_figure13aCSVCSVOpt
+    # make run_figure13bCSVPGOpt
+    # make run_figure14aXArrow
+    # make run_figure14bYParquet
+    # make run_figure1516a
+    # make run_figure1516b
+    # make run_figure17aMemoryManagement
+    # make run_figure17b
+    # make run_figure18
+    # make run_figure19
+    # make run_figure20
 
     echo "All figure experiments completed successfully."
 else

@@ -34,6 +34,12 @@ run_figure7a:
 	docker exec -it xdbcexpt bash -c "cd /app/experiment_files && PYTHONPATH=.. python3 figure7a.py"
 run_figure7b:
 	docker exec -it xdbcexpt bash -c "cd /app/experiment_files && PYTHONPATH=.. python3 figure7b.py"
+run_figure9a:
+	docker exec -it xdbcexpt bash -c "cd /app/experiment_files && PYTHONPATH=.. python3 figure7a.py"
+run_figure9b:
+	@echo "Running Figure 9b experiments..."
+	cd ../pg_xdbc_fdw/experiments && ./run_experiments_for_datasets.sh 1 && cd ../../xdbc-sigmod-ari
+	@echo "Figure 9b experiments completed."
 run_figure13aCSVCSVOpt:
 	docker exec -it xdbcexpt bash -c "cd /app/experiment_files && PYTHONPATH=.. python3 figure13aCSVCSVOpt.py"
 run_figure13bCSVPGOpt:
