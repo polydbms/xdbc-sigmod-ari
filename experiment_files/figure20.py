@@ -104,24 +104,24 @@ environments = [
             'table': 'lineitem_sf10'
         }
     },
-    # {
-    #     'name': "pg",
-    #     'env': {
-    #         'server_cpu': 16,
-    #         'client_cpu': 16,
-    #         'network': 100,
-    #         'network_latency': 0,
-    #         'network_loss': 0,
-    #         'src': 'postgres',
-    #         'src_format': 1,
-    #         'target': 'postgres',
-    #         'target_format': 1,
-    #         'server_container': 'xdbcserver',
-    #         'client_container': 'xdbcpostgres',
-    #         'tables': ['lineitem_sf10'], 
-    #         'table': 'lineitem_sf10'
-    #     }
-    # }
+    {
+        'name': "pg",
+        'env': {
+            'server_cpu': 16,
+            'client_cpu': 16,
+            'network': 100,
+            'network_latency': 0,
+            'network_loss': 0,
+            'src': 'postgres',
+            'src_format': 1,
+            'target': 'postgres',
+            'target_format': 1,
+            'server_container': 'xdbcserver',
+            'client_container': 'pg_xdbc_client',
+            'tables': ['lineitem_sf10'], 
+            'table': 'lineitem_sf10'
+        }
+    }
 ]
 
 # compression_types = ['nocomp', 'lz4', 'lzo', 'snappy', 'zstd']
@@ -216,23 +216,23 @@ fixed_configs = [
             'format': 2
         }
     },
-    # {
-    #     'name': "pg",
-    #     'config_type': {
-    #         'read_par': 4,
-    #         'deser_par': 3,
-    #         'comp_par': 3,
-    #         'send_par': 2,
-    #         'rcv_par': 2,
-    #         'decomp_par': 4,
-    #         'write_par': 1,
-    #         'compression_lib': 'zstd',
-    #         'buffer_size': 256,
-    #         'server_buffpool_size': 2 * 256 * 20,
-    #         'client_buffpool_size': 2 * 256 * 20,
-    #         'format': 1
-    #     }
-    # }
+    {
+        'name': "pg",
+        'config_type': {
+            'read_par': 4,
+            'deser_par': 3,
+            'comp_par': 3,
+            'send_par': 2,
+            'rcv_par': 2,
+            'decomp_par': 4,
+            'write_par': 1,
+            'compression_lib': 'zstd',
+            'buffer_size': 256,
+            'server_buffpool_size': 2 * 256 * 20,
+            'client_buffpool_size': 2 * 256 * 20,
+            'format': 1
+        }
+    }
 ]
 
 configurations = []
