@@ -15,13 +15,17 @@ set -v
 
 # ==================================================  VARIABLES ======================================
 
-# datasets
-# dataset_tables=("lineitem_sf10") 
-dataset_tables=("lineitem_sf10" "ss13husallm" "inputeventsm" "iotm")
+# # datasets
+# # dataset_tables=("lineitem_sf10") 
+# dataset_tables=("lineitem_sf10" "ss13husallm" "inputeventsm" "iotm")
+# # schemas
+# # schema_prefixes=("xdbc")
+# schema_prefixes=("jdbc" "native_fdw" "xdbc")
 
-# schemas
-# schema_prefixes=("xdbc" "native_fdw" "jdbc")
-schema_prefixes=("jdbc" "native_fdw")
+# All possible datasets
+all_datasets=("lineitem_sf10" "ss13husallm" "inputeventsm" "iotm")
+# All possible schemas
+all_schemas=("jdbc" "native_fdw" "xdbc")
 
 # timeout in seconds
 timeout_in_seconds=900
@@ -35,7 +39,50 @@ mean_run_times="res/averages.csv"
 client_container_name="pg_xdbc_client"
 server_container_name="xdbcserver"
 
+run_count=1
+
 # =====================================================================================================
+
+combination_id=${1:-0} # Default to 0 (run all) if not specified
+
+# Function to get combination by ID
+get_combination() {
+    local id=$1
+    case $id in
+        1) echo "jdbc lineitem_sf10" ;;
+        2) echo "jdbc ss13husallm" ;;
+        3) echo "jdbc inputeventsm" ;;
+        4) echo "jdbc iotm" ;;
+        5) echo "native_fdw lineitem_sf10" ;;
+        6) echo "native_fdw ss13husallm" ;;
+        7) echo "native_fdw inputeventsm" ;;
+        8) echo "native_fdw iotm" ;;
+        9) echo "xdbc lineitem_sf10" ;;
+        10) echo "xdbc ss13husallm" ;;
+        11) echo "xdbc inputeventsm" ;;
+        12) echo "xdbc iotm" ;;
+        *) echo "" ;;
+    esac
+}
+
+if [ $combination_id -eq 0 ]; then
+    # Run all combinations
+    schema_prefixes=("${all_schemas[@]}")
+    dataset_tables=("${all_datasets[@]}")
+    echo "Running all 12 combinations with $run_count runs each"
+else
+    # Run specific combination
+    combination=$(get_combination $combination_id)
+    if [ -z "$combination" ]; then
+        echo "Invalid combination_id: $combination_id. Must be 1-12."
+        exit 1
+    fi
+    
+    read -r schema table <<< "$combination"
+    schema_prefixes=("$schema")
+    dataset_tables=("$table")
+    echo "Running combination $combination_id: $schema + $table with $run_count runs"
+fi
 
 # rm -rf "${mean_run_times}"
 
@@ -143,7 +190,7 @@ for schema in "${schema_prefixes[@]}"; do
   for tablename in "${dataset_tables[@]}"; do
     current_iteration=$((current_iteration + 1))
     echo "=== Iteration ${current_iteration}/${total_iterations}: ${schema}.${tablename} ==="
-    run_queries "${schema}.${tablename}" "$csv_file" "${schema}" "$1" "$av_file" $timeout_in_seconds "${tablename}"
+    run_queries "${schema}.${tablename}" "$csv_file" "${schema}" "$run_count" "$av_file" $timeout_in_seconds "${tablename}"
   done
 done
 

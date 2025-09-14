@@ -1,0 +1,17 @@
+timestamp,env,repetition,system,table,time
+1757626883,figure_parquet,1,pyarrow,lineitem_sf10,69.136717
+1757626952,figure_parquet,1,pyarrow,ss13husallm,3.599853
+1757626956,figure_parquet,1,pyarrow,iotm,11.421647
+1757626967,figure_parquet,1,pyarrow,inputeventsm,16.469608
+1757626984,figure_parquet,1,duckdb,lineitem_sf10,70.777737
+1757627054,figure_parquet,1,duckdb,ss13husallm,9.580632
+1757627064,figure_parquet,1,duckdb,iotm,30.161451
+1757627094,figure_parquet,1,duckdb,inputeventsm,28.47497
+1757627184,figure_parquet,1,xdbc[col],lineitem_sf10,55.425503
+1757627202,figure_parquet,1,xdbc[col],ss13husallm,11.963032
+1757627227,figure_parquet,1,xdbc[col],iotm,18.663023
+1757627249,figure_parquet,1,xdbc[col],inputeventsm,16.44828
+1757627334,figure_parquet,1,xdbc[parquet],lineitem_sf10,79.012554
+1757627350,figure_parquet,1,xdbc[parquet],ss13husallm,9.564201
+1757627374,figure_parquet,1,xdbc[parquet],iotm,18.281548
+1757627403,figure_parquet,1,xdbc[parquet],inputeventsm,23.21351

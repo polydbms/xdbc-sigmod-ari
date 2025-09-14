@@ -37,13 +37,14 @@ SQL_DIR="/app/sql_scripts"
 CONTAINER_NAME="pg1"
 DB_USER="postgres"
 DB_NAME="db1"
-TABLES=("ss13husallm" "iotm" "inputeventsm")
+TABLES=("ss13husallm" "iotm" "inputeventsm" "lineitem_sf10")
 
 # --- Table and Script Mapping ---
 declare -A TABLE_TO_SQL_MAP
 TABLE_TO_SQL_MAP["ss13husallm"]="create_ss13husall.sql"
 TABLE_TO_SQL_MAP["iotm"]="create_iot.sql"
 TABLE_TO_SQL_MAP["inputeventsm"]="create_inputevents.sql"
+TABLE_TO_SQL_MAP["lineitem_sf10"]="create_lineitem_sf10.sql"
 
 # --- Script Logic ---
 set -e

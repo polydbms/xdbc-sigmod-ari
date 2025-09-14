@@ -1,0 +1,13 @@
+fdw,dataset,run,execution_time
+jdbc,lineitem_sf10,1,0
+jdbc,ss13husallm,1,241.293
+jdbc,inputeventsm,1,265.796
+jdbc,iotm,1,472.208
+native_fdw,lineitem_sf10,1,411.561
+native_fdw,ss13husallm,1,58.4122
+native_fdw,inputeventsm,1,68.6831
+native_fdw,iotm,1,181.148
+xdbc,lineitem_sf10,1,4.00959
+xdbc,ss13husallm,1,0.946072
+xdbc,inputeventsm,1,1.28874
+xdbc,iotm,1,1.50005

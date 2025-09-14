@@ -1,4 +1,4 @@
-CREATE TABLE inputeventsm
+CREATE TABLE IF NOT EXISTS inputeventsm
 (
     subject_id                    integer,
     hadm_id                       integer,

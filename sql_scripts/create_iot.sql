@@ -1,4 +1,4 @@
-CREATE TABLE iotm
+CREATE TABLE IF NOT EXISTS iotm
 (
     id             integer,
     flowid         character varying(45),

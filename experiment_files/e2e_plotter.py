@@ -26,14 +26,14 @@ RUN_SECTION_11 = True  # Figure 16b (Config Comparison - Env 1)         : figure
 RUN_SECTION_12 = True  # Figure 15a (Parallelism Scaling - Env 2)       : figure1516a.csv (N24)
 RUN_SECTION_13 = True  # Figure 15b (Config Comparison - Env 2)         : figure1516b.csv (N24)
 RUN_SECTION_14 = True  # Figures 6a & 6b (Configuration Runtimes)      : figure7.csv, figure7b.csv (N23)
-RUN_SECTION_15 = True  # Figure 7a                                     : figure8a.csv (N23)
+RUN_SECTION_15 = False  # Figure 7a                                     : figure8a.csv (N23)
 RUN_SECTION_16 = True  # figureYParquet.py => figure14b                : figureYParquet.csv (N24)
 RUN_SECTION_17 = True  # figure8b.py => figure7b                       : figure8b.csv (N23)
 RUN_SECTION_18 = True  # figure8a.py => figure7b4                      : figure8a.csv (N23)
 RUN_SECTION_19 = True   # figurePandasPG.py => figure8a              : figurePandasPG.csv (N28)
 RUN_SECTION_20 = True   # figurePandasPG.py => figure8b              : figurePandasPG.csv (N28)
 RUN_SECTION_21 = True   # figure20.py
-RUN_SECTION_22 = False   # figure20.py
+RUN_SECTION_22 = True   # figure20.py
 RUN_SECTION_23 = True   # figure9a
 RUN_SECTION_24 = True   # figure9b
 
@@ -1337,6 +1337,7 @@ if RUN_SECTION_14:
 
 # ******************************** Section15: Figure 7a *******************************
 if RUN_SECTION_15:
+    print("\n--- Running Section 15: Generating Figures 7a")
     filename = "figure8a.csv"
     csv_file_path = os.path.join('res', filename)
     data = pd.read_csv(csv_file_path)
@@ -1742,7 +1743,7 @@ if RUN_SECTION_20:
 
 # ******************************** Section21: Generate figure 8b *******************************
 if RUN_SECTION_21:
-    print("\n--- Running Section 20: Generating Figure 8b (Runtime Comparison) ---")
+    print("\n--- Running Section 21: Generating Figure 20 ---")
     filename = "figure20.csv"
     csv_file_path = os.path.join('res', filename)
     df = pd.read_csv(csv_file_path)

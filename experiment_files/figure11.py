@@ -46,7 +46,7 @@ for table in test_env['env']['tables']:
             writer = csv.writer(file)
             writer.writerow([int(a.timestamp()), test_env['name'], i + 1, baseline, table, c])
 
-generate_historical_data(env) # Generate historical data for optimization and store in local_measurements_new
+generate_historical_data(env, all_skip_options=True) # Generate historical data for optimization and store in local_measurements_new
 perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements')) # Store performance data in local_measurements after optimization
 for table in test_env['env']['tables']:
     for i in range(repetitions):

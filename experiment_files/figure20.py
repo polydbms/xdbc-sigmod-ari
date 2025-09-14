@@ -104,24 +104,24 @@ environments = [
             'table': 'lineitem_sf10'
         }
     },
-    {
-        'name': "pg",
-        'env': {
-            'server_cpu': 16,
-            'client_cpu': 16,
-            'network': 100,
-            'network_latency': 0,
-            'network_loss': 0,
-            'src': 'postgres',
-            'src_format': 1,
-            'target': 'postgres',
-            'target_format': 1,
-            'server_container': 'xdbcserver',
-            'client_container': 'pg_xdbc_client',
-            'tables': ['lineitem_sf10'], 
-            'table': 'lineitem_sf10'
-        }
-    }
+    # {
+    #     'name': "pg",
+    #     'env': {
+    #         'server_cpu': 16,
+    #         'client_cpu': 16,
+    #         'network': 100,
+    #         'network_latency': 0,
+    #         'network_loss': 0,
+    #         'src': 'postgres',
+    #         'src_format': 1,
+    #         'target': 'postgres',
+    #         'target_format': 1,
+    #         'server_container': 'xdbcserver',
+    #         'client_container': 'pg_xdbc_client',
+    #         'tables': ['lineitem_sf10'], 
+    #         'table': 'lineitem_sf10'
+    #     }
+    # }
 ]
 
 # compression_types = ['nocomp', 'lz4', 'lzo', 'snappy', 'zstd']
@@ -216,23 +216,23 @@ fixed_configs = [
             'format': 2
         }
     },
-    {
-        'name': "pg",
-        'config_type': {
-            'read_par': 4,
-            'deser_par': 3,
-            'comp_par': 3,
-            'send_par': 2,
-            'rcv_par': 2,
-            'decomp_par': 4,
-            'write_par': 1,
-            'compression_lib': 'zstd',
-            'buffer_size': 256,
-            'server_buffpool_size': 2 * 256 * 20,
-            'client_buffpool_size': 2 * 256 * 20,
-            'format': 1
-        }
-    }
+    # {
+    #     'name': "pg",
+    #     'config_type': {
+    #         'read_par': 4,
+    #         'deser_par': 3,
+    #         'comp_par': 3,
+    #         'send_par': 2,
+    #         'rcv_par': 2,
+    #         'decomp_par': 4,
+    #         'write_par': 1,
+    #         'compression_lib': 'zstd',
+    #         'buffer_size': 256,
+    #         'server_buffpool_size': 2 * 256 * 20,
+    #         'client_buffpool_size': 2 * 256 * 20,
+    #         'format': 1
+    #     }
+    # }
 ]
 
 configurations = []
@@ -284,6 +284,8 @@ if not os.path.exists("res/xdbc_plans"):
 
 sample_run_config = configurations[0]['run_config']
 sample_cur_conf = create_conf(**sample_run_config) # Generate a sample to get its structure
+run_config_keys = list(sample_cur_conf.keys())
+
 # Create CSV with a header that matches the logged data
 if not os.path.exists(csv_file_path):
     header_base = [
@@ -291,7 +293,7 @@ if not os.path.exists(csv_file_path):
     ]
     # Use keys from the ACTUAL data structure that will be written to the file
     run_config_keys = list(sample_cur_conf.keys())
-    full_header = header_base + run_config_keys + ["time"] + ["data_size"]
+    full_header = header_base + run_config_keys + ["time"] + ["data_size"] + ["est_throughput"]
     with open(csv_file_path, mode="a", newline="") as file:
         writer = csv.writer(file)
         writer.writerow(full_header)
@@ -309,7 +311,7 @@ for env_config in environments:
     set_env(env)
 
     # Generate historical data for optimization
-    generate_historical_data(env,all_compression_types = True) # Generate historical data for optimization and store in local_measurements_new
+    generate_historical_data(env,show_output=(True, True),all_compression_types = True) # Generate historical data for optimization and store in local_measurements_new
     
     print(f"--- Heuristics Optimize for environment: {env_name} ---")
     n, best_config, estimated_thr, opt_time = optimize(env, 'xdbc', 'heuristic', False, False)
@@ -321,7 +323,7 @@ for env_config in environments:
         perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
         
         # Use a deepcopy to avoid modifying the original config object
-        t, data_size = run_xdbserver_and_xdbclient(copy.deepcopy(best_config), env, perf_dir, show_output=(False, False), return_size=True)
+        t, data_size = run_xdbserver_and_xdbclient(copy.deepcopy(best_config), env, perf_dir, show_output=(True, True), return_size=True)
         print(f"Result: {t:.4f} seconds\n")
         
         # Log results for the optimal run
@@ -331,8 +333,10 @@ for env_config in environments:
             row_data = [
                 timestamp, env_name, "xdbc", i + 1
             ]
-            row_data.extend(best_config.values())
-            row_data.extend([t, data_size])
+            # row_data.extend(best_config.values())
+            for key in run_config_keys:
+                row_data.append(best_config[key])
+            row_data.extend([t, data_size, estimated_thr])  # Add estimated throughput
             writer.writerow(row_data)
         
         with open(f"res/xdbc_plans/{timestamp}_optimal_{env_name}.json", "w") as file:
@@ -350,7 +354,7 @@ for env_config in environments:
         perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
         
         # Use a deepcopy to avoid modifying the original config object
-        t, data_size = run_xdbserver_and_xdbclient(copy.deepcopy(best_config), env, perf_dir, show_output=(False, False), return_size=True)
+        t, data_size = run_xdbserver_and_xdbclient(copy.deepcopy(best_config), env, perf_dir, show_output=(True, True), return_size=True)
         print(f"Result: {t:.4f} seconds\n")
         
         # Log results for the optimal run
@@ -360,8 +364,10 @@ for env_config in environments:
             row_data = [
                 timestamp, env_name, "bf", i + 1
             ]
-            row_data.extend(best_config.values())
-            row_data.extend([t, data_size])
+            # row_data.extend(best_config.values())
+            for key in run_config_keys:
+                row_data.append(best_config[key])
+            row_data.extend([t, data_size, estimated_thr])  # Add estimated throughput
             writer.writerow(row_data)
         
         with open(f"res/xdbc_plans/{timestamp}_optimal_{env_name}.json", "w") as file:
@@ -386,7 +392,7 @@ for env_config in environments:
             perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
             
             # Run the client-server and get the execution time
-            t, data_size = run_xdbserver_and_xdbclient(copy.deepcopy(cur_conf), env, perf_dir, show_output=(False, False),return_size=True)
+            t, data_size = run_xdbserver_and_xdbclient(copy.deepcopy(cur_conf), env, perf_dir, show_output=(True, True),return_size=True)
             print(f"Result: {t:.4f} seconds\n")
 
             # Log the results
@@ -405,7 +411,8 @@ for env_config in environments:
                 row_data.extend(cur_conf.values())
                 row_data.append(t)
                 row_data.append(data_size)
-
+                estimated_thr = 0
+                row_data.append(estimated_thr)
                 writer.writerow(row_data)
 
 
