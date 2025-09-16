@@ -1,9 +1,0 @@
-table_name,system,config,elapsed_time_ms,timestamp
-lineitem_sf10,jdbc,default,230517,2025-09-14 05:20:04
-lineitem_sf10,xdbc,xdbc_1024_65536_1_6_8_1,43066,2025-09-14 05:20:59
-ss13husallm,jdbc,default,48383,2025-09-14 05:21:52
-ss13husallm,xdbc,xdbc_1024_65536_1_6_8_1,25122,2025-09-14 05:22:29
-iotm,jdbc,default,123997,2025-09-14 05:24:37
-iotm,xdbc,xdbc_1024_65536_1_6_8_1,27881,2025-09-14 05:25:17
-inputeventsm,jdbc,default,56567,2025-09-14 05:26:19
-inputeventsm,xdbc,xdbc_1024_65536_1_6_8_1,17201,2025-09-14 05:26:48

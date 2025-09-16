@@ -9,6 +9,45 @@ from experiment_helpers import set_env, create_conf, create_file
 import copy
 from profiling_phase import generate_historical_data
 
+
+def calculate_config_throughput(env, config):
+    """Calculate estimated throughput for a configuration"""
+    from optimizer.optimizers import HeuristicsOptimizer
+    from optimizer.config import loader
+    from optimizer.config.helpers import Helpers
+    import math
+    import os
+    
+    perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements_new'))
+    
+    # Load throughput data
+    throughput_data = Helpers.load_throughput(
+        env, perf_dir, 
+        compression=config.get('compression_lib', 'nocomp'),
+        consider_skip_ser=False
+    )
+    
+    if throughput_data is None:
+        print("Warning: No throughput data found, using 0 as estimate")
+        return 0
+    
+    # Set up optimizer parameters
+    mode = 2
+    params = {
+        "f0": 0.3,
+        "a": 0.02,
+        "upper_bounds": loader.upper_bounds[f"{env['target']}_{env['src']}"][mode],
+        "max_total_workers_server": math.floor(env["server_cpu"] * 1.2),
+        "max_total_workers_client": math.floor(env["client_cpu"] * 1.2),
+        "compression_libraries": ["lzo", "snappy", "nocomp", "lz4", "zstd"],
+        "env": env
+    }
+    
+    # Calculate throughput
+    optimizer = HeuristicsOptimizer(params)
+    estimated_thr = optimizer.calculate_throughput(config, throughput_data, False)
+    return estimated_thr
+
 # --- Experiment Configuration ---
 
 
@@ -117,7 +156,7 @@ environments = [
     #         'target': 'postgres',
     #         'target_format': 1,
     #         'server_container': 'xdbcserver',
-    #         'client_container': 'pg_xdbc_client',
+    #         'client_container': 'xdbcpostgres',
     #         'tables': ['lineitem_sf10'], 
     #         'table': 'lineitem_sf10'
     #     }
@@ -216,23 +255,23 @@ fixed_configs = [
             'format': 2
         }
     },
-    # {
-    #     'name': "pg",
-    #     'config_type': {
-    #         'read_par': 4,
-    #         'deser_par': 3,
-    #         'comp_par': 3,
-    #         'send_par': 2,
-    #         'rcv_par': 2,
-    #         'decomp_par': 4,
-    #         'write_par': 1,
-    #         'compression_lib': 'zstd',
-    #         'buffer_size': 256,
-    #         'server_buffpool_size': 2 * 256 * 20,
-    #         'client_buffpool_size': 2 * 256 * 20,
-    #         'format': 1
-    #     }
-    # }
+    {
+        'name': "pg",
+        'config_type': {
+            'read_par': 4,
+            'deser_par': 3,
+            'comp_par': 3,
+            'send_par': 2,
+            'rcv_par': 2,
+            'decomp_par': 4,
+            'write_par': 1,
+            'compression_lib': 'zstd',
+            'buffer_size': 256,
+            'server_buffpool_size': 2 * 256 * 20,
+            'client_buffpool_size': 2 * 256 * 20,
+            'format': 1
+        }
+    }
 ]
 
 configurations = []
@@ -411,7 +450,9 @@ for env_config in environments:
                 row_data.extend(cur_conf.values())
                 row_data.append(t)
                 row_data.append(data_size)
-                estimated_thr = 0
+                # estimated_thr = 0
+                estimated_thr = calculate_config_throughput(env, cur_conf)
+                print(f"Estimated throughput: {estimated_thr:.2f} MB/s")
                 row_data.append(estimated_thr)
                 writer.writerow(row_data)
 

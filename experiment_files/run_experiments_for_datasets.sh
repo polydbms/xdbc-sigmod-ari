@@ -36,7 +36,7 @@ out_dir="res"
 # result files
 all_runs_times="res/query_times.csv"
 mean_run_times="res/averages.csv"
-client_container_name="pg_xdbc_client"
+client_container_name="xdbcpostgres"
 server_container_name="xdbcserver"
 
 run_count=1
