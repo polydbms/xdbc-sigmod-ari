@@ -1934,6 +1934,9 @@ if RUN_SECTION_22:
     plt.xlabel('Estimated Throughput (MB)')
     plt.ylabel('Real Throughput (MB)')
 
+    plt.xlim(0, 1000)
+    plt.ylim(0, 1000)
+
     # Add optimizer legend
     optimizer_scatter = plt.scatter([], [], color='black', marker='*', s=100, label='Optimizer')
     optimizer_scatter2 = plt.scatter([], [], color='black', marker='+', s=100, label='Bruteforce')

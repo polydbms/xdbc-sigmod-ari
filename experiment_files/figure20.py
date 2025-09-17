@@ -54,6 +54,24 @@ def calculate_config_throughput(env, config):
 #1 .  create environments 
 environments = [
     {
+        'name': "icu_analysis",
+        'env': {
+            'server_cpu': 16,
+            'client_cpu': 12,
+            'network': 50,
+            'network_latency': 0,
+            'network_loss': 0,
+            'src': 'csv',
+            'src_format': 1,
+            'target': 'pandas',
+            'target_format': 2,
+            'server_container': 'xdbcserver',
+            'client_container': 'xdbcpython',
+            'tables': ['inputeventsm'], 
+            'table': 'inputeventsm'
+        }
+    },
+    {
         'name': "iot_analysis",
         'env': {
             'server_cpu': 16,
@@ -87,24 +105,6 @@ environments = [
             'client_container': 'xdbcclient',
             'tables': ['lineitem_sf10'], 
             'table': 'lineitem_sf10'
-        }
-    },
-    {
-        'name': "icu_analysis",
-        'env': {
-            'server_cpu': 16,
-            'client_cpu': 12,
-            'network': 50,
-            'network_latency': 0,
-            'network_loss': 0,
-            'src': 'csv',
-            'src_format': 1,
-            'target': 'pandas',
-            'target_format': 2,
-            'server_container': 'xdbcserver',
-            'client_container': 'xdbcpython',
-            'tables': ['inputeventsm'], 
-            'table': 'inputeventsm'
         }
     },
     {
@@ -143,6 +143,7 @@ environments = [
             'table': 'lineitem_sf10'
         }
     },
+
     # {
     #     'name': "pg",
     #     'env': {
@@ -170,6 +171,23 @@ environments = [
 repetitions = 1 # Set how many times each experiment should be repeated
 
 fixed_configs = [
+    {
+        'name': "copy",
+        'config_type': {
+            'read_par': 4,
+            'deser_par': 4,
+            'comp_par': 2,
+            'send_par': 2,
+            'rcv_par': 2,
+            'decomp_par': 2,
+            'write_par': 4,
+            'compression_lib': 'lz4',
+            'buffer_size': 512,
+            'server_buffpool_size': 4 * 512 * 20,
+            'client_buffpool_size': 4 * 512 * 20,
+            'format': 1
+        }
+    },
     {
         'name': "iot_analysis",
         'config_type': {
@@ -219,23 +237,6 @@ fixed_configs = [
             'server_buffpool_size': 4 * 64 * 20,
             'client_buffpool_size': 2 * 64 * 20,
             'format': 2
-        }
-    },
-    {
-        'name': "copy",
-        'config_type': {
-            'read_par': 4,
-            'deser_par': 4,
-            'comp_par': 2,
-            'send_par': 2,
-            'rcv_par': 2,
-            'decomp_par': 2,
-            'write_par': 4,
-            'compression_lib': 'lz4',
-            'buffer_size': 512,
-            'server_buffpool_size': 4 * 512 * 20,
-            'client_buffpool_size': 4 * 512 * 20,
-            'format': 1
         }
     },
     {

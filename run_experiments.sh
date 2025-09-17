@@ -296,6 +296,7 @@ if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
         make run_figure6b
         make run_figure7a
         make run_figure7b
+        make copy-csvs
     fi
 
 
@@ -305,6 +306,7 @@ if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
         make run_figure9b
         make run_figure8PandasPGCPUNet
         make run_figure10ZParquetCSV
+        make copy-csvs
     fi
 
     if [ "$RUN_SECTION_C" = true ]; then
@@ -314,6 +316,7 @@ if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
         make run_figure12bCSVPG
         make run_figure13aCSVCSVOpt
         make run_figure13bCSVPGOpt
+        make copy-csvs
     fi
 
     if [ "$RUN_SECTION_D" = true ]; then
@@ -322,6 +325,7 @@ if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
         make run_figure14bYParquet
         make run_figure1516a
         make run_figure1516b
+        make copy-csvs
     fi
 
     if [ "$RUN_SECTION_E" = true ]; then
@@ -330,11 +334,13 @@ if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
         make run_figure17b
         make run_figure18
         make run_figure19
+        make copy-csvs
     fi
 
     if [ "$RUN_SECTION_F" = true ]; then
         echo "Running Section F"
         make run_figure20
+        make copy-csvs
     fi
 
     echo "All figure experiments completed successfully."
