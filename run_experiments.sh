@@ -17,13 +17,158 @@ set -e
 # --- Configuration: Select which steps to run ---
 # Set the following variables to 'true' to run the corresponding step,
 # or 'false' to skip it.
-RUN_STEP_1_CLONE=true
-RUN_STEP_2_SETUP=true
-RUN_STEP_3_DOWNLOAD=true
-RUN_STEP_4_BUILD=true
-RUN_STEP_5_PREPARE=true
-RUN_STEP_6_EXPERIMENTS=true
-RUN_STEP_7_PLOT=true
+RUN_STEP_1_CLONE=false
+RUN_STEP_2_SETUP=false
+RUN_STEP_3_DOWNLOAD=false
+RUN_STEP_4_BUILD=true  
+RUN_STEP_5_PREPARE=false
+RUN_STEP_6_EXPERIMENTS=false
+RUN_STEP_7_PLOT=false
+
+RUN_SECTION_A=false  
+RUN_SECTION_B=false   
+RUN_SECTION_C=false 
+RUN_SECTION_D=false 
+RUN_SECTION_E=false
+RUN_SECTION_F=false
+
+# Handle command line arguments
+if [ "$#" -gt 0 ]; then
+    case "$1" in
+        init)
+            RUN_STEP_1_CLONE=true
+            RUN_STEP_2_SETUP=true
+            RUN_STEP_3_DOWNLOAD=true
+            RUN_STEP_4_BUILD=true
+            RUN_STEP_5_PREPARE=true
+            RUN_STEP_6_EXPERIMENTS=false
+            RUN_STEP_7_PLOT=false
+            echo "Running initialization steps only (clone, setup, download, build, prepare)"
+            ;;
+        expt)
+            RUN_STEP_1_CLONE=false
+            RUN_STEP_2_SETUP=false
+            RUN_STEP_3_DOWNLOAD=false
+            RUN_STEP_4_BUILD=true
+            RUN_STEP_5_PREPARE=false
+            RUN_STEP_6_EXPERIMENTS=true
+            RUN_STEP_7_PLOT=false
+            RUN_SECTION_A=true
+            RUN_SECTION_B=true
+            RUN_SECTION_C=true
+            RUN_SECTION_D=true
+            RUN_SECTION_E=true
+            RUN_SECTION_F=true
+            echo "Running all experiments"
+            ;;
+        plot)
+            RUN_STEP_1_CLONE=false
+            RUN_STEP_2_SETUP=false
+            RUN_STEP_3_DOWNLOAD=false
+            RUN_STEP_4_BUILD=true
+            RUN_STEP_5_PREPARE=false
+            RUN_STEP_6_EXPERIMENTS=false
+            RUN_STEP_7_PLOT=true
+            echo "Running plotting only"
+            ;;
+        sectionA|A|1|6-7)
+            RUN_STEP_1_CLONE=false
+            RUN_STEP_2_SETUP=false
+            RUN_STEP_3_DOWNLOAD=false
+            RUN_STEP_4_BUILD=true
+            RUN_STEP_5_PREPARE=false
+            RUN_STEP_6_EXPERIMENTS=true
+            RUN_STEP_7_PLOT=false
+            RUN_SECTION_A=true
+            echo "Running Section A experiments"
+            ;;
+        sectionB|B|2|8-10)
+            RUN_STEP_1_CLONE=false
+            RUN_STEP_2_SETUP=false
+            RUN_STEP_3_DOWNLOAD=false
+            RUN_STEP_4_BUILD=true
+            RUN_STEP_5_PREPARE=false
+            RUN_STEP_6_EXPERIMENTS=true
+            RUN_STEP_7_PLOT=false
+            RUN_SECTION_B=true
+            echo "Running Section B experiments"
+            ;;
+        sectionC|C|3|11-13)
+            RUN_STEP_1_CLONE=false
+            RUN_STEP_2_SETUP=false
+            RUN_STEP_3_DOWNLOAD=false
+            RUN_STEP_4_BUILD=true
+            RUN_STEP_5_PREPARE=false
+            RUN_STEP_6_EXPERIMENTS=true
+            RUN_STEP_7_PLOT=false
+            RUN_SECTION_C=true
+            echo "Running Section C experiments"
+            ;;
+        sectionD|D|4|14-16)
+            RUN_STEP_1_CLONE=false
+            RUN_STEP_2_SETUP=false
+            RUN_STEP_3_DOWNLOAD=false
+            RUN_STEP_4_BUILD=true
+            RUN_STEP_5_PREPARE=false
+            RUN_STEP_6_EXPERIMENTS=true
+            RUN_STEP_7_PLOT=false
+            RUN_SECTION_D=true
+            echo "Running Section D experiments"
+            ;;
+        sectionE|E|5|17-20)
+            RUN_STEP_1_CLONE=false
+            RUN_STEP_2_SETUP=false
+            RUN_STEP_3_DOWNLOAD=false
+            RUN_STEP_4_BUILD=true
+            RUN_STEP_5_PREPARE=false
+            RUN_STEP_6_EXPERIMENTS=true
+            RUN_STEP_7_PLOT=false
+            RUN_SECTION_E=true
+            echo "Running Section E experiments"
+            ;;
+        sectionF|F|6|17-20)
+            RUN_STEP_1_CLONE=false
+            RUN_STEP_2_SETUP=false
+            RUN_STEP_3_DOWNLOAD=false
+            RUN_STEP_4_BUILD=true
+            RUN_STEP_5_PREPARE=false
+            RUN_STEP_6_EXPERIMENTS=true
+            RUN_STEP_7_PLOT=false
+            RUN_SECTION_F=true
+            echo "Running Section F experiments"
+            ;;
+        *)
+            echo "Unknown argument: $1"
+            echo "Available arguments:"
+            echo "  init      - Run initialization steps only"
+            echo "  expt      - Run all experiments"
+            echo "  plot      - Run plotting only"
+            echo "  sectionA  - Run Section A experiments"
+            echo "  sectionB  - Run Section B experiments"
+            echo "  sectionC  - Run Section C experiments"
+            echo "  sectionD  - Run Section D experiments"
+            echo "  sectionE  - Run Section E experiments"
+            echo "  sectionF  - Run Section F experiments"
+            exit 1
+            ;;
+    esac
+else
+    # No arguments - run everything
+    RUN_STEP_1_CLONE=true
+    RUN_STEP_2_SETUP=true
+    RUN_STEP_3_DOWNLOAD=true
+    RUN_STEP_4_BUILD=true
+    RUN_STEP_5_PREPARE=true
+    RUN_STEP_6_EXPERIMENTS=true
+    RUN_STEP_7_PLOT=true
+    RUN_SECTION_A=true
+    RUN_SECTION_B=true
+    RUN_SECTION_C=true
+    RUN_SECTION_D=true
+    RUN_SECTION_E=true
+    RUN_SECTION_F=true
+    echo "No arguments provided - running all steps"
+fi
 
     
 # --- Introduction ---
@@ -75,11 +220,14 @@ if [ "$RUN_STEP_2_SETUP" = true ]; then
 
     docker compose -f .././xdbc-client/docker-xdbc.yml up -d
     docker compose -f .././xdbc-client/docker-tc.yml up -d
+    docker rm -f xdbcspark 2>/dev/null || true
     docker run -d -it --rm --name xdbcspark --network xdbc-net -p 4040:4040 -p 18080:18080 spark3io-sbt:latest
 
     docker compose -f .././pg_xdbc_fdw/docker-xdbc-fdw.yml up -d
-    docker exec pg_xdbc_client bash -c "cd /pg_xdbc_fdw/experiments/ && psql -d db1 -f clean.sql"
-    docker exec pg_xdbc_client bash -c "cd pg_xdbc_fdw/experiments/ && ./setup_fdws.sh" 
+    echo "Waiting for PostgreSQL container to start..."
+    sleep 5
+    docker exec xdbcpostgres bash -c "cd /pg_xdbc_fdw/experiments/ && psql -d db1 -f clean.sql"
+    docker exec xdbcpostgres bash -c "cd pg_xdbc_fdw/experiments/ && ./setup_fdws.sh" 
 
     echo "XDBC setup completed successfully."
 else
@@ -141,30 +289,59 @@ if [ "$RUN_STEP_6_EXPERIMENTS" = true ]; then
     make clean_csvs
 
     # Run experiments for each figure
-    # Uncomment the lines below to run specific figures
 
-    make run_figure6
-    make run_figure6b
-    make run_figure7a
-    make run_figure7b
-    make run_figure9a
-    make run_figure9b
-    make run_figure8PandasPGCPUNet
-    make run_figure10ZParquetCSV
-    make run_figure11 
-    make run_figure12aCSVCSV
-    make run_figure12bCSVPG
-    make run_figure13aCSVCSVOpt
-    make run_figure13bCSVPGOpt
-    make run_figure14aXArrow
-    make run_figure14bYParquet
-    make run_figure1516a
-    make run_figure1516b
-    make run_figure17aMemoryManagement
-    make run_figure17b
-    make run_figure18
-    make run_figure19
-    make run_figure20
+    if [ "$RUN_SECTION_A" = true ]; then
+        echo "Running Section A: "
+        make run_figure6
+        make run_figure6b
+        make run_figure7a
+        make run_figure7b
+        make copy-csvs
+    fi
+
+
+    if [ "$RUN_SECTION_B" = true ]; then
+        echo "Running Section B"
+        make run_figure9a
+        make run_figure9b
+        make run_figure8PandasPGCPUNet
+        make run_figure10ZParquetCSV
+        make copy-csvs
+    fi
+
+    if [ "$RUN_SECTION_C" = true ]; then
+        echo "Running Section C"
+        make run_figure11 
+        make run_figure12aCSVCSV
+        make run_figure12bCSVPG
+        make run_figure13aCSVCSVOpt
+        make run_figure13bCSVPGOpt
+        make copy-csvs
+    fi
+
+    if [ "$RUN_SECTION_D" = true ]; then
+        echo "Running Section D"
+        make run_figure14aXArrow
+        make run_figure14bYParquet
+        make run_figure1516a
+        make run_figure1516b
+        make copy-csvs
+    fi
+
+    if [ "$RUN_SECTION_E" = true ]; then
+        echo "Running Section E"
+        make run_figure17aMemoryManagement
+        make run_figure17b
+        make run_figure18
+        make run_figure19
+        make copy-csvs
+    fi
+
+    if [ "$RUN_SECTION_F" = true ]; then
+        echo "Running Section F"
+        make run_figure20
+        make copy-csvs
+    fi
 
     echo "All figure experiments completed successfully."
 else

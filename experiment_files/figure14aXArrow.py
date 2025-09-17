@@ -6,6 +6,7 @@ from experiment_envs import test_envs
 from optimizer.runner import run_xdbserver_and_xdbclient
 from optimizer.optimize import optimize
 from experiment_helpers import set_env, create_file
+from profiling_phase import generate_historical_data
 
 repetitions = 2
 test_env = next((env for env in test_envs if env['name'] == "figure_11"), None)
@@ -18,7 +19,7 @@ create_file(csv_file_path)
 formats = [1, 2, 3]
 
 perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
-
+generate_historical_data(env, all_skip_options=True)
 for skip_ser in [0, 1]:
     for table in test_env['env']['tables']:
         formats_to_run = formats if skip_ser == 0 else [None]

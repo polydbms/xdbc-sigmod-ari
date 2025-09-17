@@ -1,4 +1,4 @@
-CREATE TABLE ss13husallm
+CREATE TABLE IF NOT EXISTS ss13husallm
 (
     serialno    integer,
     division    integer,

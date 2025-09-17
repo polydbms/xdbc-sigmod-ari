@@ -199,7 +199,7 @@ for env_config in environments:
             perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
             
             # Run the client-server and get the execution time
-            t, data_size = run_xdbserver_and_xdbclient(copy.deepcopy(cur_conf), env, perf_dir, show_output=(False, False), return_size=True)
+            t, data_size = run_xdbserver_and_xdbclient(copy.deepcopy(cur_conf), env, perf_dir, show_output=(True, True), return_size=True)
             print(f"Result: {t:.4f} seconds\n")
 
             # Log the results
