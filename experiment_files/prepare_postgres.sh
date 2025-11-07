@@ -68,9 +68,19 @@ for TABLE_NAME in "${!TABLE_TO_SQL_MAP[@]}"; do
 
     # Define source paths (in this container) and destination paths (in pg1)
     SRC_SQL_PATH="$SHARED_SQL_DIR/$SQL_FILE_NAME"
-    SRC_CSV_PATH="$SHARED_CSV_DIR/$TABLE_NAME.csv"
-    DEST_SQL_PATH="/tmp/$SQL_FILE_NAME"
-    DEST_CSV_PATH="/tmp/$TABLE_NAME.csv"
+    # Handle special case for lineitem_sf10
+    if [[ "$TABLE_NAME" == "lineitem_sf10" ]]; then
+        SRC_CSV_PATH="$SHARED_CSV_DIR/$TABLE_NAME.tbl"
+        DEST_SQL_PATH="/tmp/$SQL_FILE_NAME"
+        DEST_CSV_PATH="/tmp/$TABLE_NAME.tbl"
+        CSV_FORMAT_OPTS="FORMAT csv, DELIMITER '|', HEADER false"
+    else
+        SRC_CSV_PATH="$SHARED_CSV_DIR/$TABLE_NAME.csv"
+        DEST_SQL_PATH="/tmp/$SQL_FILE_NAME"
+        DEST_CSV_PATH="/tmp/$TABLE_NAME.csv"
+        CSV_FORMAT_OPTS="FORMAT csv, HEADER true"
+    fi
+
 
     # --- NEW: Step 1/4: Copy SQL file to pg1 ---
     echo "Step 1/4: Copying '$SQL_FILE_NAME' to '$CONTAINER_NAME:$DEST_SQL_PATH'..."
@@ -89,7 +99,8 @@ for TABLE_NAME in "${!TABLE_TO_SQL_MAP[@]}"; do
 
     # --- MODIFIED: Step 4/4: Import data from .csv file inside pg1 ---
     echo "Step 4/4: Importing data into table '$TABLE_NAME'..."
-    COPY_COMMAND="\copy $TABLE_NAME FROM '$DEST_CSV_PATH' WITH (FORMAT csv, HEADER true);"
+    COPY_COMMAND="\copy $TABLE_NAME FROM '$DEST_CSV_PATH' WITH ($CSV_FORMAT_OPTS);"
+
 
     if docker exec "$CONTAINER_NAME" psql -U "$DB_USER" -d "$DB_NAME" -c "$COPY_COMMAND"; then
         echo "Data for '$TABLE_NAME' imported successfully!"
