@@ -207,6 +207,7 @@ if [ "$RUN_STEP_2_SETUP" = true ]; then
     # Create Docker network if it doesn't exist
     docker network create xdbc-net 2>/dev/null || true
 
+    make -C postgres
     make -C .././xdbc-client
     make -C .././xdbc-server
     make -C .././xdbc-python
@@ -244,7 +245,7 @@ if [ "$RUN_STEP_3_DOWNLOAD" = true ]; then
     cd datasets
     for f in inputeventsm.csv.tar.gz iotm.csv.tar.gz lineitem.tbl.tar.gz lineitem_sf10.csv.tar.gz ss13husallm.csv.tar.gz; do
         if [ ! -f "$f" ]; then
-            wget -O "$f" "https://tubcloud.tu-berlin.de/s/FTxy2w6mGt4f5cK/download?path=%2F&files=$f"
+            wget -O "$f" "https://tubcloud.tu-berlin.de/s/M3aeptL8R5ekWSD/download?path=%2F&files=$f"
         fi
     done
     cd ..
