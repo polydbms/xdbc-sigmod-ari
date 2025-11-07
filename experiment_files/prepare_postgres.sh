@@ -70,9 +70,9 @@ for TABLE_NAME in "${!TABLE_TO_SQL_MAP[@]}"; do
     SRC_SQL_PATH="$SHARED_SQL_DIR/$SQL_FILE_NAME"
     # Handle special case for lineitem_sf10
     if [[ "$TABLE_NAME" == "lineitem_sf10" ]]; then
-        SRC_CSV_PATH="$SHARED_CSV_DIR/$TABLE_NAME.tbl"
+        SRC_CSV_PATH="$SHARED_CSV_DIR/lineitem.tbl"
         DEST_SQL_PATH="/tmp/$SQL_FILE_NAME"
-        DEST_CSV_PATH="/tmp/$TABLE_NAME.tbl"
+        DEST_CSV_PATH="/tmp/lineitem.tbl"
         CSV_FORMAT_OPTS="FORMAT csv, DELIMITER '|', HEADER false"
     else
         SRC_CSV_PATH="$SHARED_CSV_DIR/$TABLE_NAME.csv"
