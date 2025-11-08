@@ -79,47 +79,49 @@ run_plotter:
 	docker exec -it xdbcexpt bash -c "cd /app/experiment_files && python3 e2e_plotter.py"
 
 copy-pdfs:
-	@echo "Copying all PDFs from container to pdf_plots..."
-	@for pdf in $$(docker exec xdbcexpt find /app/experiment_files -name "*.pdf"); do \
+	@echo "Copying all PDFs from container to experiment_files/res/pdf_plots..."
+	@dest_dir="experiment_files/res/pdf_plots"; \
+	if [ ! -d "$$dest_dir" ]; then \
+		echo "Error: Directory '$$dest_dir' not found. Please run this from the repository root."; \
+		exit 1; \
+	fi; \
+	for pdf in $$(docker exec xdbcexpt find /app/experiment_files -name "*.pdf"); do \
 		filename=$$(basename "$$pdf"); \
-		if [ -d "$$HOME/XDBC/xdbc-sigmod-ari/experiment_files/res/pdf_plots" ]; then \
-			docker cp "xdbcexpt:$$pdf" "$$HOME/XDBC/xdbc-sigmod-ari/experiment_files/res/pdf_plots/$$filename"; \
-		elif [ -d "$$HOME/xdbc-sigmod-ari/experiment_files/res/pdf_plots" ]; then \
-			docker cp "xdbcexpt:$$pdf" "$$HOME/xdbc-sigmod-ari/experiment_files/res/pdf_plots/$$filename"; \
-		else \
-			echo "Error: Could not find pdf_plots directory in either $$HOME/XDBC/xdbc-sigmod-ari/ or $$HOME/xdbc-sigmod-ari/"; \
-			exit 1; \
-		fi; \
-	done
-	@echo "All PDFs copied successfully!"
+		echo "Copying $$filename to $$dest_dir/"; \
+		docker cp "xdbcexpt:$$pdf" "$$dest_dir/$$filename"; \
+	done; \
+	echo "All PDFs copied successfully to '$$dest_dir'."
+
 copy-csvs:
 	@echo "Copying all CSVs from container..."
-	@echo "Copying res CSVs..."
-	@for csv in $$(docker exec xdbcexpt find /app/experiment_files/res -name "*.csv"); do \
+	@dest_res="experiment_files/res"; \
+	dest_local="experiment_files/local_measurements_new"; \
+	if [ ! -d "$$dest_res" ]; then \
+		echo "Error: Directory '$$dest_res' not found. Please run this from the repository root."; \
+		exit 1; \
+	fi; \
+	if [ ! -d "$$dest_local" ]; then \
+		echo "Error: Directory '$$dest_local' not found. Please run this from the repository root."; \
+		exit 1; \
+	fi; \
+	\
+	echo "Copying res CSVs..."; \
+	for csv in $$(docker exec xdbcexpt find /app/experiment_files/res -name "*.csv"); do \
 		filename=$$(basename "$$csv"); \
-		if [ -d "$$HOME/XDBC/xdbc-sigmod-ari/experiment_files/res" ]; then \
-			docker cp "xdbcexpt:$$csv" "$$HOME/XDBC/xdbc-sigmod-ari/experiment_files/res/$$filename"; \
-		elif [ -d "$$HOME/xdbc-sigmod-ari/experiment_files/res" ]; then \
-			docker cp "xdbcexpt:$$csv" "$$HOME/xdbc-sigmod-ari/experiment_files/res/$$filename"; \
-		else \
-			echo "Error: Could not find res directory in either $$HOME/XDBC/xdbc-sigmod-ari/ or $$HOME/xdbc-sigmod-ari/"; \
-			exit 1; \
-		fi; \
-	done
-	@echo "Copying local_measurements_new CSVs..."
-	@for csv in $$(docker exec xdbcexpt find /app/experiment_files/local_measurements_new -name "*.csv"); do \
+		echo "Copying $$filename to $$dest_res/"; \
+		docker cp "xdbcexpt:$$csv" "$$dest_res/$$filename"; \
+	done; \
+	echo "res CSVs copied successfully."; \
+	\
+	echo "Copying local_measurements_new CSVs..."; \
+	for csv in $$(docker exec xdbcexpt find /app/experiment_files/local_measurements_new -name "*.csv"); do \
 		filename=$$(basename "$$csv"); \
-		if [ -d "$$HOME/XDBC/xdbc-sigmod-ari/experiment_files/local_measurements_new" ]; then \
-			docker cp "xdbcexpt:$$csv" "$$HOME/XDBC/xdbc-sigmod-ari/experiment_files/local_measurements_new/$$filename"; \
-		elif [ -d "$$HOME/xdbc-sigmod-ari/experiment_files/local_measurements_new" ]; then \
-			docker cp "xdbcexpt:$$csv" "$$HOME/xdbc-sigmod-ari/experiment_files/local_measurements_new/$$filename"; \
-		else \
-			echo "Error: Could not find local_measurements_new directory in either $$HOME/XDBC/xdbc-sigmod-ari/ or $$HOME/xdbc-sigmod-ari/"; \
-			exit 1; \
-		fi; \
-		echo "Copied local_measurements CSV: $$filename"; \
-	done
-	@echo "All CSVs copied successfully to their respective directories!"
+		echo "Copying $$filename to $$dest_local/"; \
+		docker cp "xdbcexpt:$$csv" "$$dest_local/$$filename"; \
+	done; \
+	echo "local_measurements_new CSVs copied successfully."; \
+	\
+	echo "All CSVs copied successfully to their respective directories."
 	
 run_plot: run_plotter copy-pdfs copy-csvs
 
