@@ -177,6 +177,7 @@ run_queries() {
                 sleep 5
             fi
     done
+    docker exec ${server_container_name} pkill -f xdbc-server 2>/dev/null || true
 
     # Output average of the runs of the query
     average=$(awk -v s="$sumtime" -v n="$runcount" 'BEGIN{printf "%.9f\n", s / n}')

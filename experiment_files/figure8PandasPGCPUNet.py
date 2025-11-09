@@ -121,6 +121,7 @@ subprocess.run(["docker", "exec", "xdbcserver", "bash", "-c", "pkill -f RangeHTT
 
 
 # run xdbc
+subprocess.run(["docker", "exec", "xdbcserver", "bash", "-c", "pkill -f './xdbc-server/build/xdbc-server' || true"])
 perf_dir = os.path.abspath(os.path.join(os.getcwd(), 'local_measurements'))
 env['table'] = table
 confs = [conf1, conf2]
