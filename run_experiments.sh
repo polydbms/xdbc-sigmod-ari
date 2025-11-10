@@ -215,7 +215,7 @@ if [ "$RUN_STEP_2_SETUP" = true ]; then
     
     # Navigate to pg_xdbc_fdw and update submodules
     cd ../pg_xdbc_fdw
-    git submodule update --init --recursive
+    git submodule update --init --recursive --remote
     cd ../xdbc-sigmod-ari  # Return to original directory
     make -C .././pg_xdbc_fdw/docker
 

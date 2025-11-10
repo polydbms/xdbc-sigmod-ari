@@ -144,24 +144,24 @@ environments = [
         }
     },
 
-    # {
-    #     'name': "pg",
-    #     'env': {
-    #         'server_cpu': 16,
-    #         'client_cpu': 16,
-    #         'network': 100,
-    #         'network_latency': 0,
-    #         'network_loss': 0,
-    #         'src': 'postgres',
-    #         'src_format': 1,
-    #         'target': 'postgres',
-    #         'target_format': 1,
-    #         'server_container': 'xdbcserver',
-    #         'client_container': 'xdbcpostgres',
-    #         'tables': ['lineitem_sf10'], 
-    #         'table': 'lineitem_sf10'
-    #     }
-    # }
+    {
+        'name': "pg",
+        'env': {
+            'server_cpu': 16,
+            'client_cpu': 16,
+            'network': 100,
+            'network_latency': 0,
+            'network_loss': 0,
+            'src': 'postgres',
+            'src_format': 1,
+            'target': 'postgres',
+            'target_format': 1,
+            'server_container': 'xdbcserver',
+            'client_container': 'xdbcpostgres',
+            'tables': ['lineitem_sf10'], 
+            'table': 'lineitem_sf10'
+        }
+    }
 ]
 
 # compression_types = ['nocomp', 'lz4', 'lzo', 'snappy', 'zstd']

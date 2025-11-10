@@ -2288,7 +2288,7 @@ if RUN_PDF_MERGER:
         ('figure20_icu_analysis.pdf', 'Figure 20c'),
         ('figure20_iot_analysis.pdf', 'Figure 20a'),
         ('figure20_etl.pdf', 'Figure 20e'),
-        # ('figure20_pg.pdf', 'Figure 20PG'),
+        ('figure20_pg.pdf', 'Figure 20f'),
         ('figure21.pdf', 'Figure 21'),
     ]
 
