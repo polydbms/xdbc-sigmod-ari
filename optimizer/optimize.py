@@ -9,7 +9,7 @@ import datetime
 import time
 
 
-def optimize(env, optimizer, optimizer_opt, run=True, consider_skip_ser=1):
+def optimize(env, optimizer, optimizer_opt, run=True, consider_skip_ser=1, best_comp_heur=False):
     print("-------------Starting Optimization-----------------")
     print(optimizer_opt)
     # env = next((entry['env'] for entry in test_envs if entry['name'] == env_name), None)
@@ -84,8 +84,8 @@ def optimize(env, optimizer, optimizer_opt, run=True, consider_skip_ser=1):
         lowest_upper_bound_component = min_upper_bound_pair[0]
         # print(f"lowest upper bound: {lowest_upper_bound_component}")
 
-        '''
-        if lowest_upper_bound_component in ['send', 'rcv'] and optimizer_opt != 'heuristics':
+        
+        if lowest_upper_bound_component in ['send', 'rcv'] and optimizer_opt == 'heuristic' and best_comp_heur:
             complibs = ['zstd', 'lz4', 'lzo', 'snappy']
 
             compconfigs = {}
@@ -116,7 +116,7 @@ def optimize(env, optimizer, optimizer_opt, run=True, consider_skip_ser=1):
             best_comp = Helpers.get_best_comp_config(compconfigs)
             best_config = compconfigs[best_comp]['config']
             best_config['compression_lib'] = best_comp
-            '''
+            
 
         # best_config = optimizer.find_best_config(throughput_data)
 

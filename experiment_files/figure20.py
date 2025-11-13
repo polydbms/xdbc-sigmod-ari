@@ -354,7 +354,7 @@ for env_config in environments:
     generate_historical_data(env,show_output=(True, True),all_compression_types = True) # Generate historical data for optimization and store in local_measurements_new
     
     print(f"--- Heuristics Optimize for environment: {env_name} ---")
-    n, best_config, estimated_thr, opt_time = optimize(env, 'xdbc', 'heuristic', False, False)
+    n, best_config, estimated_thr, opt_time = optimize(env, 'xdbc', 'heuristic', False, False, best_comp_heur=True)
     print(f"Optimizer found best configuration in {opt_time:.2f}s. Estimated throughput: {estimated_thr:.2f} MB/s")
     print(f"--- Running Heuristic configuration for {env_name} ---")
     for i in range(repetitions):
